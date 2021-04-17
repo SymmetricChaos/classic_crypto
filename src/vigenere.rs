@@ -8,32 +8,42 @@ use crate::errors::CipherError;
 pub struct Caesar {
     key: u8,
     whitespace: bool,
+    punctuation: bool,
+    capitalization: bool,
 }
 
 
-fn caesar_enc(c: u8, n: u8) -> Result<u8,CipherError> {
-    if !c.is_ascii_uppercase() {
-        return Err(CipherError::new(format!("{} is not a valid character",c as char)))
+fn caesar_enc(c: u8, n: u8) -> u8 {
+    if c.is_ascii_uppercase() {
+        return (c-65+n)%26+65
     } else {
-        return Ok((c-65+n)%26+65)
+        return (c-97+n)%26+97
     }
 }
 
-fn caesar_dec(c: u8, n: u8) -> Result<u8,CipherError> {
-    if !c.is_ascii_uppercase() {
-        return Err(CipherError::new(format!("{} is not a valid character",c)))
+fn caesar_dec(c: u8, n: u8) -> u8 {
+    if c.is_ascii_uppercase() {
+        return (c-65+(26-n))%26+65
     } else {
-        return Ok((c-65+(26-n))%26+65)
+        return (c-97+(26-n))%26+97
     }
 }
 
 impl Caesar {
     pub fn new(key: u8) -> Caesar {
-        Caesar{ key, whitespace: false }
+        Caesar{ key, whitespace: false, punctuation: false, capitalization: false }
+    }
+
+    pub fn set_punctuation(&mut self, boolean: bool) {
+        self.punctuation = boolean
     }
 
     pub fn set_whitespace(&mut self, boolean: bool) {
         self.whitespace = boolean
+    }
+
+    pub fn set_capitalization(&mut self, boolean: bool) {
+        self.capitalization = boolean
     }
 
     pub fn set_key(&mut self, key: u8) {
@@ -41,15 +51,20 @@ impl Caesar {
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         for c in ch {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(c);
+            if c.is_ascii_alphabetic() {
+                out.push(caesar_enc(c,self.key))
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
-                continue
+                if self.punctuation { out.push(c) }
             } else {
-                out.push(caesar_enc(c,self.key)?)
+                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -57,16 +72,20 @@ impl Caesar {
     }
 
     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         for c in ch {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(c);
-                continue
+            if c.is_ascii_alphabetic() {
+                out.push(caesar_dec(c,self.key))
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
-                continue
+                if self.punctuation { out.push(c) }
             } else {
-                out.push(caesar_dec(c,self.key)?)
+                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -81,6 +100,8 @@ impl Caesar {
 pub struct Vigenere {
     key: Vec::<u8>,
     whitespace: bool,
+    punctuation: bool,
+    capitalization: bool,
 }
 
 impl Vigenere {
@@ -93,22 +114,30 @@ impl Vigenere {
         self.key = key
     }
 
+    pub fn set_capitalization(&mut self, boolean: bool) {
+        self.capitalization = boolean
+    }
+
     pub fn new(key: Vec::<u8>) -> Vigenere {
-        Vigenere{ key, whitespace: false }
+        Vigenere{ key, whitespace: false, punctuation: false, capitalization: false }
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         let mut ckey = self.key.iter().cycle();
         for c in ch {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(c);
-                continue
+            if c.is_ascii_alphabetic() {
+                out.push(caesar_enc(c,*ckey.next().unwrap()))
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
-                continue
+                if self.punctuation { out.push(c) }
             } else {
-                out.push(caesar_enc(c,*ckey.next().unwrap())?)
+                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
             }
             
         }
@@ -117,17 +146,21 @@ impl Vigenere {
     }
 
     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         let mut ckey = self.key.iter().cycle();
         for c in ch {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(c);
-                continue
+            if c.is_ascii_alphabetic() {
+                out.push(caesar_dec(c,*ckey.next().unwrap()))
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
-                continue
+                if self.punctuation { out.push(c) }
             } else {
-                out.push(caesar_dec(c,*ckey.next().unwrap())?)
+                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -138,10 +171,11 @@ impl Vigenere {
 
 
 
-
+/* 
 pub struct Autokey {
     key: Vec::<u8>,
     whitespace: bool,
+    punctuation: bool,
 }
 
 impl Autokey {
@@ -155,7 +189,7 @@ impl Autokey {
     }
 
     pub fn new(key: Vec::<u8>) -> Autokey {
-        Autokey{ key, whitespace: false }
+        Autokey{ key, whitespace: false, punctuation: false }
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
@@ -163,12 +197,15 @@ impl Autokey {
         let mut out = Vec::new();
         let mut akey = VecDeque::from_iter(&self.key);
         for c in ch.iter() {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(*c);
-                continue
+            if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(*c); }
+            } else if c.is_ascii_punctuation() {
+                if self.punctuation { out.push(*c); }
+            } else {
+                println!("{:?}",akey);
+                akey.push_back(c);
+                out.push(caesar_enc(*c,*akey.pop_front().unwrap())?)
             }
-            akey.push_back(&c);
-            out.push(caesar_enc(*c,*akey.pop_front().unwrap())?)
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
@@ -177,14 +214,19 @@ impl Autokey {
     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
         let ch = text.to_ascii_uppercase().into_bytes();
         let mut out = Vec::new();
-        for c in ch {
-            if self.whitespace && c.is_ascii_whitespace() {
-                out.push(c);
-                continue
+        let mut akey = VecDeque::from_iter(&self.key);
+        for c in ch.iter() {
+            if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(*c); }
+            } else if c.is_ascii_punctuation() {
+                if self.punctuation { out.push(*c); }
+            } else {
+                akey.push_back(c);
+                out.push(caesar_dec(*c,*akey.pop_front().unwrap())?)
             }
-
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
     }
 }
+*/
