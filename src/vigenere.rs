@@ -106,20 +106,24 @@ pub struct Vigenere {
 
 impl Vigenere {
 
-    pub fn set_whitespace(&mut self, boolean: bool) {
-        self.whitespace = boolean
+    pub fn new(key: Vec<u8>) -> Vigenere {
+        Vigenere{ key, whitespace: false, punctuation: false, capitalization: false }
     }
 
-    pub fn set_key(&mut self, key: Vec::<u8>) {
-        self.key = key
+    pub fn set_punctuation(&mut self, boolean: bool) {
+        self.punctuation = boolean
+    }
+
+    pub fn set_whitespace(&mut self, boolean: bool) {
+        self.whitespace = boolean
     }
 
     pub fn set_capitalization(&mut self, boolean: bool) {
         self.capitalization = boolean
     }
 
-    pub fn new(key: Vec::<u8>) -> Vigenere {
-        Vigenere{ key, whitespace: false, punctuation: false, capitalization: false }
+    pub fn set_key(&mut self, key: Vec<u8>) {
+        self.key = key
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
@@ -176,20 +180,29 @@ pub struct Autokey {
     key: Vec::<u8>,
     whitespace: bool,
     punctuation: bool,
+    capitalization: bool,
 }
 
 impl Autokey {
+
+    pub fn new(key: u8) -> Autokey {
+        Autokey{ key, whitespace: false, punctuation: false, capitalization: false }
+    }
+
+    pub fn set_punctuation(&mut self, boolean: bool) {
+        self.punctuation = boolean
+    }
 
     pub fn set_whitespace(&mut self, boolean: bool) {
         self.whitespace = boolean
     }
 
-    pub fn set_key(&mut self, key: Vec::<u8>) {
-        self.key = key
+    pub fn set_capitalization(&mut self, boolean: bool) {
+        self.capitalization = boolean
     }
 
-    pub fn new(key: Vec::<u8>) -> Autokey {
-        Autokey{ key, whitespace: false, punctuation: false }
+    pub fn set_key(&mut self, key: u8) {
+        self.key = key
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
