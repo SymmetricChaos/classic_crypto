@@ -11,7 +11,7 @@ fn main() -> Result<(),CipherError> {
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 
-    /*
+    
     println!("\nVigenere Cipher");
     let mut vigenere = Vigenere::new(vec![1,2,3]);
     vigenere.set_whitespace(true);
@@ -20,6 +20,6 @@ fn main() -> Result<(),CipherError> {
     let cleartext = vigenere.decode(&ciphertext)?;
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
-     */
+    
     Ok(())
 }

@@ -46,6 +46,8 @@ impl Caesar {
         for c in ch {
             if self.whitespace && c.is_ascii_whitespace() {
                 out.push(c);
+            } else if c.is_ascii_punctuation() {
+                continue
             } else {
                 out.push(caesar_enc(c,self.key)?)
             }
@@ -60,6 +62,8 @@ impl Caesar {
         for c in ch {
             if self.whitespace && c.is_ascii_whitespace() {
                 out.push(c);
+                continue
+            } else if c.is_ascii_punctuation() {
                 continue
             } else {
                 out.push(caesar_dec(c,self.key)?)
@@ -101,8 +105,12 @@ impl Vigenere {
             if self.whitespace && c.is_ascii_whitespace() {
                 out.push(c);
                 continue
+            } else if c.is_ascii_punctuation() {
+                continue
+            } else {
+                out.push(caesar_enc(c,*ckey.next().unwrap())?)
             }
-            out.push(caesar_enc(c,*ckey.next().unwrap())?)
+            
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
@@ -116,8 +124,11 @@ impl Vigenere {
             if self.whitespace && c.is_ascii_whitespace() {
                 out.push(c);
                 continue
+            } else if c.is_ascii_punctuation() {
+                continue
+            } else {
+                out.push(caesar_dec(c,*ckey.next().unwrap())?)
             }
-            out.push(caesar_dec(c,*ckey.next().unwrap())?)
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
