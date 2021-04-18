@@ -1,9 +1,9 @@
-pub trait Key {  }
+use crate::errors::CipherError;
 
 pub trait Cipher {
-    fn encode(&self, text: &str) -> String;
+    fn encode(&self, text: &str) -> Result<String,CipherError>;
 
-    fn decode(&self, text: &str) -> String;
+    fn decode(&self, text: &str) -> Result<String,CipherError>;
 
     pub fn set_punctuation(&mut self, boolean: bool);
 

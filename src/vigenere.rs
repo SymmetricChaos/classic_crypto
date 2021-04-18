@@ -24,6 +24,36 @@ fn caesar_dec(c: u8, n: u8) -> u8 {
     }
 }
 
+fn affine_enc(c: u8, n1: u8, n2: u8) -> u8 {
+    let tc = ALPHA[&c] as u16;
+    let tn1 = ALPHA[&n1] as u16;
+    let tn2 = ALPHA[&n2] as u16;
+
+    let val = (tc*tn1+tn2) % 26;
+
+    if c.is_ascii_uppercase() {
+        return (val + 65) as u8
+    } else {
+        return (val + 97) as u8
+    }
+}
+
+// Must be provided with n1 that is the multiplicative inverse of n1 modulo 26
+fn affine_dec(c: u8, n1: u8, n2: u8) -> u8 {
+    let tc = ALPHA[&c] as u16;
+    let tn1 = ALPHA[&n1] as u16;
+    let tn2 = ALPHA[&n2] as u16;
+
+    let val = (tc-tn2*tn1) % 26;
+
+    if c.is_ascii_uppercase() {
+        return (val + 65) as u8
+    } else {
+        return (val + 97) as u8
+    }
+}
+
+
 
 
 
