@@ -15,6 +15,7 @@ fn main() -> Result<(),CipherError> {
     assert_eq!(cleartext,decoded_nospace);
     println!("{}",ciphertext);
 
+    
     println!("\nVigenere Cipher");
     let vigenere = Vigenere::new("SECRET".to_string().into_bytes());
     let ciphertext = vigenere.encode(plaintext)?;

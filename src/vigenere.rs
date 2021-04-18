@@ -232,15 +232,16 @@ impl Autokey {
             false => text.to_ascii_uppercase().into_bytes(),
         };
         let mut out = Vec::new();
-        let mut akey = VecDeque::from_iter(&self.key);
+        let mut akey: VecDeque<u8> = self.key.clone().into_iter().collect();
         for c in ch.iter() {
             if c.is_ascii_whitespace() {
                 if self.whitespace { out.push(*c); }
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(*c); }
             } else {
-                akey.push_back(c);
-                out.push(caesar_dec(*c,*akey.pop_front().unwrap()))
+                let k = caesar_dec(*c,akey.pop_front().unwrap());
+                akey.push_back(k);
+                out.push(k)
             }
         }
         let val = String::from_utf8(out).unwrap();
