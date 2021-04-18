@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 use std::iter::FromIterator;
 
 use crate::errors::CipherError;
+use crate::alphabet::ALPHA;
 
 ///! Vigenere Family of Cphers
 
@@ -12,20 +13,19 @@ pub struct Caesar {
     capitalization: bool,
 }
 
-
 fn caesar_enc(c: u8, n: u8) -> u8 {
     if c.is_ascii_uppercase() {
-        return (c-65+n)%26+65
+        return (ALPHA[&c] + ALPHA[&n]) % 26 + 65
     } else {
-        return (c-97+n)%26+97
+        return (ALPHA[&c] + ALPHA[&n]) % 26 + 97
     }
 }
 
 fn caesar_dec(c: u8, n: u8) -> u8 {
     if c.is_ascii_uppercase() {
-        return (c-65+(26-n))%26+65
+        return (ALPHA[&c] + 26 - ALPHA[&n]) % 26 + 65
     } else {
-        return (c-97+(26-n))%26+97
+        return (ALPHA[&c] + 26 - ALPHA[&n]) % 26 + 97
     }
 }
 
@@ -175,7 +175,7 @@ impl Vigenere {
 
 
 
-/* 
+
 pub struct Autokey {
     key: Vec::<u8>,
     whitespace: bool,
@@ -185,7 +185,7 @@ pub struct Autokey {
 
 impl Autokey {
 
-    pub fn new(key: u8) -> Autokey {
+    pub fn new(key: Vec::<u8>) -> Autokey {
         Autokey{ key, whitespace: false, punctuation: false, capitalization: false }
     }
 
@@ -201,12 +201,15 @@ impl Autokey {
         self.capitalization = boolean
     }
 
-    pub fn set_key(&mut self, key: u8) {
+    pub fn set_key(&mut self, key: Vec::<u8>) {
         self.key = key
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         let mut akey = VecDeque::from_iter(&self.key);
         for c in ch.iter() {
@@ -215,9 +218,8 @@ impl Autokey {
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(*c); }
             } else {
-                println!("{:?}",akey);
                 akey.push_back(c);
-                out.push(caesar_enc(*c,*akey.pop_front().unwrap())?)
+                out.push(caesar_enc(*c,*akey.pop_front().unwrap()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -225,7 +227,10 @@ impl Autokey {
     }
 
     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase().into_bytes();
+        let ch = match self.capitalization {
+            true => text.to_string().into_bytes(),
+            false => text.to_ascii_uppercase().into_bytes(),
+        };
         let mut out = Vec::new();
         let mut akey = VecDeque::from_iter(&self.key);
         for c in ch.iter() {
@@ -235,11 +240,10 @@ impl Autokey {
                 if self.punctuation { out.push(*c); }
             } else {
                 akey.push_back(c);
-                out.push(caesar_dec(*c,*akey.pop_front().unwrap())?)
+                out.push(caesar_dec(*c,*akey.pop_front().unwrap()))
             }
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
     }
 }
-*/

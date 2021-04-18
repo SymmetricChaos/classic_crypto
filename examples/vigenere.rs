@@ -1,4 +1,4 @@
-use classic_crypto::vigenere::{Caesar,Vigenere};
+use classic_crypto::vigenere::{Caesar,Vigenere,Autokey};
 use classic_crypto::errors::CipherError;
 
 fn main() -> Result<(),CipherError> {
@@ -13,27 +13,22 @@ fn main() -> Result<(),CipherError> {
     let ciphertext = caesar.encode(plaintext)?;
     let cleartext = caesar.decode(&ciphertext)?;
     assert_eq!(cleartext,decoded_nospace);
-
     println!("{}",ciphertext);
-
 
     println!("\nVigenere Cipher");
-    let vigenere = Vigenere::new(vec![1,2,3]);
+    let vigenere = Vigenere::new("SECRET".to_string().into_bytes());
     let ciphertext = vigenere.encode(plaintext)?;
     let cleartext = vigenere.decode(&ciphertext)?;
-
     println!("{}",ciphertext);
     assert_eq!(cleartext,decoded_nospace);
 
-    /*    
+    
     println!("\nAutokey Cipher");
-    let autokey = Autokey::new(vec![1,2,3]);
-    //vigenere.set_whitespace(true);
+    let autokey = Autokey::new("SECRET".to_string().into_bytes());
     let ciphertext = autokey.encode(plaintext)?;
     let cleartext = autokey.decode(&ciphertext)?;
-
     println!("{}",ciphertext);
     assert_eq!(cleartext,decoded_nospace);
-    */
+    
     Ok(())
 }
