@@ -7,25 +7,24 @@ fn main() -> Result<(),CipherError> {
     let decoded_nospace = "ITWASTHEBESTOFTIMESITWASTHEWORSTOFTIMESITWASTHEAGEOFWISDOMITWASTHEAGEOFFOOLISHNESSITWASTHEEPOCHOFBELIEFITWASTHEEPOCHOFINCREDULITYITWASTHESEASONOFLIGHTITWASTHESEASONOFDARKNESSITWASTHESPRINGOFHOPEITWASTHEWINTEROFDESPAIR";
     println!("Our example ciphertext is from Dickens and contains a lot of repetition\n{}",plaintext);
 
-
-    println!("\nCaesar Cipher");
     let caesar = Caesar::new(1);
+    println!("\n\n{}",caesar);
     let ciphertext = caesar.encode(plaintext)?;
     let cleartext = caesar.decode(&ciphertext)?;
     assert_eq!(cleartext,decoded_nospace);
     println!("{}",ciphertext);
 
-    
-    println!("\nVigenere Cipher");
+
     let vigenere = Vigenere::new("SECRET".to_string().into_bytes());
+    println!("\n\n{}",vigenere);
     let ciphertext = vigenere.encode(plaintext)?;
     let cleartext = vigenere.decode(&ciphertext)?;
     println!("{}",ciphertext);
     assert_eq!(cleartext,decoded_nospace);
 
     
-    println!("\nAutokey Cipher");
     let autokey = Autokey::new("SECRET".to_string().into_bytes());
+    println!("\n\n{}",autokey);
     let ciphertext = autokey.encode(plaintext)?;
     let cleartext = autokey.decode(&ciphertext)?;
     println!("{}",ciphertext);

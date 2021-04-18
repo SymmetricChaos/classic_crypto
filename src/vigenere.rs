@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, fmt};
 use std::iter::FromIterator;
 
 use crate::errors::CipherError;
@@ -6,12 +6,7 @@ use crate::alphabet::ALPHA;
 
 ///! Vigenere Family of Cphers
 
-pub struct Caesar {
-    key: u8,
-    whitespace: bool,
-    punctuation: bool,
-    capitalization: bool,
-}
+
 
 fn caesar_enc(c: u8, n: u8) -> u8 {
     if c.is_ascii_uppercase() {
@@ -27,6 +22,16 @@ fn caesar_dec(c: u8, n: u8) -> u8 {
     } else {
         return (ALPHA[&c] + 26 - ALPHA[&n]) % 26 + 97
     }
+}
+
+
+
+
+pub struct Caesar {
+    key: u8,
+    whitespace: bool,
+    punctuation: bool,
+    capitalization: bool,
 }
 
 impl Caesar {
@@ -59,12 +64,14 @@ impl Caesar {
         for c in ch {
             if c.is_ascii_alphabetic() {
                 out.push(caesar_enc(c,self.key))
+            } else if c.is_ascii_digit() {
+                out.push(c)
             } else if c.is_ascii_whitespace() {
                 if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(c) }
             } else {
-                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -80,16 +87,24 @@ impl Caesar {
         for c in ch {
             if c.is_ascii_alphabetic() {
                 out.push(caesar_dec(c,self.key))
+            } else if c.is_ascii_digit() {
+                out.push(c)
             } else if c.is_ascii_whitespace() {
                 if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(c) }
             } else {
-                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
+    }
+}
+
+impl fmt::Display for Caesar {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Caesar Cipher\nkey: {}",self.key)
     }
 }
 
@@ -136,12 +151,14 @@ impl Vigenere {
         for c in ch {
             if c.is_ascii_alphabetic() {
                 out.push(caesar_enc(c,*ckey.next().unwrap()))
+            } else if c.is_ascii_digit() {
+                out.push(c)
             } else if c.is_ascii_whitespace() {
                 if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(c) }
             } else {
-                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
             
         }
@@ -159,16 +176,25 @@ impl Vigenere {
         for c in ch {
             if c.is_ascii_alphabetic() {
                 out.push(caesar_dec(c,*ckey.next().unwrap()))
+            } else if c.is_ascii_digit() {
+                out.push(c)
             } else if c.is_ascii_whitespace() {
                 if self.whitespace { out.push(c) }
             } else if c.is_ascii_punctuation() {
                 if self.punctuation { out.push(c) }
             } else {
-                return Err(CipherError::new("Found char that is not alphabetic, whitespace, or punctuation".to_string()))
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
+    }
+}
+
+impl fmt::Display for Vigenere {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let k: Vec<u8> = self.key.iter().map(|x| ALPHA[x]).collect();
+        write!(f, "Vigenere Cipher\nkey: {:?}",k)
     }
 }
 
@@ -213,13 +239,17 @@ impl Autokey {
         let mut out = Vec::new();
         let mut akey = VecDeque::from_iter(&self.key);
         for c in ch.iter() {
-            if c.is_ascii_whitespace() {
-                if self.whitespace { out.push(*c); }
-            } else if c.is_ascii_punctuation() {
-                if self.punctuation { out.push(*c); }
-            } else {
+            if c.is_ascii_alphabetic() {
                 akey.push_back(c);
                 out.push(caesar_enc(*c,*akey.pop_front().unwrap()))
+            } else if c.is_ascii_digit() {
+                out.push(*c)
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(*c) }
+            } else if c.is_ascii_punctuation() {
+                if self.punctuation { out.push(*c) }
+            } else {
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
@@ -234,17 +264,28 @@ impl Autokey {
         let mut out = Vec::new();
         let mut akey: VecDeque<u8> = self.key.clone().into_iter().collect();
         for c in ch.iter() {
-            if c.is_ascii_whitespace() {
-                if self.whitespace { out.push(*c); }
-            } else if c.is_ascii_punctuation() {
-                if self.punctuation { out.push(*c); }
-            } else {
+            if c.is_ascii_alphabetic() {
                 let k = caesar_dec(*c,akey.pop_front().unwrap());
                 akey.push_back(k);
                 out.push(k)
+            } else if c.is_ascii_digit() {
+                out.push(*c)
+            } else if c.is_ascii_whitespace() {
+                if self.whitespace { out.push(*c) }
+            } else if c.is_ascii_punctuation() {
+                if self.punctuation { out.push(*c) }
+            } else {
+                return Err(CipherError::new("Found char that is not alphanumeric, whitespace, or punctuation".to_string()))
             }
         }
         let val = String::from_utf8(out).unwrap();
         Ok(val)
+    }
+}
+
+impl fmt::Display for Autokey {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let k: Vec<u8> = self.key.iter().map(|x| ALPHA[x]).collect();
+        write!(f, "Autokey Cipher\nkey start: {:?}",k)
     }
 }

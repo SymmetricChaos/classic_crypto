@@ -1,3 +1,3 @@
 pub mod vigenere;
 pub mod errors;
-mod alphabet;
+pub mod alphabet;
