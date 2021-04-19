@@ -1,4 +1,4 @@
-use std::{fmt, ops::Rem};
+use std::fmt;
 use std::ops::{Add, Mul, Neg, Sub, Div};
 
 
@@ -23,7 +23,7 @@ impl Modular for u32 {
     }
 }
 
-#[derive(Debug,PartialEq)]
+#[derive(Debug,PartialEq,Eq,Clone,Copy,Hash)]
 pub struct Modulo {
     value: u32,
     modulus: u32
@@ -165,7 +165,6 @@ mod test {
     fn reciprocal() {
         let n1 = modulo!(7,26);
         let i1 = n1.mul_inv().unwrap();
-        println!("{}",i1);
         assert_eq!(i1*n1,Modulo::one(26));
     }
 
