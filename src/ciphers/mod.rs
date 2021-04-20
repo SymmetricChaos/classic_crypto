@@ -6,3 +6,5 @@ pub mod vigenere;
 pub use self::vigenere::Vigenere;
 pub mod autokey;
 pub use self::autokey::Autokey;
+
+pub mod enigma;

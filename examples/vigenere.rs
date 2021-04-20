@@ -31,6 +31,7 @@ fn main() -> Result<(),CipherError> {
     println!("{}",ciphertext);
     assert_eq!(cleartext,decoded_nospace);
 
+    
     let autokey = Autokey::new("SECRET", ALPHA26.clone());
     println!("\n\n{}",autokey);
     let ciphertext = autokey.encode(plaintext)?;
