@@ -3,7 +3,13 @@ use std::collections::HashMap;
 use lazy_static::lazy_static;
 //use rand::Rng;
 
+fn char_to_usize(c: char) -> usize {
+    (c as u8 as usize) - 65
+}
 
+fn usize_to_char(n: usize) -> char {
+    (n + 65) as u8 as char
+}
 
 #[derive(Clone,Debug)]
 pub struct Rotor {
@@ -11,45 +17,62 @@ pub struct Rotor {
     wiring_ltr: [usize; 26],
     notch: usize,
     position: usize,
+    ring: usize,
     wiring_display: String,
 }
 
 impl Rotor {
-    pub fn new(wiring: &str, notch: usize, position: usize) -> Rotor {
+    pub fn new(wiring: &str, notch: usize) -> Rotor {
         let mut wiring_rtl: [usize; 26] = [0; 26];
         let mut wiring_ltr: [usize; 26] = [0; 26];
         for w in wiring.chars().map(|x| ((x as u8) - 65) as usize ).enumerate() {
-            wiring_rtl[w.0] = w.1;
             wiring_ltr[w.1] = w.0;
+            wiring_rtl[w.0] = w.1;
         }
-        Rotor{ wiring_rtl, wiring_ltr, notch, position, wiring_display: wiring.to_string() }
+        Rotor{ wiring_rtl, wiring_ltr, notch, position: 0, ring: 0, wiring_display: wiring.to_string() }
     }
 
     pub fn step(&mut self) {
         self.position = (self.position + 1) % 26
     }
 
+    pub fn set_ring(&mut self, n: usize) {
+        self.ring = n;
+    }
+
+    pub fn set_position(&mut self, n: usize) {
+        self.position = n;
+    }
+
+    pub fn get_ring(&mut self) -> usize {
+        self.ring
+    }
+
+    pub fn get_position(&mut self) -> usize {
+        self.position
+    }
+
     // Signal starts on the right amd goes through the rotor then back
     // We will use usize instead of char to avoid constantly converting types
     pub fn encode_rtl(&self, character: usize) -> usize {
-        self.wiring_rtl[(character + self.position) % 26]
+        self.wiring_rtl[(26 + character + self.position - self.ring) % 26]
     }
 
     pub fn encode_ltr(&self, character: usize) -> usize {
-        self.wiring_ltr[(character + self.position) % 26]
+        self.wiring_ltr[(26 + character + self.position - self.ring) % 26]
     }
 
 }
 
 lazy_static! {
-    pub static ref ROTOR_I: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 16, 0);
-    pub static ref ROTOR_II: Rotor = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 4, 0);
-    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 21, 0);
-    pub static ref ROTOR_IV: Rotor = Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 9, 0);
-    pub static ref ROTOR_V: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 25, 0); 
-    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", 26, 0);
-    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", 26, 0);
-    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", 26, 0);
+    pub static ref ROTOR_I: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 16);
+    pub static ref ROTOR_II: Rotor = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 4);
+    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 21);
+    pub static ref ROTOR_IV: Rotor = Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 9);
+    pub static ref ROTOR_V: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 25); 
+    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", 26);
+    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", 26);
+    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", 26);
 }
 
 
@@ -202,18 +225,36 @@ fn plugboard() {
 
 #[test]
 fn single_rotor() {
-    let mut rotor = ROTOR_I.clone();
-
+    let rotor = ROTOR_III.clone();
     println!("{}",rotor);
+    let c = char_to_usize('A');
+    println!("{} -> {}", 'A', usize_to_char(rotor.encode_rtl(c)));
+    println!("shuold get: A -> B")
+}
 
-    let c = ('A' as u8 as usize) - 65;
+#[test]
+fn single_rotor_stepping() {
+    let mut rotor = ROTOR_II.clone();
+    println!("{}",rotor);
+    rotor.set_ring(26);
+    rotor.set_position(25);
 
-    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
     rotor.step();
-    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
+    println!("{}  {}",
+        usize_to_char(rotor.get_position()),
+        usize_to_char(rotor.encode_rtl(1)));
+    
     rotor.step();
-    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
+    println!("{}  {}",
+        usize_to_char(rotor.get_position()),
+        usize_to_char(rotor.encode_rtl(2)));
+    
     rotor.step();
+    println!("{}  {}",
+        usize_to_char(rotor.get_position()),
+        usize_to_char(rotor.encode_rtl(3)));
+
+
 }
 
 #[test]
