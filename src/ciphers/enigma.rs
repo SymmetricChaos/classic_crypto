@@ -50,20 +50,21 @@ lazy_static! {
 
 #[derive(Clone,Debug)]
 pub struct Plugboard {
-    wiring: HashMap<char,char>
+    wiring: HashMap<char,char>,
+    pairs: Vec<(char,char)>
 }
 
 impl Plugboard {
     pub fn new(pairs: Vec<(char,char)>) -> Plugboard {
         let mut wiring = HashMap::new();
-        for (p1, p2) in pairs {
+        for (p1, p2) in pairs.clone() {
             if wiring.contains_key(&p1) || wiring.contains_key(&p2) {
                 panic!("Plugboard settings cannot overlap.")
             }
             wiring.insert(p1,p2);
             wiring.insert(p2,p1);
         }
-        Plugboard{ wiring }
+        Plugboard{ wiring, pairs }
     }
 
     pub fn swap(&self, character: char) -> char {
@@ -79,6 +80,12 @@ impl Plugboard {
     } */
 }
 
+impl fmt::Display for Plugboard {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Plugboard: {:?}",self.pairs)
+    }
+} 
+
 
 
 
@@ -87,12 +94,13 @@ impl Plugboard {
 pub struct Settings {
     plugboard: Plugboard,
     rotors: (Rotor,Rotor,Rotor),
-    ring_positions: Vec<u8>,
+    reflector: Rotor,
+    ring_positions: (u8,u8,u8),
 }
 
 impl Settings {
-    pub fn new(plugboard: Plugboard, rotors: (Rotor,Rotor,Rotor), ring_positions: Vec<u8>) -> Settings {
-        Settings{ plugboard, rotors, ring_positions }
+    pub fn new(plugboard: Plugboard, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (u8,u8,u8)) -> Settings {
+        Settings{ plugboard, rotors, reflector, ring_positions }
     }
 
     // Need to include double-stepping
@@ -105,6 +113,30 @@ impl Settings {
             }
         }
     }
+
+    fn encode_char(&self, c: char) -> char {
+        let mut x = c;
+        //println!("start {}",x);
+        x = self.plugboard.swap(x);
+        //println!("P {}",x);
+        x = self.rotors.0.swap(x);
+        //println!("R1 {}",x);
+        x = self.rotors.1.swap(x);
+        //println!("R2 {}",x);
+        x = self.rotors.2.swap(x);
+        //println!("R3 {}",x);
+        x = self.reflector.swap(x);
+        //println!("REF {}",x);
+        x = self.rotors.2.swap_inv(x);
+        //println!("R3 {}",x);
+        x = self.rotors.1.swap_inv(x);
+        //println!("R2 {}",x);
+        x = self.rotors.0.swap_inv(x);
+        //println!("R1 {}",x);
+        x =self.plugboard.swap(x);
+        //println!("P {}",x);
+        x
+    }
 }
 
 
@@ -112,20 +144,25 @@ impl Settings {
 
 
 pub struct Enigma {
-    key: Settings,
+    settings: Settings,
 }
 
 impl Enigma {
-    pub fn new(key: Settings) -> Enigma {
-        Enigma{ key }
+    pub fn new(settings: Settings) -> Enigma {
+        Enigma{ settings }
     }
 
 
-
-/*     pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> Result<String,Error> {
-
+    pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> String {
+        let mut out = Vec::new();
+        for c in text.chars() {
+            out.push(self.settings.encode_char(c));
+            self.settings.advance_rotors();
+        }
+        let message: String = out.iter().collect();
+        message
     } 
-*/
+
 }
 
 /* impl fmt::Display for Enigma {
@@ -173,46 +210,28 @@ fn single_rotor_inv() {
     rotor.step();
 }
 
-
 #[test]
-fn triple_rotor() {
+fn settings() {
+    let plugboard = Plugboard::new(vec![('A','B'),('X','Z')]);
     let rotor1 = ROTOR_I.clone();
     let rotor2 = ROTOR_II.clone();
     let rotor3 = ROTOR_III.clone();
+    let reflector = REFLECTOR_A.clone();
 
-    let rotors = vec![rotor1, rotor2, rotor3];
-    let mut c = 'A';
-    for r in rotors {
-        c = r.swap(c);
+    let rotors = (rotor1, rotor2, rotor3);
+    let ring_positions = (0,0,0);
+
+    let mut s = Settings::new(plugboard, rotors, reflector, ring_positions );
+
+    let text = "AAA".chars();
+    for c in text {
+        print!("{}",s.encode_char(c));
+        s.advance_rotors();
     }
+    println!("");
 
-    assert_eq!(c,'G');
+    println!("we should get:\nEKV")
 
-    println!("{} -> {}", 'A', c);
 
 }
 
-#[test]
-fn full_rotor() {
-    let rotor1 = ROTOR_I.clone();
-    let rotor2 = ROTOR_II.clone();
-    let rotor3 = ROTOR_III.clone();
-    let reflector = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", '#');
-
-    let rotors = vec![&rotor1, &rotor2, &rotor3];
-    let inv_rotors = vec![&rotor3, &rotor2, &rotor1];
-
-    let mut c = 'A';
-    for r in rotors {
-        c = r.swap(c);
-    }
-    c = reflector.swap(c);
-    for r in inv_rotors {
-        c = r.swap(c);
-    }
-
-    assert_eq!(c,'X');
-
-    println!("{} -> {}", 'A', c);
-
-}
