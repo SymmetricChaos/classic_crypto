@@ -1,7 +1,7 @@
 use std::fmt;
 use std::collections::{VecDeque,HashMap};
 use lazy_static::lazy_static;
-
+//use rand::Rng;
 
 
 
@@ -73,6 +73,10 @@ impl Plugboard {
             character
         }
     }
+
+    /* pub fn random(&self) -> Plugboard {
+
+    } */
 }
 
 
@@ -82,13 +86,24 @@ impl Plugboard {
 #[derive(Clone,Debug)]
 pub struct Settings {
     plugboard: Plugboard,
-    rotors: Vec<Rotor>,
+    rotors: (Rotor,Rotor,Rotor),
     ring_positions: Vec<u8>,
 }
 
 impl Settings {
-    pub fn new(plugboard: Plugboard, rotors: Vec<Rotor>, ring_positions: Vec<u8>) -> Settings {
+    pub fn new(plugboard: Plugboard, rotors: (Rotor,Rotor,Rotor), ring_positions: Vec<u8>) -> Settings {
         Settings{ plugboard, rotors, ring_positions }
+    }
+
+    // Need to include double-stepping
+    pub fn advance_rotors(&mut self) {
+        self.rotors.0.step();
+        if self.rotors.0.wiring.iter().last().unwrap() == &self.rotors.0.notch {
+            self.rotors.1.step();
+            if self.rotors.1.wiring.iter().last().unwrap() == &self.rotors.1.notch {
+                self.rotors.2.step();
+            }
+        }
     }
 }
 
@@ -104,6 +119,8 @@ impl Enigma {
     pub fn new(key: Settings) -> Enigma {
         Enigma{ key }
     }
+
+
 
 /*     pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> Result<String,Error> {
 
