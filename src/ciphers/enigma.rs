@@ -1,19 +1,20 @@
 use std::fmt;
 use std::collections::{VecDeque,HashMap};
-
+use lazy_static::lazy_static;
 
 
 
 
 #[derive(Clone,Debug)]
 pub struct Rotor {
-    wiring: VecDeque<char>
+    wiring: VecDeque<char>,
+    notch: char,
 }
 
 impl Rotor {
-    pub fn new(alphabet: &str) -> Rotor {
+    pub fn new(alphabet: &str, notch: char) -> Rotor {
         let wiring: VecDeque<char> = alphabet.chars().into_iter().collect();
-        Rotor{ wiring }
+        Rotor{ wiring, notch }
     }
 
     pub fn step(&mut self) {
@@ -30,6 +31,17 @@ impl Rotor {
         (self.wiring.iter().position(|&x| x == character).unwrap() + 65) as u8 as char
     }
 
+}
+
+lazy_static! {
+    pub static ref ROTOR_I: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q');
+    pub static ref ROTOR_II: Rotor = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E');
+    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V');
+    pub static ref ROTOR_IV: Rotor = Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 'J');
+    pub static ref ROTOR_V: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Z'); 
+    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", '#');
+    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", '#');
+    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", '#');
 }
 
 
@@ -122,7 +134,7 @@ fn plugboard() {
 
 #[test]
 fn single_rotor() {
-    let mut rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ");
+    let mut rotor = ROTOR_I.clone();
 
     println!("{} -> {}, then step", 'A', rotor.swap('A'));
     rotor.step();
@@ -134,7 +146,7 @@ fn single_rotor() {
 
 #[test]
 fn single_rotor_inv() {
-    let mut rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ");
+    let mut rotor = ROTOR_I.clone();
 
     println!("{} -> {}, then step", 'A', rotor.swap_inv('A'));
     rotor.step();
@@ -147,9 +159,9 @@ fn single_rotor_inv() {
 
 #[test]
 fn triple_rotor() {
-    let rotor1 = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ");
-    let rotor2 = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE");
-    let rotor3 = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO");
+    let rotor1 = ROTOR_I.clone();
+    let rotor2 = ROTOR_II.clone();
+    let rotor3 = ROTOR_III.clone();
 
     let rotors = vec![rotor1, rotor2, rotor3];
     let mut c = 'A';
@@ -165,10 +177,10 @@ fn triple_rotor() {
 
 #[test]
 fn full_rotor() {
-    let rotor1 = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ");
-    let rotor2 = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE");
-    let rotor3 = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO");
-    let reflector = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD");
+    let rotor1 = ROTOR_I.clone();
+    let rotor2 = ROTOR_II.clone();
+    let rotor3 = ROTOR_III.clone();
+    let reflector = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", '#');
 
     let rotors = vec![&rotor1, &rotor2, &rotor3];
     let inv_rotors = vec![&rotor3, &rotor2, &rotor1];
