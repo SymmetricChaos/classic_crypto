@@ -1,5 +1,5 @@
 use std::fmt;
-use std::collections::{VecDeque,HashMap};
+use std::collections::HashMap;
 use lazy_static::lazy_static;
 //use rand::Rng;
 
@@ -7,43 +7,57 @@ use lazy_static::lazy_static;
 
 #[derive(Clone,Debug)]
 pub struct Rotor {
-    wiring: VecDeque<char>,
-    notch: char,
+    wiring_rtl: [usize; 26],
+    wiring_ltr: [usize; 26],
+    notch: usize,
+    position: usize,
+    wiring_display: String,
 }
 
 impl Rotor {
-    pub fn new(alphabet: &str, notch: char) -> Rotor {
-        let wiring: VecDeque<char> = alphabet.chars().into_iter().collect();
-        Rotor{ wiring, notch }
+    pub fn new(wiring: &str, notch: usize, position: usize) -> Rotor {
+        let mut wiring_rtl: [usize; 26] = [0; 26];
+        let mut wiring_ltr: [usize; 26] = [0; 26];
+        for w in wiring.chars().map(|x| ((x as u8) - 65) as usize ).enumerate() {
+            wiring_rtl[w.0] = w.1;
+            wiring_ltr[w.1] = w.0;
+        }
+        Rotor{ wiring_rtl, wiring_ltr, notch, position, wiring_display: wiring.to_string() }
     }
 
     pub fn step(&mut self) {
-        self.wiring.rotate_left(1);
+        self.position = (self.position + 1) % 26
     }
 
-    pub fn swap(&self, character: char) -> char {
-        let n = character as usize-65;
-        self.wiring[n]
+    // Signal starts on the right amd goes through the rotor then back
+    // We will use usize instead of char to avoid constantly converting types
+    pub fn encode_rtl(&self, character: usize) -> usize {
+        self.wiring_rtl[(character + self.position) % 26]
     }
 
-    pub fn swap_inv(&self, character: char) -> char {
-        // Find the position, add 65 to align it with the ASCII chart, then cast to char
-        (self.wiring.iter().position(|&x| x == character).unwrap() + 65) as u8 as char
+    pub fn encode_ltr(&self, character: usize) -> usize {
+        self.wiring_ltr[(character + self.position) % 26]
     }
 
 }
 
 lazy_static! {
-    pub static ref ROTOR_I: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Q');
-    pub static ref ROTOR_II: Rotor = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 'E');
-    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 'V');
-    pub static ref ROTOR_IV: Rotor = Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 'J');
-    pub static ref ROTOR_V: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 'Z'); 
-    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", '#');
-    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", '#');
-    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", '#');
+    pub static ref ROTOR_I: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 16, 0);
+    pub static ref ROTOR_II: Rotor = Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 4, 0);
+    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 21, 0);
+    pub static ref ROTOR_IV: Rotor = Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 9, 0);
+    pub static ref ROTOR_V: Rotor = Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 25, 0); 
+    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", 26, 0);
+    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", 26, 0);
+    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", 26, 0);
 }
 
+
+impl fmt::Display for Rotor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Rotor: {:?}",self.wiring_display)
+    }
+} 
 
 
 
@@ -106,15 +120,15 @@ impl Settings {
     // Need to include double-stepping
     pub fn advance_rotors(&mut self) {
         self.rotors.0.step();
-        if self.rotors.0.wiring.iter().last().unwrap() == &self.rotors.0.notch {
+        if self.rotors.0.position == self.rotors.0.notch {
             self.rotors.1.step();
-            if self.rotors.1.wiring.iter().last().unwrap() == &self.rotors.1.notch {
+            if self.rotors.1.position == self.rotors.1.notch {
                 self.rotors.2.step();
             }
         }
     }
 
-    fn encode_char(&self, c: char) -> char {
+/*     fn encode_char(&self, c: char) -> char {
         let mut x = c;
         //println!("start {}",x);
         x = self.plugboard.swap(x);
@@ -136,7 +150,7 @@ impl Settings {
         x =self.plugboard.swap(x);
         //println!("P {}",x);
         x
-    }
+    } */
 }
 
 
@@ -153,7 +167,7 @@ impl Enigma {
     }
 
 
-    pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> String {
+/*     pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> String {
         let mut out = Vec::new();
         for c in text.chars() {
             out.push(self.settings.encode_char(c));
@@ -161,7 +175,7 @@ impl Enigma {
         }
         let message: String = out.iter().collect();
         message
-    } 
+    }  */
 
 }
 
@@ -190,26 +204,41 @@ fn plugboard() {
 fn single_rotor() {
     let mut rotor = ROTOR_I.clone();
 
-    println!("{} -> {}, then step", 'A', rotor.swap('A'));
+    println!("{}",rotor);
+
+    let c = ('A' as u8 as usize) - 65;
+
+    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
     rotor.step();
-    println!("{} -> {}, then step", 'A', rotor.swap('A'));
+    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
     rotor.step();
-    println!("{} -> {}, then step", 'A', rotor.swap('A'));
+    println!("{} -> {}, then step", 'A', (rotor.encode_rtl(c) + 65) as u8 as char);
     rotor.step();
 }
 
 #[test]
-fn single_rotor_inv() {
-    let mut rotor = ROTOR_I.clone();
+fn full_rotors() {
+    let rotor1 = ROTOR_I.clone();
+    let rotor2 = ROTOR_II.clone();
+    let rotor3 = ROTOR_III.clone();
+    let reflector = REFLECTOR_A.clone();
 
-    println!("{} -> {}, then step", 'A', rotor.swap_inv('A'));
-    rotor.step();
-    println!("{} -> {}, then step", 'A', rotor.swap_inv('A'));
-    rotor.step();
-    println!("{} -> {}, then step", 'A', rotor.swap_inv('A'));
-    rotor.step();
+    let mut c = ('A' as u8 as usize) - 65;
+    c = rotor1.encode_rtl(c);
+    c = rotor2.encode_rtl(c);
+    c = rotor3.encode_rtl(c);
+    c = reflector.encode_rtl(c);
+    c = rotor3.encode_ltr(c);
+    c = rotor2.encode_ltr(c);
+    c = rotor1.encode_ltr(c);
+
+    println!("A -> {}", (c+65) as u8 as char);
+
+    println!("we should be getting: A -> S");
 }
 
+/*
+// Need to find a step by step encryption example
 #[test]
 fn settings() {
     let plugboard = Plugboard::new(vec![('A','B'),('X','Z')]);
@@ -235,3 +264,4 @@ fn settings() {
 
 }
 
+ */
