@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use lazy_static::lazy_static;
 //use rand::Rng;
 
-// Reference
+// References
+// This is the M3 Enigma
 // https://github.com/aurbano/enigma_py
 // https://cryptii.com/pipes/enigma-machine
 
@@ -62,19 +63,16 @@ impl Rotor {
     // Signal starts on the right amd goes through the rotor then back
     // We will use and return usize instead of char to avoid constantly converting types
     // There MUST be an easier way to do this.
-    // The RTL portion works. There may be issues with the LTR portion.
     pub fn encode_rtl(&self, entry: usize) -> usize {
         let inner_position = (26+entry+self.position-self.ring)%26;
         let inner = self.wiring_rtl[inner_position];
-        let outer = (self.alpha.iter().position(|x| x == &inner).unwrap()+26-self.position+self.ring) % 26;
-        outer
+        (inner+26-self.position+self.ring) % 26
     }
 
     pub fn encode_ltr(&self, entry: usize) -> usize {
         let inner_position = (26+entry+self.position-self.ring)%26;
-        let inner = self.alpha[inner_position];
-        let outer = (self.wiring_rtl.iter().position(|x| x == &inner).unwrap()+26-self.position+self.ring) % 26;
-        outer
+        let inner = self.wiring_ltr[inner_position];
+        (inner+26-self.position+self.ring) % 26
     }
 
 }
@@ -100,6 +98,7 @@ impl fmt::Display for Rotor {
 
 
 
+// TODO: Introduce function to parse an &str to create the pairs
 #[derive(Clone,Debug)]
 pub struct Plugboard {
     wiring: HashMap<char,char>,
@@ -155,63 +154,52 @@ impl Settings {
         Settings{ plugboard, rotors, reflector, ring_positions }
     }
 
+    pub fn rotor_positions(&self) {
+        println!("{} {} {}",
+            self.rotors.0.position,
+            self.rotors.1.position,
+            self.rotors.2.position)
+    }
+
     // Need to include double-stepping
     pub fn advance_rotors(&mut self) {
-        self.rotors.0.step();
-        if self.rotors.0.position == self.rotors.0.notch {
+        self.rotors.2.step();
+        if self.rotors.2.position == self.rotors.0.notch {
             self.rotors.1.step();
             if self.rotors.1.position == self.rotors.1.notch {
-                self.rotors.2.step();
+                self.rotors.0.step();
             }
         }
     }
 
-     fn encode_char(&self, c: char) -> char {
+    // Notice that the signal goes through the rotors starting on the right with the 3rd rotor, 
+    // then through the reflector, and back through from left to right starting with the 1st rotor
+     fn encode_char(&mut self, c: char) -> char {
+        self.advance_rotors();
+        //self.rotor_positions();
         let mut x = char_to_usize(self.plugboard.swap(c));
-        x = self.rotors.0.encode_rtl(x);
-        x = self.rotors.1.encode_rtl(x);
         x = self.rotors.2.encode_rtl(x);
+        //println!("R3 {}",usize_to_char(x));
+        x = self.rotors.1.encode_rtl(x);
+        //println!("R2 {}",usize_to_char(x));
+        x = self.rotors.0.encode_rtl(x);
+        //println!("R1 {}",usize_to_char(x));
         x = self.reflector.encode_rtl(x);
-        x = self.rotors.2.encode_ltr(x);
-        x = self.rotors.1.encode_ltr(x);
+        //println!("REF {}",usize_to_char(x));
         x = self.rotors.0.encode_ltr(x);
-        self.plugboard.swap(usize_to_char(x))
+        //println!("R1 {}",usize_to_char(x));
+        x = self.rotors.1.encode_ltr(x);
+        //println!("R2 {}",usize_to_char(x));
+        x = self.rotors.2.encode_ltr(x);
+        //println!("R3 {}",usize_to_char(x));
+        let d = self.plugboard.swap(usize_to_char(x));
+        //println!("{}",d);
+        d
         
     }
 }
 
 
-
-
-
-pub struct Enigma {
-    settings: Settings,
-}
-
-impl Enigma {
-    pub fn new(settings: Settings) -> Enigma {
-        Enigma{ settings }
-    }
-
-
-/*     pub fn encode(&mut self, rotor_positions: Vec<u8>, text: &str) -> String {
-        let mut out = Vec::new();
-        for c in text.chars() {
-            out.push(self.settings.encode_char(c));
-            self.settings.advance_rotors();
-        }
-        let message: String = out.iter().collect();
-        message
-    }  */
-
-}
-
-/* impl fmt::Display for Enigma {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Enigma Cipher\nPlugboard: {}\nRotors: {}\nRing Positions:{}",self.key.plugboard, self.key.rotors, self.key.ring_positions)
-    }
-} 
-*/
 
 
 
@@ -233,26 +221,7 @@ fn single_rotor() {
     println!("{}",rotor);
     let c = char_to_usize('A');
     println!("{} -> {}", 'A', usize_to_char(rotor.encode_rtl(c)));
-    println!("shuold get: A -> B")
-}
-
-#[test]
-fn single_rotor_rlt_and_ltr() {
-    let rotor = ROTOR_I.clone();
-    println!("{}",rotor);
-
-    println!("LTR");
-    for entry in 0..26usize {
-        let encoding = rotor.encode_ltr(entry);
-        println!("{} -> {}", usize_to_char(entry), usize_to_char(encoding));
-    }
-
-    println!("\n\nRTL");
-    for entry in 0..26usize {
-        let encoding = rotor.encode_rtl(entry);
-        println!("{} -> {}", usize_to_char(entry), usize_to_char(encoding));
-    }
-
+    println!("should get: A -> B")
 }
 
 #[test]
@@ -281,6 +250,8 @@ fn single_rotor_stepping() {
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
         usize_to_char(rotor.encode_rtl(0)));
+
+    println!("right column: BCDE\nleft column: BCDE")
 
 }
 
@@ -312,52 +283,52 @@ fn single_rotor_stepping_2() {
         usize_to_char(rotor.get_position()),
         usize_to_char(rotor.encode_rtl(0)));
 
+    
+    println!("right column: ABCD\nleft column: IBHO")
 }
 
 
 // Need to find a step by step encryption example
 #[test]
 fn settings() {
-    let plugboard = Plugboard::new(vec![('A','B'),('X','Z')]);
+    let plugboard = Plugboard::new(vec![('#','#')]);
     let rotor1 = ROTOR_I.clone();
     let rotor2 = ROTOR_II.clone();
     let rotor3 = ROTOR_III.clone();
-    let reflector = REFLECTOR_A.clone();
+    let reflector = REFLECTOR_B.clone();
 
     let rotors = (rotor1, rotor2, rotor3);
     let ring_positions = (0,0,0);
 
     let mut s = Settings::new( plugboard, rotors, reflector, ring_positions );
 
-    let text = "AAA".chars();
+    let text = "AAAAA".chars();
     for c in text {
         print!("{}",s.encode_char(c));
-        s.advance_rotors();
     }
     println!("");
 
-    println!("we should get:\nEKV")
+    println!("we should get:\nBDZGO")
 }
 
 #[test]
-fn settings_2() {
-    let plugboard = Plugboard::new(vec![('Z','Z')]);
+fn settings_reverse() {
+    let plugboard = Plugboard::new(vec![('#','#')]);
     let rotor1 = ROTOR_I.clone();
     let rotor2 = ROTOR_II.clone();
     let rotor3 = ROTOR_III.clone();
-    let reflector = REFLECTOR_A.clone();
+    let reflector = REFLECTOR_B.clone();
 
     let rotors = (rotor1, rotor2, rotor3);
     let ring_positions = (0,0,0);
 
     let mut s = Settings::new( plugboard, rotors, reflector, ring_positions );
 
-    let text = "ENIGMA".chars();
+    let text = "BDZGO".chars();
     for c in text {
         print!("{}",s.encode_char(c));
-        s.advance_rotors();
     }
     println!("");
 
-    println!("we should get:\nBYEJNJ")
+    println!("we should get:\nAAAAA")
 }
