@@ -1,11 +1,11 @@
 
-use std::{ fs::File, io::{Write,Error, Read}};
+use std::io::Error;
 
 use classic_crypto::ciphers::{Enigma,Plugboard,prep_file,ENIGMA_ROTORS,ENIGMA_REFLECTORS};
 
 fn main() -> Result<(),Error> {
 
-    prep_file("sample_text.txt","enigma_plaintext")?;
+    prep_file("sample_text.txt","enigma_plaintext.txt")?;
 
     let plugboard = Plugboard::new("EJ OY IV AQ KW FX MT PS LU BD");
     let rotor1 = ENIGMA_ROTORS["IV"].clone();
@@ -17,16 +17,7 @@ fn main() -> Result<(),Error> {
 
     let mut s = Enigma::new( plugboard, rotors, reflector, ring_positions );
 
-    let target_name = format!("{}.txt","engima_ciphertext");
-    let mut target_file = File::create(target_name)?;
-
-    let mut source_file = File::open("enigma_plaintext.txt")?;
-    let mut source_text = String::new();
-    source_file.read_to_string(&mut source_text)?;
-
-    let ciphertext = s.encode(&source_text, (0,0,0));
-
-    target_file.write(ciphertext.as_bytes())?;
+    s.encode_file("enigma_plaintext.txt", "engima_ciphertext.txt", (0,0,0))?;
 
     Ok(())
 }

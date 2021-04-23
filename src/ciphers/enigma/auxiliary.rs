@@ -14,8 +14,7 @@ pub fn prep_text(text: &str) -> String {
 }
 
 pub fn prep_file(source: &str, target: &str) -> Result<(),Error> {
-    let target_name = format!("{}.txt",target);
-    let mut target_file = File::create(target_name)?;
+    let mut target_file = File::create(target.to_string())?;
 
     let mut source_file = File::open(source)?;
     let mut source_text = String::new();

@@ -1,4 +1,5 @@
 use std::fmt;
+use std::{ fs::File, io::{Write,Error, Read}};
 use std::collections::HashMap;
 use lazy_static::lazy_static;
 //use rand::Rng;
@@ -226,6 +227,21 @@ impl Enigma {
             out.push(self.encode_char(c));
         }
         out
+    }
+
+    pub fn encode_file(&mut self, source: &str, target: &str, rotor_positions: (usize,usize,usize)) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encode(&source_text, rotor_positions);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
     }
 }
 
