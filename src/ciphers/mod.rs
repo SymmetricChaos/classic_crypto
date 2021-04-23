@@ -8,4 +8,6 @@ pub mod autokey;
 pub use self::autokey::Autokey;
 
 pub mod enigma;
-pub use self::enigma::enigma::Enigma;
+pub use self::enigma::enigma::{Rotor,Plugboard,Enigma};
+pub use self::enigma::auxiliary::prep_file;
+pub use self::enigma::real_rotors::{ENIGMA_REFLECTORS,ENIGMA_ROTORS};

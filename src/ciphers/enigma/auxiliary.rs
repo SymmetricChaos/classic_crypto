@@ -6,7 +6,7 @@ pub fn prep_text(text: &str) -> String {
     } else {
         let upper = text.to_ascii_uppercase();
         let mut out = "".to_string();
-        for word in upper.split_ascii_whitespace() {
+        for word in upper.split(|x: char| !x.is_ascii_alphabetic()) {
             out.push_str(word);
         }
         out
