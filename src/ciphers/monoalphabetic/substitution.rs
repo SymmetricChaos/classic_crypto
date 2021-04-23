@@ -15,9 +15,15 @@ pub struct Substitution {
 
 impl Substitution {
     pub fn new(key1: &str, key2: &str) -> Substitution {
+        if key1.chars().count() != key2.chars().count() {
+            panic!("key1 is of length {} but key2 is of length {}",key1.chars().count(),key2.chars().count())
+        }
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
         for (a, b) in key1.chars().zip(key2.chars()) {
+            if a.is_whitespace() || b.is_whitespace() {
+                panic!("whitespace is not allowed as a substitution symbol")
+            }
             map.insert(a, b);
             map_inv.insert(b, a);
         }
@@ -28,29 +34,78 @@ impl Substitution {
         self.whitespace = boolean
     }
 
-    pub fn set_key(&mut self, key: (u32,u32)) {
-
+    pub fn set_key(&mut self, key1: &str, key2: &str) {
+        if key1.len() != key2.len() {
+            panic!("Must provide two equal length strings")
+        }
+        let mut map = HashMap::new();
+        let mut map_inv = HashMap::new();
+        for (a, b) in key1.chars().zip(key2.chars()) {
+            if a.is_whitespace() || b.is_whitespace() {
+                panic!("whitespace is not allowed as a substitution symbol")
+            }
+            map.insert(a, b);
+            map_inv.insert(b, a);
+        }
+        self.key1 = key1.to_string();
+        self.key2 = key2.to_string();
+        self.map = map;
+        self.map_inv = map_inv;
     }
 
     pub fn encode(&self, text: &str) -> Result<String,CipherError> {
-
-        Ok("".to_string())
+        let mut out = "".to_string();
+        for c in text.chars() {
+            if self.whitespace && c.is_whitespace() {
+                out.push(c)
+            } else {
+                out.push(self.map[&c])
+            }
+        }
+        Ok(out)
     }
 
     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
-
-        Ok("".to_string())
+        let mut out = "".to_string();
+        for c in text.chars() {
+            if self.whitespace && c.is_whitespace() {
+                out.push(c)
+            } else {
+                out.push(self.map_inv[&c])
+            }
+        }
+        Ok(out)
     }
 }
 
 impl fmt::Display for Substitution {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Substitution Cipher\nkey:\n{}\n{}",self.key1,self.key2)
+        write!(f, "{}\n{}",self.key1,self.key2)
     }
 }
 
 #[test]
 fn substitution() {
+    let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","QWERTYUIOPASDFGHJKLZXCVBNM");
+        
+    let plaintext = "thequickbrownfoxjumpsoverthelazydog";
+    let ciphertext = substitution.encode(plaintext).unwrap();
+    let decrypt = substitution.decode(&ciphertext).unwrap();
+
+    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
+
+    
+}
+
+#[test]
+fn substitution_unicode() {
+    let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
+    
+    let plaintext = "thequickbrownfoxjumpsoverthelazydog";
+    let ciphertext = substitution.encode(plaintext).unwrap();
+    let decrypt = substitution.decode(&ciphertext).unwrap();
+
+    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 
     
 }
