@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::{Caesar,Affine,Vigenere,Autokey};
+use classic_crypto::ciphers::{Caesar,Affine,Vigenere};
 use classic_crypto::errors::CipherError;
 use classic_crypto::alphabet::ALPHA26;
 
@@ -31,13 +31,6 @@ fn main() -> Result<(),CipherError> {
     println!("{}",ciphertext);
     assert_eq!(cleartext,decoded_nospace);
 
-    
-    let autokey = Autokey::new("SECRET", ALPHA26.clone());
-    println!("\n\n{}",autokey);
-    let ciphertext = autokey.encode(plaintext)?;
-    let cleartext = autokey.decode(&ciphertext)?;
-    println!("{}",ciphertext);
-    assert_eq!(cleartext,decoded_nospace);
 
     Ok(())
 }

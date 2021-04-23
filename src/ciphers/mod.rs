@@ -8,3 +8,4 @@ pub mod autokey;
 pub use self::autokey::Autokey;
 
 pub mod enigma;
+pub use self::enigma::enigma::Enigma;

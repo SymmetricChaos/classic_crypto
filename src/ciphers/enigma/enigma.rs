@@ -16,6 +16,8 @@ fn usize_to_char(n: usize) -> char {
     (n + 65) as u8 as char
 }
 
+
+
 #[derive(Clone,Debug)]
 pub struct Rotor {
     wiring_rtl: [usize; 26],
@@ -49,11 +51,11 @@ impl Rotor {
         self.position = n;
     }
 
-    pub fn get_ring(&mut self) -> usize {
+    pub fn get_ring(&self) -> usize {
         self.ring
     }
 
-    pub fn get_position(&mut self) -> usize {
+    pub fn get_position(&self) -> usize {
         self.position
     }
 
@@ -142,7 +144,7 @@ impl Plugboard {
 
 impl fmt::Display for Plugboard {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Plugboard: {:?}",self.pairs)
+        write!(f, "Plugboard: {}",self.pairs)
     }
 } 
 
@@ -178,7 +180,7 @@ impl Enigma {
     }
 
     // Need to include double-stepping
-    pub fn advance_rotors(&mut self) {
+    fn advance_rotors(&mut self) {
         let mut on_notch = self.rotors.2.position == self.rotors.2.notch;
         self.rotors.2.step();
         if on_notch {
@@ -192,7 +194,7 @@ impl Enigma {
 
     // Notice that the signal goes through the rotors starting on the right with the 3rd rotor, 
     // then through the reflector, and back through from left to right starting with the 1st rotor
-     fn encode_char(&mut self, c: char) -> char {
+    fn encode_char(&mut self, c: char) -> char {
         self.advance_rotors();
         //self.get_rotor_positions();
         let mut x = char_to_usize(self.plugboard.swap(c));
@@ -208,7 +210,7 @@ impl Enigma {
 
     // Rotor positions are meant to be different for each message so here they are supplied when .encode() is called
     // There is no .decode() method as the Enigma was involutive and thus needed no decode setting
-    fn encode(&mut self, text: &str, rotor_positions: (usize,usize,usize)) -> String {
+    pub fn encode(&mut self, text: &str, rotor_positions: (usize,usize,usize)) -> String {
 
         self.rotors.0.set_position(rotor_positions.0);
         self.rotors.1.set_position(rotor_positions.1);
@@ -290,7 +292,6 @@ fn single_rotor_stepping() {
         usize_to_char(rotor.encode_rtl(0)));
 
     println!("right column: BCDE\nleft column: BCDE")
-
 }
 
 
@@ -321,7 +322,6 @@ fn single_rotor_stepping_2() {
         usize_to_char(rotor.get_position()),
         usize_to_char(rotor.encode_rtl(0)));
 
-    
     println!("right column: ABCD\nleft column: IBHO")
 }
 
