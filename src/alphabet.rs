@@ -4,9 +4,9 @@ use crate::modulus::*;
 
 lazy_static! {
     pub static ref ALPHA26: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-
     pub static ref ALPHA_NUM: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-
+    pub static ref ALPHA25_CK: CipherAlphabet = CipherAlphabet::new("ABDEFGHIJKLMNOPQRSTUVWXYZ");
+    pub static ref ALPHA25_IJ: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIKLMNOPQRSTUVWXYZ");
 }
 
 #[derive(Clone)]

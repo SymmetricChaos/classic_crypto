@@ -6,8 +6,8 @@ pub struct CipherError {
 }
 
 impl CipherError {
-    pub fn new(desc: String) -> CipherError {
-        CipherError{ desc }
+    pub fn new(desc: &str) -> CipherError {
+        CipherError{ desc: desc.to_string() }
     }
 }
 

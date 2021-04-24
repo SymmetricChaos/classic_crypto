@@ -76,7 +76,7 @@ impl Affine {
             } else {
                 let v = match self.alpha.char_to_val(c) {
                     Some(m) => m,
-                    None => return Err(CipherError::new("unknown character encountered".to_string())),
+                    None => return Err(CipherError::new("unknown character encountered")),
                 };
                 let x = (v - self.key1)*self.akey2;
                 out.push(self.alpha.val_to_char(x))
