@@ -1,8 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
 
-use crate::errors::CipherError;
-
 
 
 pub struct Substitution {
@@ -53,7 +51,7 @@ impl Substitution {
         self.map_inv = map_inv;
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn encode(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             if self.whitespace && c.is_whitespace() {
@@ -62,10 +60,10 @@ impl Substitution {
                 out.push(self.map[&c])
             }
         }
-        Ok(out)
+        out
     }
 
-    pub fn decode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn decode(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             if self.whitespace && c.is_whitespace() {
@@ -74,7 +72,7 @@ impl Substitution {
                 out.push(self.map_inv[&c])
             }
         }
-        Ok(out)
+        out
     }
 }
 
@@ -89,8 +87,8 @@ fn substitution() {
     let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","QWERTYUIOPASDFGHJKLZXCVBNM");
         
     let plaintext = "thequickbrownfoxjumpsoverthelazydog";
-    let ciphertext = substitution.encode(plaintext).unwrap();
-    let decrypt = substitution.decode(&ciphertext).unwrap();
+    let ciphertext = substitution.encode(plaintext);
+    let decrypt = substitution.decode(&ciphertext);
 
     println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 
@@ -102,8 +100,8 @@ fn substitution_unicode() {
     let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
     
     let plaintext = "thequickbrownfoxjumpsoverthelazydog";
-    let ciphertext = substitution.encode(plaintext).unwrap();
-    let decrypt = substitution.decode(&ciphertext).unwrap();
+    let ciphertext = substitution.encode(plaintext);
+    let decrypt = substitution.decode(&ciphertext);
 
     println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 

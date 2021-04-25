@@ -1,6 +1,5 @@
 use std::fmt;
 
-use crate::errors::CipherError;
 use crate::alphabet::CipherAlphabet;
 use crate::modulus::*;
 
@@ -29,7 +28,7 @@ impl Caesar {
         self.key = key.to_modulo(self.alpha.len() as u32);
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn encode(&self, text: &str) -> String {
         let ch = text.to_ascii_uppercase();
         let mut out = Vec::new();
         for c in ch.chars() {
@@ -47,10 +46,10 @@ impl Caesar {
             }
         }
         let val: String = out.iter().collect();
-        Ok(val)
+        val
     }
 
-    pub fn decode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn decode(&self, text: &str) -> String {
         let ch = text.to_ascii_uppercase();
         let mut out = Vec::new();
         for c in ch.chars() {
@@ -59,7 +58,7 @@ impl Caesar {
             } else {
                 let v = match self.alpha.char_to_val(c) {
                     Some(m) => m,
-                    None => continue
+                    None => panic!("unknown character encountered while decoding")
                 };
                 let x = v - self.key;
                 out.push(self.alpha.val_to_char(x))
@@ -67,7 +66,7 @@ impl Caesar {
 
         }
         let val: String = out.iter().collect();
-        Ok(val)
+        val
     }
 }
 
@@ -83,8 +82,8 @@ fn caesar() {
     let mut aff = Caesar::new(1, alpha);
     aff.set_whitespace(true);
     let plaintext = "the quick brown fox jumps over the lazy dog";
-    let ciphertext = aff.encode(plaintext).unwrap();
-    let cleartext = aff.decode(&ciphertext).unwrap();
+    let ciphertext = aff.encode(plaintext);
+    let cleartext = aff.decode(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
     

@@ -12,12 +12,12 @@ fn main() -> Result<(),CipherError> {
 
     let caesar = Caesar::new(1, ALPHA26.clone());
     println!("\n{}",caesar);
-    let ciphertext = caesar.encode(plaintext)?;
+    let ciphertext = caesar.encode(plaintext);
     println!("{}",ciphertext);
 
     let affine = Affine::new((2,3), ALPHA26.clone());
     println!("\n{}",affine);
-    let ciphertext = affine.encode(plaintext)?;
+    let ciphertext = affine.encode(plaintext);
     println!("{}",ciphertext);
 
 

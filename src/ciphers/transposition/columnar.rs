@@ -1,8 +1,5 @@
 use std::fmt;
-use std::collections::HashMap;
 use num::Integer;
-
-use crate::errors::CipherError;
 
 pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     let mut text = text.to_string();
@@ -12,8 +9,21 @@ pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     text
 }
 
+/* pub fn word_to_ranks(text: &str) -> Vec<usize> {
 
-// Need a less memory intensive method
+} */
+
+
+// Given 5,2,1,3,0,4 we want to get 4,2,1,3,5,0
+fn inverse_ranks(v: Vec<usize>) -> Vec<usize> {
+    let mut out = v.clone();
+    for (pos,val) in v.iter().enumerate() {
+        out[*val] = pos
+    }
+    out
+}
+
+
 pub struct Columnar {
     key: Vec<usize>,
 }
@@ -23,7 +33,7 @@ impl Columnar {
         Columnar{ key }
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn encode(&self, text: &str) -> String {
         let mut columns = Vec::new();
         for _ in 0..self.key.len() {
             columns.push(Vec::<char>::new());
@@ -35,15 +45,27 @@ impl Columnar {
                 col.push(symbols.next().unwrap_or('X'))
             }
         }
-        println!("{:?}",columns);
-
-        let out = "".to_string();
-        Ok(out)
+        let mut out = "".to_string();
+        for rank in inverse_ranks(self.key.clone()).iter() {
+            let s: String = columns[*rank].iter().collect();
+            out.push_str(&s);
+        }
+        out
     }
 
-/*     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
-
-    } */
+    // Decoding is very different
+    pub fn decode(&self, text: &str) -> String {
+        let symbols: Vec<char> = text.chars().collect();
+        let n_rows = text.len().div_ceil(&self.key.len());
+        let rows: Vec<&[char]> = symbols.chunks(n_rows).collect();
+        let mut out = "".to_string();
+        for col in 0..n_rows {
+            for rank in self.key.iter() {
+                out.push(rows[*rank][col])
+            }
+        }
+        out
+    }
 }
 
 impl fmt::Display for Columnar {
@@ -55,9 +77,12 @@ impl fmt::Display for Columnar {
 #[test]
 fn columnar() {
 
-    let col = Columnar::new(vec![6,3,2,4,1,5]);
+    let col = Columnar::new(vec![5,2,1,3,0,4]);
     println!("Columnar Cipher: {}",col);
-    let plaintext = "WEAREDISCOVEREDFLEEATONCE";
-    let ciphertext = col.encode(plaintext).unwrap();
+    let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
+    let ciphertext = col.encode(plaintext);
+    let decoded = col.decode(&ciphertext);
+
+    println!("{}\n{}\n{}",plaintext,ciphertext,decoded)
 
 }

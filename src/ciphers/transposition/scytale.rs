@@ -13,7 +13,6 @@ pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
 }
 
 
-// Need a less memory intensive method
 pub struct Scytale {
     key: usize,
 }
@@ -23,14 +22,15 @@ impl Scytale {
         Scytale{ key }
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+/*     pub fn encode(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
-        //let mut rows = Vec::new();
+        let symbols = text.chars();
+        let mut rows = Vec::new();
 
         Ok("".to_string())
-    }
+    } */
 
-/*     pub fn decode(&self, text: &str) -> Result<String,CipherError> {
+/*     pub fn decode(&self, text: &str) -> String {
 
     } */
 }
@@ -41,12 +41,12 @@ impl fmt::Display for Scytale {
     }
 }
 
-#[test]
+/* #[test]
 fn scytale() {
 
     let scytale = Scytale::new(3);
     println!("Scytale Cipher: {}",scytale);
     let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
-    let ciphertext = scytale.encode(plaintext).unwrap();
+    let ciphertext = scytale.encode(plaintext);
 
-}
+} */

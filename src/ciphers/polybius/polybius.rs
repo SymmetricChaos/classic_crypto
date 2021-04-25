@@ -1,8 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
 
-use crate::errors::CipherError;
-
 // Need a less memory intensive method
 pub struct Polybius {
     map: HashMap<char,(char,char)>,
@@ -46,21 +44,21 @@ impl Polybius {
         Polybius{ map, map_inv, name }
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn encode(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             let (a,b) = self.map[&c];
             let s = format!("{}{}",a,b);
             out.push_str(&s);
         }
-        Ok(out)
+        out
     }
 
-    pub fn decode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn decode(&self, text: &str) -> String {
         let mut out = "".to_string();
         let tlen = text.chars().count();
         if tlen % 2 == 1 {
-            return Err(CipherError::new("Polybius Square Error: cannot decode a string with an odd number of characters"))
+            panic!("Polybius Square Error: cannot decode a string with an odd number of characters")
         }
         let n_groups = tlen / 2;
         let mut symbols = text.chars();
@@ -68,8 +66,7 @@ impl Polybius {
             let t = (symbols.next().unwrap(),symbols.next().unwrap());
             out.push(self.map_inv[&t]);
         }
-
-        Ok(out)
+        out
     }
 }
 
@@ -85,8 +82,8 @@ fn polybius() {
     let poly = Polybius::new("0AB1CD2EF3GH4IJ5KL6MN7OP8QR9STUVWXYZ","123456");
     println!("Polybius Square:{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = poly.encode(plaintext).unwrap();
-    let cleartext = poly.decode(&ciphertext).unwrap();
+    let ciphertext = poly.encode(plaintext);
+    let cleartext = poly.decode(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }
