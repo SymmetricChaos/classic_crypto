@@ -15,4 +15,5 @@ pub mod polybius;
 pub use self::polybius::polybius::Polybius;
 
 pub mod transposition;
-pub use self::transposition::columnar::Columnar;
+//pub use self::transposition::columnar::Columnar;
+//pub use self::transposition::scytale::Scytale;

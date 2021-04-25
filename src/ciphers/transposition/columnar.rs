@@ -1,5 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
+use num::Integer;
 
 use crate::errors::CipherError;
 
@@ -28,7 +29,8 @@ impl Columnar {
             columns.push(Vec::<char>::new());
         }
         let mut symbols = text.chars();
-        for _row in 0..(text.len()/self.key.len()) {
+        let n_rows = text.len().div_ceil(&self.key.len());
+        for _row in 0..n_rows {
             for col in columns.iter_mut() {
                 col.push(symbols.next().unwrap_or('X'))
             }
@@ -54,8 +56,8 @@ impl fmt::Display for Columnar {
 fn columnar() {
 
     let col = Columnar::new(vec![6,3,2,4,1,5]);
-    println!("Columnar Cipher:{}",col);
-    let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
+    println!("Columnar Cipher: {}",col);
+    let plaintext = "WEAREDISCOVEREDFLEEATONCE";
     let ciphertext = col.encode(plaintext).unwrap();
 
 }
