@@ -247,7 +247,7 @@ impl Enigma {
 
 impl fmt::Display for Enigma {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
+        write!(f, "Enigma Machine\n{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
             self.plugboard,
             self.rotors.0,
             self.ring_positions.0,
@@ -269,7 +269,6 @@ fn plugboard() {
     println!("{} -> {}",'B',board.swap('B'));
     println!("{} -> {}",'C',board.swap('C'));
 }
-
 
 #[test]
 fn single_rotor() {
@@ -310,7 +309,6 @@ fn single_rotor_stepping() {
     println!("right column: BCDE\nleft column: BCDE")
 }
 
-
 #[test]
 fn single_rotor_stepping_2() {
     let mut rotor = ROTOR_II.clone();
@@ -340,7 +338,6 @@ fn single_rotor_stepping_2() {
 
     println!("right column: ABCD\nleft column: IBHO")
 }
-
 
 #[test]
 fn enigma() {

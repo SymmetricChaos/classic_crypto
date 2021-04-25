@@ -1,5 +1,5 @@
 
-use classic_crypto::ciphers::{Columnar};
+use classic_crypto::ciphers::transposition::Columnar;
 
 fn main() {
 

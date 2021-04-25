@@ -1,11 +1,11 @@
 use std::fmt;
 use std::collections::HashMap;
 
-// Need a less memory intensive method
+// Less memory intensive method?
 pub struct Polybius {
     map: HashMap<char,(char,char)>,
     map_inv: HashMap<(char,char),char>,
-    name: String,
+    square: String,
 }
 
 impl Polybius {
@@ -31,17 +31,23 @@ impl Polybius {
             }
         }
 
-        let mut name = format!("\n {}\n",labels);
+        let mut square = " ".to_string();
+        for c in labels.chars() {
+            square.push(' ');
+            square.push(c)
+        }
+        square.push_str("\n");
         let mut symbols = alpha.chars();
         for l in labels.chars() {
-            name.push(l);
+            square.push(l);
             for _ in 0..llen {
-                name.push(symbols.next().unwrap_or(' '))
+                square.push(' ');
+                square.push(symbols.next().unwrap_or(' '))
             }
-            name.push_str("\n");
+            square.push_str("\n");
         }
 
-        Polybius{ map, map_inv, name }
+        Polybius{ map, map_inv, square }
     }
 
     pub fn encode(&self, text: &str) -> String {
@@ -72,7 +78,7 @@ impl Polybius {
 
 impl fmt::Display for Polybius {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",self.name)
+        write!(f, "Polybius Square\n{}",self.square)
     }
 }
 
@@ -80,7 +86,7 @@ impl fmt::Display for Polybius {
 fn polybius() {
 
     let poly = Polybius::new("0AB1CD2EF3GH4IJ5KL6MN7OP8QR9STUVWXYZ","123456");
-    println!("Polybius Square:{}",poly);
+    println!("{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = poly.encode(plaintext);
     let cleartext = poly.decode(&ciphertext);

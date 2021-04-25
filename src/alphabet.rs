@@ -1,24 +1,25 @@
 use lazy_static::lazy_static;
-use std::{collections::HashMap, fmt};
+use std::collections::HashMap;
 use crate::modulus::*;
 
 lazy_static! {
-    pub static ref ALPHA26: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    pub static ref ALPHA_NUM: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-    pub static ref ALPHA25_CK: CipherAlphabet = CipherAlphabet::new("ABDEFGHIJKLMNOPQRSTUVWXYZ");
-    pub static ref ALPHA25_IJ: CipherAlphabet = CipherAlphabet::new("ABCDEFGHIKLMNOPQRSTUVWXYZ");
+    pub static ref ALPHA26: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    pub static ref ALPHA_NUM: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    pub static ref ALPHA25_CK: ModularAlphabet = ModularAlphabet::new("ABDEFGHIJKLMNOPQRSTUVWXYZ");
+    pub static ref ALPHA25_IJ: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIKLMNOPQRSTUVWXYZ");
 }
 
 #[derive(Clone)]
-pub struct CipherAlphabet {
-    alpha: Vec<char>,
+pub struct ModularAlphabet {
     cmap: HashMap<char,Modulo>,
     vmap: HashMap<Modulo,char>,
+    length: usize,
 }
 
-impl CipherAlphabet {
-    pub fn new(alphabet: &str) -> CipherAlphabet {
+impl ModularAlphabet {
+    pub fn new(alphabet: &str) -> ModularAlphabet {
         let alpha: Vec<char> = alphabet.chars().collect();
+        let length = alpha.len();
         let mut cmap: HashMap<char,Modulo> = HashMap::new();
         let mut vmap: HashMap<Modulo,char> = HashMap::new();
         for (p,c) in alpha.iter().enumerate() {
@@ -26,28 +27,18 @@ impl CipherAlphabet {
             cmap.insert(*c, m);
             vmap.insert(m, *c);
         }
-        CipherAlphabet{ alpha, cmap, vmap }
+        ModularAlphabet{ cmap, vmap, length }
     }
 
-    pub fn char_to_val(&self, c: char) -> Option<Modulo> {
-        if self.cmap.contains_key(&c) {
-            Some(self.cmap[&c])
-        } else {
-            None
-        }
+    pub fn char_to_val(&self, c: char) -> Option<&Modulo> {
+        self.cmap.get(&c)
     }
 
-    pub fn val_to_char(&self, n: Modulo) -> char {
-        self.vmap[&n]
+    pub fn val_to_char(&self, n: Modulo) -> Option<&char> {
+        self.vmap.get(&n)
     }
 
-    pub fn len(&self) -> u32 {
-        self.alpha.len() as u32
-    }
-}
-
-impl fmt::Display for CipherAlphabet {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}",self.alpha)
+    pub fn len(&self) -> usize {
+        self.length
     }
 }

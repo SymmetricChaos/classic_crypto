@@ -70,7 +70,7 @@ impl Columnar {
 
 impl fmt::Display for Columnar {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}",self.key)
+        write!(f, "Columnar Cipher\nkey: {:?}",self.key)
     }
 }
 
@@ -78,7 +78,7 @@ impl fmt::Display for Columnar {
 fn columnar() {
 
     let col = Columnar::new(vec![5,2,1,3,0,4]);
-    println!("Columnar Cipher: {}",col);
+    println!("{}",col);
     let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
     let ciphertext = col.encode(plaintext);
     let decoded = col.decode(&ciphertext);

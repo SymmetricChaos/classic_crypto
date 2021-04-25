@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::{Caesar,Affine};
+use classic_crypto::ciphers::monoalphabetic::{Caesar,Affine};
 use classic_crypto::errors::CipherError;
 use classic_crypto::alphabet::ALPHA26;
 

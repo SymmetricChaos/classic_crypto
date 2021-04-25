@@ -1,8 +1,5 @@
 use std::fmt;
-use std::collections::HashMap;
 use num::Integer;
-
-use crate::errors::CipherError;
 
 pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     let mut text = text.to_string();
@@ -27,7 +24,7 @@ impl Scytale {
         let symbols = text.chars();
         let mut rows = Vec::new();
 
-        Ok("".to_string())
+        "".to_string()
     } */
 
 /*     pub fn decode(&self, text: &str) -> String {
@@ -37,7 +34,7 @@ impl Scytale {
 
 impl fmt::Display for Scytale {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",self.key)
+        write!(f, "Scytale\nkey: {}",self.key)
     }
 }
 

@@ -2,3 +2,6 @@
 
 pub mod scytale;
 pub mod columnar;
+pub mod route;
+
+pub use self::columnar::Columnar;

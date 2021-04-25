@@ -2,7 +2,7 @@ use std::fmt;
 use std::collections::VecDeque;
 
 use crate::errors::CipherError;
-use crate::alphabet::CipherAlphabet;
+use crate::alphabet::ModularAlphabet;
 use crate::modulus::*;
 
 
@@ -10,14 +10,14 @@ use crate::modulus::*;
 pub struct Autokey {
     key: Vec<Modulo>,
     key_name: String,
-    alpha: CipherAlphabet,
+    alpha: ModularAlphabet,
     whitespace: bool,
 }
 
 impl Autokey {
-    pub fn new(key: &str, alpha: CipherAlphabet) -> Autokey {
+    pub fn new(key: &str, alpha: ModularAlphabet) -> Autokey {
         let key_name = key.to_string();
-        let key = key.chars().map(|x| alpha.char_to_val(x).unwrap()).collect();
+        let key = key.chars().map(|x| *alpha.char_to_val(x).unwrap()).collect();
         Autokey{ key, key_name, alpha, whitespace: false }
     }
 
@@ -25,7 +25,7 @@ impl Autokey {
         self.whitespace = boolean
     }
 
-    pub fn set_alpha(&mut self, alpha: CipherAlphabet) {
+    pub fn set_alpha(&mut self, alpha: ModularAlphabet) {
         self.alpha = alpha
     }
 
@@ -40,12 +40,12 @@ impl Autokey {
                 }
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => continue
                 };
                 akey.push_back(v);
                 let x = v + akey.pop_front().unwrap();
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
         }
         let val: String = out.iter().collect();
@@ -63,12 +63,12 @@ impl Autokey {
                 }
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => continue
                 };
                 let x = v - akey.pop_front().unwrap();
                 akey.push_back(x);
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
         }
         let val: String = out.iter().collect();
@@ -84,7 +84,7 @@ impl fmt::Display for Autokey {
 
 #[test]
 fn affine() {
-    let alpha = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    let alpha = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     let mut aff = Autokey::new("SECRET", alpha);
     aff.set_whitespace(true);
     let plaintext = "the quick brown fox jumps over the lazy dog";

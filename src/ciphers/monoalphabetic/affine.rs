@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::alphabet::CipherAlphabet;
+use crate::alphabet::ModularAlphabet;
 use crate::modulus::*;
 
 
@@ -9,12 +9,12 @@ pub struct Affine {
     key1: Modulo,
     key2: Modulo,
     akey2: Modulo,
-    alpha: CipherAlphabet,
+    alpha: ModularAlphabet,
     whitespace: bool,
 }
 
 impl Affine {
-    pub fn new(key: (u32,u32), alpha: CipherAlphabet) -> Affine {
+    pub fn new(key: (u32,u32), alpha: ModularAlphabet) -> Affine {
         let key1 = key.0.to_modulo(alpha.len() as u32);
         let key2 = key.1.to_modulo(alpha.len() as u32);
         let akey2 = match key2.mul_inv() {
@@ -29,20 +29,8 @@ impl Affine {
         self.whitespace = boolean
     }
 
-    pub fn set_alpha(&mut self, alpha: CipherAlphabet) {
+    pub fn set_alpha(&mut self, alpha: ModularAlphabet) {
         self.alpha = alpha
-    }
-
-    pub fn set_key(&mut self, key: (u32,u32)) {
-        let key1 = key.0.to_modulo(self.alpha.len());
-        let key2 = key.1.to_modulo(self.alpha.len());
-        let akey2 = match key2.mul_inv() {
-            Some(m) => m,
-            None => panic!("{} has no multiplicative inverse modulo {}",key2.value(),key2.modulus()),
-        };
-        self.key1 = key1;
-        self.key2 = key2;
-        self.akey2 = akey2;
     }
 
     pub fn encode(&self, text: &str) -> String {
@@ -55,11 +43,11 @@ impl Affine {
                 }
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => continue,
                 };
                 let x = v * self.key2 + self.key1;
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
         }
         let val: String = out.iter().collect();
@@ -74,11 +62,11 @@ impl Affine {
                 out.push(c);
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => panic!("unknown character encountered while decoding"),
                 };
                 let x = (v - self.key1)*self.akey2;
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
 
         }
@@ -95,7 +83,7 @@ impl fmt::Display for Affine {
 
 #[test]
 fn affine() {
-    let alpha = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    let alpha = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     let mut aff = Affine::new((1,3),alpha);
     aff.set_whitespace(true);
     let plaintext = "the quick brown fox jumps over the lazy dog";

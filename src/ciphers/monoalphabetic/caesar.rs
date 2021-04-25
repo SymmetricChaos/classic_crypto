@@ -1,17 +1,17 @@
 use std::fmt;
 
-use crate::alphabet::CipherAlphabet;
+use crate::alphabet::ModularAlphabet;
 use crate::modulus::*;
 
 
 pub struct Caesar {
     key: Modulo,
-    alpha: CipherAlphabet,
+    alpha: ModularAlphabet,
     whitespace: bool,
 }
 
 impl Caesar {
-    pub fn new(key: u32, alpha: CipherAlphabet) -> Caesar {
+    pub fn new(key: u32, alpha: ModularAlphabet) -> Caesar {
         let key = key.to_modulo(alpha.len() as u32);
         Caesar{ key, alpha, whitespace: false }
     }
@@ -20,7 +20,7 @@ impl Caesar {
         self.whitespace = boolean
     }
 
-    pub fn set_alpha(&mut self, alpha: CipherAlphabet) {
+    pub fn set_alpha(&mut self, alpha: ModularAlphabet) {
         self.alpha = alpha
     }
 
@@ -38,11 +38,11 @@ impl Caesar {
                 }
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => continue
                 };
                 let x = v + self.key;
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
         }
         let val: String = out.iter().collect();
@@ -57,11 +57,11 @@ impl Caesar {
                 out.push(c);
             } else {
                 let v = match self.alpha.char_to_val(c) {
-                    Some(m) => m,
+                    Some(m) => *m,
                     None => panic!("unknown character encountered while decoding")
                 };
                 let x = v - self.key;
-                out.push(self.alpha.val_to_char(x))
+                out.push(*self.alpha.val_to_char(x).unwrap())
             }
 
         }
@@ -78,7 +78,7 @@ impl fmt::Display for Caesar {
 
 #[test]
 fn caesar() {
-    let alpha = CipherAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    let alpha = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     let mut aff = Caesar::new(1, alpha);
     aff.set_whitespace(true);
     let plaintext = "the quick brown fox jumps over the lazy dog";

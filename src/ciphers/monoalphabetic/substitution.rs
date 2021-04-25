@@ -78,14 +78,16 @@ impl Substitution {
 
 impl fmt::Display for Substitution {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\n{}",self.key1,self.key2)
+        write!(f, "Simple Substitution\n{}\n{}",self.key1,self.key2)
     }
 }
 
 #[test]
 fn substitution() {
     let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","QWERTYUIOPASDFGHJKLZXCVBNM");
-        
+    
+    println!("{}\n",substitution);
+
     let plaintext = "thequickbrownfoxjumpsoverthelazydog";
     let ciphertext = substitution.encode(plaintext);
     let decrypt = substitution.decode(&ciphertext);
