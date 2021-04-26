@@ -1,6 +1,31 @@
 use std::fmt;
 use std::collections::HashMap;
 
+pub fn polybius_from_keyword(keyword: &str, alphabet: &str, labels: &str) -> Polybius {
+    let mut key_alpha = "".to_string();
+    for k in keyword.chars() {
+        let ks = &k.to_string();
+        if !alphabet.contains(ks) {
+            panic!("keyword must use symbols from the alphabet: {}",alphabet)
+        }
+        if key_alpha.contains(ks) {
+            continue
+        } else {
+            key_alpha.push(k)
+        }
+    }
+
+    for a in alphabet.chars() {
+        if key_alpha.contains(&a.to_string()) {
+            continue
+        } else {
+            key_alpha.push(a)
+        }
+    }
+
+    Polybius::new(&key_alpha,labels)
+}
+
 // Less memory intensive method?
 pub struct Polybius {
     map: HashMap<char,(char,char)>,
@@ -85,7 +110,7 @@ impl fmt::Display for Polybius {
 #[test]
 fn polybius() {
 
-    let poly = Polybius::new("0AB1CD2EF3GH4IJ5KL6MN7OP8QR9STUVWXYZ","123456");
+    let poly = polybius_from_keyword("17ZEBRAS42","ABCDEFGHIJKLMNOPQRSTUVWXYZ","123456");
     println!("{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = poly.encode(plaintext);

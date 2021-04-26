@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
+use crate::ciphers::polybius::polybius::{Polybius,polybius_from_keyword};
 use crate::ciphers::transposition::columnar::Columnar;
 
 //const ALPHANUM: &str = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
@@ -13,8 +13,8 @@ pub struct ADFGX {
 // Automatically pads with the letter X during the columnar step meaning the message is padded with the last letter of the alphabet, this should be adjustable
 // Need to enforce the specific alphabet of the ADFGX cipher
 impl ADFGX {
-    pub fn new(alphabet: &str, columnar_key: Vec<usize>) -> ADFGX {
-        let polybius = Polybius::new(alphabet,"ADFGX");
+    pub fn new(keyword: &str, columnar_key: Vec<usize>) -> ADFGX {
+        let polybius = polybius_from_keyword(keyword,"ABCDEFGHIKLMNOPQRSTUVWXYZ","ADFGX");
         let columnar = Columnar::new(columnar_key);
         ADFGX{ polybius, columnar }
     }

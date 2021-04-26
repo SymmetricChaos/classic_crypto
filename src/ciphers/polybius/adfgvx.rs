@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
+use crate::ciphers::polybius::polybius::{Polybius,polybius_from_keyword};
 use crate::ciphers::transposition::columnar::Columnar;
 
 //const ALPHANUM: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -13,8 +13,8 @@ pub struct ADFGVX {
 // Automatically pads with the letter X during the columnar step meaning the message is padded with the last letter of the alphabet, this should be adjustable
 // Need to enforce the specific alphabet of the ADFGVX cipher
 impl ADFGVX {
-    pub fn new(alphabet: &str, columnar_key: Vec<usize>) -> ADFGVX {
-        let polybius = Polybius::new(alphabet,"ADFGVX");
+    pub fn new(keyword: &str, columnar_key: Vec<usize>) -> ADFGVX {
+        let polybius = polybius_from_keyword(keyword,"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789","ADFGVX");
         let columnar = Columnar::new(columnar_key);
         ADFGVX{ polybius, columnar }
     }
@@ -41,7 +41,7 @@ impl fmt::Display for ADFGVX {
 #[test]
 fn adfgvx() {
 
-    let adfgvx = ADFGVX::new("0AB1CD2EF3GH4IJ5KL6MN7OP8QR9STUVWXYZ", vec![5,2,1,3,0,4]);
+    let adfgvx = ADFGVX::new("17ZEBRAS42", vec![5,2,1,3,0,4]);
 
     println!("{}",adfgvx);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";

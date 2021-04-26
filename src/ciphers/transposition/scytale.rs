@@ -79,7 +79,7 @@ impl fmt::Display for Scytale {
 fn scytale() {
 
     let scytale = Scytale::new(3);
-    println!("Scytale Cipher: {}",scytale);
+    println!("{}",scytale);
     let plaintext = "WEAREDISCOVEREDFLEEATONCE";
     let ciphertext = scytale.encode(plaintext);
     let cleartext = scytale.decode(&ciphertext);
