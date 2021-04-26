@@ -19,17 +19,54 @@ impl Scytale {
         Scytale{ key }
     }
 
-/*     pub fn encode(&self, text: &str) -> String {
+    pub fn encode(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
-        let symbols = text.chars();
+        let mut symbols = text.chars();
         let mut rows = Vec::new();
 
-        "".to_string()
-    } */
+        for _ in 0..self.key {
+            let mut v = Vec::new();
+            for _ in 0..n_cols {
+                v.push(symbols.next().unwrap_or('X'))
+            }
+            rows.push(v)
+        }
 
-/*     pub fn decode(&self, text: &str) -> String {
+        let mut out = "".to_string();
 
-    } */
+        for x in 0..n_cols {
+            for y in 0..self.key {
+                out.push(rows[y][x])
+            }
+        }
+
+        out
+    }
+
+
+    pub fn decode(&self, text: &str) -> String {
+        let n_cols = text.len().div_ceil(&self.key);
+        let mut symbols = text.chars();
+        let mut rows = Vec::new();
+
+        for _ in 0..n_cols {
+            let mut v = Vec::new();
+            for _ in 0..self.key {
+                v.push(symbols.next().unwrap_or('X'))
+            }
+            rows.push(v)
+        }
+
+        let mut out = "".to_string();
+
+        for x in 0..self.key {
+            for y in 0..n_cols {
+                out.push(rows[y][x])
+            }
+        }
+
+        out
+    }
 }
 
 impl fmt::Display for Scytale {
@@ -38,12 +75,16 @@ impl fmt::Display for Scytale {
     }
 }
 
-/* #[test]
+#[test]
 fn scytale() {
 
     let scytale = Scytale::new(3);
     println!("Scytale Cipher: {}",scytale);
-    let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
+    let plaintext = "WEAREDISCOVEREDFLEEATONCE";
     let ciphertext = scytale.encode(plaintext);
+    let cleartext = scytale.decode(&ciphertext);
 
-} */
+    println!("{}",ciphertext);
+    println!("{}",cleartext);
+
+}

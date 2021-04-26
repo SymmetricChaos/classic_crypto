@@ -5,3 +5,4 @@ pub mod columnar;
 pub mod route;
 
 pub use self::columnar::Columnar;
+pub use self::scytale::Scytale;

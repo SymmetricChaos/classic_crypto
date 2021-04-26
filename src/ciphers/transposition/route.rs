@@ -1,5 +1,5 @@
 use std::fmt;
-use num::Integer;
+//use num::Integer;
 
 
 // This will have to be a whole family of ciphers
