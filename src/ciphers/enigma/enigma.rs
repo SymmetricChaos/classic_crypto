@@ -162,7 +162,9 @@ pub struct Enigma {
 }
 
 impl Enigma {
-    pub fn new(plugboard: Plugboard, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (usize,usize,usize)) -> Enigma {
+    // Note that rotor positions are not provided here. Only the key settings are.
+    pub fn new(plugs: &str, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (usize,usize,usize)) -> Enigma {
+        let plugboard = Plugboard::new(plugs);
         Enigma{ plugboard, rotors, reflector, ring_positions }
     }
 
@@ -341,7 +343,6 @@ fn single_rotor_stepping_2() {
 
 #[test]
 fn enigma() {
-    let plugboard = Plugboard::new("EJ OY IV AQ KW FX MT PS LU BD");
     let rotor1 = ROTOR_IV.clone();
     let rotor2 = ROTOR_II.clone();
     let rotor3 = ROTOR_V.clone();
@@ -349,7 +350,7 @@ fn enigma() {
     let reflector = REFLECTOR_B.clone();
     let ring_positions = (14,22,25);
 
-    let mut s = Enigma::new( plugboard, rotors, reflector, ring_positions );
+    let mut s = Enigma::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );
 
     println!("\n{}\n",s);
 

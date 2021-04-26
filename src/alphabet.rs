@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use crate::modulus::*;
 
 lazy_static! {
-    pub static ref ALPHA26: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    pub static ref ALPHA_NUM: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    pub static ref ALPHA26: ModularAlphabet    = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    pub static ref ALPHA_NUM: ModularAlphabet  = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
     pub static ref ALPHA25_CK: ModularAlphabet = ModularAlphabet::new("ABDEFGHIJKLMNOPQRSTUVWXYZ");
     pub static ref ALPHA25_IJ: ModularAlphabet = ModularAlphabet::new("ABCDEFGHIKLMNOPQRSTUVWXYZ");
 }
