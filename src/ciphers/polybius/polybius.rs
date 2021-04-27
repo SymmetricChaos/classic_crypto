@@ -110,7 +110,7 @@ impl fmt::Display for Polybius {
 #[test]
 fn polybius() {
 
-    let poly = polybius_from_keyword("17ZEBRAS42","ABCDEFGHIJKLMNOPQRSTUVWXYZ","123456");
+    let poly = polybius_from_keyword("17ZEBRAS42","ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789","123456");
     println!("{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = poly.encode(plaintext);

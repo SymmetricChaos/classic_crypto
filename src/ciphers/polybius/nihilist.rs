@@ -1,7 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
-use crate::ciphers::transposition::columnar::Columnar;
+use crate::ciphers::polybius::polybius::{Polybius,polybius_from_keyword};
 
 
 pub struct Nihilist {
@@ -11,23 +10,49 @@ pub struct Nihilist {
 
 
 impl Nihilist {
-    pub fn new(alphabet: &str, key: Vec<usize>) -> Nihilist {
-        let polybius = Polybius::new(alphabet,"12345");
-        Nihilist{ polybius, key }
+    pub fn new(polybius_key: &str, vigenere_key: Vec<usize>) -> Nihilist {
+        let polybius = polybius_from_keyword(polybius_key,"ABCDFEGHIKLMNOPQRSTUVWXYZ","12345");
+        Nihilist{ polybius, vigenere: vigenere_key }
     }
 
-/*     pub fn encode(&self, text: &str) -> String {
+    pub fn encode(&self, text: &str) -> String {
+        let poly_pairs = self.polybius.encode(text).chars().collect::<Vec<char>>();
+        let mut vkey = self.vigenere.iter().cycle();
 
-        
-    } */
+        let mut out = "".to_string();
 
-/*     pub fn decode(&self, text: &str) -> String {
+        for p in poly_pairs.chunks(2)
+                                  .map(|x| format!("{}{}",x[0],x[1])
+                                  .parse::<usize>().unwrap()) {
+            out.push_str(&format!("{} ",p+vkey.next().unwrap())) 
+        }
 
-    } */
+        out
+    }
+
+    pub fn decode(&self, text: &str) -> String {
+        let groups = text.split(' ').collect::<Vec<&str>>()
+                                   .iter().map(|x| x.parse::<usize>().unwrap())
+                                   .collect::<Vec<usize>>();
+    }
 }
 
 impl fmt::Display for Nihilist {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Nihilist Composite Cipher\n{}\n{}",self.columnar,self.polybius)
+        write!(f, "Nihilist Composite Cipher\n{}\nAdditive Key:\n{:?}",self.polybius,self.vigenere)
     }
+}
+
+
+ #[test]
+fn nihilist() {
+
+    let nihilist = Nihilist::new("ZEBRAS",vec![20,21,22,23,24]);
+    //println!("{}",nihilist);
+    let plaintext = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
+    let ciphertext = nihilist.encode(plaintext);
+    //let cleartext = nihilist.decode(&ciphertext);
+
+    println!("{}",ciphertext)
+    //println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }

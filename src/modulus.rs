@@ -30,6 +30,11 @@ pub struct Modulo {
 }
 
 impl Modulo {
+
+    pub fn new(value: u32, modulus: u32) -> Modulo {
+        Modulo {value, modulus }
+    }
+
     pub fn zero(modulus: u32) -> Modulo {
         Modulo {value: 0, modulus}
     }

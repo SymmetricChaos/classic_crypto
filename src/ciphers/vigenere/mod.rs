@@ -1,3 +1,5 @@
+//! Vigenere based ciphers
+
 pub mod vigenere;
 pub mod autokey;
 
