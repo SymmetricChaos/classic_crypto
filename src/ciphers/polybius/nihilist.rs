@@ -31,9 +31,18 @@ impl Nihilist {
     }
 
     pub fn decode(&self, text: &str) -> String {
-        let groups = text.split(' ').collect::<Vec<&str>>()
+        let groups = text.trim_end().split(' ').collect::<Vec<&str>>()
                                    .iter().map(|x| x.parse::<usize>().unwrap())
                                    .collect::<Vec<usize>>();
+        let poly_groups = {
+            let mut vkey = self.vigenere.iter().cycle();
+            let mut s = "".to_string();
+            for g in groups {
+                s.push_str(&format!("{}",g-vkey.next().unwrap()))
+            }
+            s
+        };
+        self.polybius.decode(&poly_groups)
     }
 }
 
@@ -51,8 +60,7 @@ fn nihilist() {
     //println!("{}",nihilist);
     let plaintext = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
     let ciphertext = nihilist.encode(plaintext);
-    //let cleartext = nihilist.decode(&ciphertext);
+    let cleartext = nihilist.decode(&ciphertext);
 
-    println!("{}",ciphertext)
-    //println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }
