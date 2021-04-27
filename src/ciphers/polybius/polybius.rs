@@ -107,6 +107,7 @@ impl fmt::Display for Polybius {
     }
 }
 
+
 #[test]
 fn polybius() {
 

@@ -5,6 +5,7 @@ use crate::modulus::Modulo;
 
 } */
 
+// The VIC Cipher is probably the strongest and certainly the most complex cipher known to have been used entirely by hand.
 fn vic_block_generation(phrase: &str, date: Vec<usize>, pin: usize, keygroup: Vec<usize>) {
 
     let line_a: Vec<Modulo> = keygroup.iter().map(|x| Modulo::new(*x as u32, 10)).collect();

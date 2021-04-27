@@ -1,25 +1,22 @@
-use classic_crypto::ciphers::monoalphabetic::{Caesar,Affine};
-use classic_crypto::errors::CipherError;
+use classic_crypto::ciphers::monoalphabetic::{Caesar,Substitution};
 use classic_crypto::alphabet::ALPHA26;
 
-fn main() -> Result<(),CipherError> {
+fn main() {
 
-    let plaintext = "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.";
-    let plaintext_nospace = "ITWASTHEBESTOFTIMESITWASTHEWORSTOFTIMESITWASTHEAGEOFWISDOMITWASTHEAGEOFFOOLISHNESSITWASTHEEPOCHOFBELIEFITWASTHEEPOCHOFINCREDULITYITWASTHESEASONOFLIGHTITWASTHESEASONOFDARKNESSITWASTHESPRINGOFHOPEITWASTHEWINTEROFDESPAIR";
-    println!("Our example plaintext is from Dickens and contains a lot of repetition:\n{}",plaintext_nospace);
+    let plaintext = "ITWASTHEBESTOFTIMESITWASTHEWORSTOFTIMESITWASTHEAGEOFWISDOMITWASTHEAGEOFFOOLISHNESSITWASTHEEPOCHOFBELIEFITWASTHEEPOCHOFINCREDULITYITWASTHESEASONOFLIGHTITWASTHESEASONOFDARKNESSITWASTHESPRINGOFHOPEITWASTHEWINTEROFDESPAIR";
+    println!("Our example plaintext is from Dickens:\n{}",plaintext);
 
-    println!("\n\nThe repetitiveness of the plaintext helps to highlight the main weakness of monoalphabetic subtitution ciphers, their failure to disguise any patterns in the text.");
+    println!("\n\nMonoalphabetic substitution ciphers are perhaps the simplest kind of cipher and operating by replacing each symbol with another symbol. In a language with an ordered alphabet this can be done quickly by shifting each letter some amount, wrapping around back to the beginning if needed. This is known as the Caesar Cipher.");
 
     let caesar = Caesar::new(1, ALPHA26.clone());
-    println!("\n{}",caesar);
     let ciphertext = caesar.encode(plaintext);
-    println!("{}",ciphertext);
+    println!("\n{}",ciphertext);
 
-    let affine = Affine::new((2,3), ALPHA26.clone());
-    println!("\n{}",affine);
-    let ciphertext = affine.encode(plaintext);
-    println!("{}",ciphertext);
+    println!("\n\nEven against an unskilled attack the Caesar Cipher can be broken just by testing all of the keys as few languages have more than a couple dozen letter symbols. This can be somewhat alleviated with the Affine Cipher which uses the rules of modular arithmetic to greatly increase the keyspace to include affine transformations over the alphabet. However, increasing the keyspace doesn't really improve the security of monoalphabetic substitution cipher. Consider the case where we match letters with arbitrary symbols. The keyspace is then the factorial of the number of letters in the alphabet.");
 
+    let substitution = Substitution::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ","🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
+    let ciphertext = substitution.encode(plaintext);
+    println!("\n{}",ciphertext);
 
-    Ok(())
+    println!("\n\nDespite this huge apparent keyspace the structure of the text has not been obfuscated. The sequence 🌷🍂🍅🌰🍁 appears over and over, corresponding the phrase ITWAS from the plaintext. Even in a relatively short text enough patterns like this are apparent enough for an attacker to easily uravel the encryption.")
 }
