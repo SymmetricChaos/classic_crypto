@@ -5,3 +5,4 @@ pub mod four_square;
 
 pub use self::playfair::Playfair;
 pub use self::two_square::TwoSquare;
+pub use self::four_square::FourSquare;
