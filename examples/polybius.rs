@@ -13,6 +13,4 @@ fn main()  {
 
     println!("\n\nThe letter 'A' would encode as the pair (1,3) while 'D' would encode as (3,1). When used in encryption these pairs are generally read off as 13 and 31.\nOn its own the Polybius Square provides no more encryption than a simple substitution cipher but can form the basis of much stronger ciphers when combined with other techniques.");
 
-
-
 }
