@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::auxiliary::keyed_alphabet;
 
 /// The Two Square cipher is a slightly version of the Playfair Cipher that uses two seperate squares to cover for some weaknesses of the Playfair.
 pub struct TwoSquare {
@@ -8,16 +9,14 @@ pub struct TwoSquare {
 }
 
 impl TwoSquare {
-    pub fn new(alphabet1: &str, alphabet2: &str, size: usize) -> TwoSquare {
-        if alphabet1.chars().count() > size*size {
-            panic!("alphabet1 does not work, it must have {} charactersto fit in a {}x{} square.",size*size,size,size)
+    pub fn new(key1: &str, key2: &str, alphabet: &str, size: usize) -> TwoSquare {
+        if alphabet.chars().count() > size*size {
+            panic!("alphabet does not work, it must have exactly {} charactersto fit in a {}x{} square.",size*size,size,size)
         }
-
-        if alphabet2.chars().count() > size*size {
-            panic!("alphabet2 does not work, it must have {} charactersto fit in a {}x{} square.",size*size,size,size)
-        }
-
-        TwoSquare{ alphabet1: alphabet1.to_string(), alphabet2: alphabet2.to_string(), size }
+        
+        TwoSquare{ alphabet1: keyed_alphabet(key1,alphabet), 
+                   alphabet2: keyed_alphabet(key2,alphabet), 
+                   size }
     }
 
     fn symbol_to_pair_1(&self, symbol: char) -> (usize,usize) {
@@ -55,23 +54,18 @@ impl TwoSquare {
                 None => break,
             };
 
-
             let a_pair = self.symbol_to_pair_1(a);
             let b_pair = self.symbol_to_pair_2(b);
 
-            if a_pair.1 == b_pair.1 {
-                out.push(b);
-                out.push(a);
-            } else {
-                out.push(self.pair_to_symbol_1((a_pair.0, b_pair.1)));
-                out.push(self.pair_to_symbol_2((b_pair.0, a_pair.1)));
-            }
+            out.push(self.pair_to_symbol_1((a_pair.0, b_pair.1)));
+            out.push(self.pair_to_symbol_2((b_pair.0, a_pair.1)));
         }
         out
     }
 
-/*     pub fn decode(&self, text: &str) -> String {
-    } */
+    pub fn decode(&self, text: &str) -> String {
+        self.encode(text)
+    }
 }
 
 impl fmt::Display for TwoSquare {
@@ -95,22 +89,18 @@ impl fmt::Display for TwoSquare {
 }
 
 
-// This does not decrypt properly
 #[test]
 fn two_square() {
-    use crate::auxiliary::{LATIN25_Q,keyed_alphabet};
-    let alphabet1 = &keyed_alphabet("EXAMPLE",LATIN25_Q);
-    let alphabet2 = &keyed_alphabet("KEYWORD",LATIN25_Q);
+    use crate::auxiliary::LATIN25_Q;
 
-    let two_square = TwoSquare::new(alphabet1, alphabet2, 5);
+    let two_square = TwoSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
 
     println!("{}",two_square);
 
     let plaintext = "HELPMEOBIWANKENOBI";
     let ciphertext = &two_square.encode(plaintext);
-    //let decoded = two_square.decode(ciphertext);
+    let decoded = two_square.decode(ciphertext);
     println!("\n\n{}",plaintext);
     println!("{}",ciphertext);
-    //println!("{}",decoded);
-    
+    println!("{}",decoded);
 }
