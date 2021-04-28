@@ -6,6 +6,7 @@ pub struct TwoSquare {
     alphabet2: String,
     size: usize,
 }
+
 impl TwoSquare {
     pub fn new(alphabet1: &str, alphabet2: &str, size: usize) -> TwoSquare {
         if alphabet1.chars().count() > size*size {
