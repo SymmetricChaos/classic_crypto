@@ -30,7 +30,6 @@ pub fn playfair_from_keyword(keyword: &str, alphabet: &str, size: usize, filler:
 }
 
 pub struct Playfair {
-    rows: Vec<Vec<char>>,
     alphabet: String,
     size: usize,
     filler: char,
@@ -46,10 +45,8 @@ impl Playfair {
         if alen != size*size {
             panic!("an alphabet with {} characters does exactly fit in a {}x{} square.",alen,size,size)
         }
-        let symbols = alphabet.chars().collect::<Vec<char>>();
-        let rows = symbols.chunks(size).map(|x| x.to_vec()).collect::<Vec<Vec<char>>>();
 
-        Playfair{ rows, alphabet: alphabet.to_string(), size, filler }
+        Playfair{ alphabet: alphabet.to_string(), size, filler }
     }
 
     fn symbol_to_pair(&self, symbol: char) -> (usize,usize) {
@@ -84,16 +81,16 @@ impl Playfair {
                 let a_pair = self.symbol_to_pair(a);
                 let b_pair = self.symbol_to_pair(b);
 
+                let s = self.size+1;
+
                 if a_pair.0 == b_pair.0 {
                     let x = a_pair.0;
-                    let s = self.size+1;
                     
                     out.push(self.pair_to_symbol((x, (a_pair.1+s)%self.size )));
                     out.push(self.pair_to_symbol((x, (b_pair.1+s)%self.size )));
 
                 } else if a_pair.1 == b_pair.1 {
                     let y = a_pair.1;
-                    let s = self.size+1;
                     
                     out.push(self.pair_to_symbol(( (a_pair.0+s)%self.size , y )));
                     out.push(self.pair_to_symbol(( (b_pair.0+s)%self.size , y )));
@@ -130,17 +127,16 @@ impl Playfair {
                 };
                 let a_pair = self.symbol_to_pair(a);
                 let b_pair = self.symbol_to_pair(b);
+                let s = self.size-1;
 
                 if a_pair.0 == b_pair.0 {
                     let x = a_pair.0;
-                    let s = self.size-1;
                     
                     out.push(self.pair_to_symbol(( x , (a_pair.1+s)%self.size ) ));
                     out.push(self.pair_to_symbol(( x , (b_pair.1+s)%self.size ) ));
 
                 } else if a_pair.1 == b_pair.1 {
                     let y = a_pair.1;
-                    let s = self.size-1;
                     
                     out.push(self.pair_to_symbol(( (a_pair.0+s)%self.size , y ) ));
                     out.push(self.pair_to_symbol(( (b_pair.0+s)%self.size , y ) ));
@@ -157,12 +153,12 @@ impl Playfair {
 
 impl fmt::Display for Playfair {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut square = "Playfair Cipher\n".to_string();
-        for r in self.rows.iter() {
-            for s in r {
-                square.push_str(&format!("{} ",s))
+        let mut square = "Playfair Cipher".to_string();
+        for (n, c) in self.alphabet.chars().enumerate() {
+            if n % self.size == 0 {
+                square.push_str("\n")
             }
-            square.push_str("\n")
+            square.push_str(&format!("{} ",c))
         };
         write!(f, "{}", square)
     }
@@ -176,7 +172,7 @@ fn playfair() {
 
     let plaintext = "HIDETHEGOLDINTHETREESTUMP";
     let ciphertext = playfair.encode(plaintext);
-    let decoded = playfair.encode(&ciphertext);
+    let decoded = playfair.decode(&ciphertext);
 
     println!("{}",plaintext);
     println!("{}",ciphertext);
