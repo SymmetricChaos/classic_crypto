@@ -1,34 +1,18 @@
 use std::fmt;
 use std::iter::Iterator;
+use crate::auxiliary::keyed_alphabet;
 
 pub fn playfair_from_keyword(keyword: &str, alphabet: &str, size: usize, filler: char) -> Playfair {
-    let mut key_alpha = "".to_string();
+
     if !alphabet.contains(filler) {
         panic!("filler characterbe in the alphabet: {}",alphabet)
     }
-    for k in keyword.chars() {
-        let ks = &k.to_string();
-        if !alphabet.contains(ks) {
-            panic!("keyword must use symbols from the alphabet: {}",alphabet)
-        }
-        if key_alpha.contains(ks) {
-            continue
-        } else {
-            key_alpha.push(k)
-        }
-    }
-
-    for a in alphabet.chars() {
-        if key_alpha.contains(&a.to_string()) {
-            continue
-        } else {
-            key_alpha.push(a)
-        }
-    }
+    let key_alpha = keyed_alphabet(keyword,alphabet);
 
     Playfair::new(&key_alpha, size, filler)
 }
 
+/// The Playfair Cipher, developed by Charles Wheatstone and promoted at his request by Lord Playfair, is a substitution ciphers that operates on digraphs.
 pub struct Playfair {
     alphabet: String,
     size: usize,
@@ -166,8 +150,8 @@ impl fmt::Display for Playfair {
 
 #[test]
 fn playfair() {
-    use crate::auxiliary::LATIN25;
-    let playfair = playfair_from_keyword("PLAYFAIREXAMPLE",LATIN25, 5, 'X');
+    use crate::auxiliary::LATIN25_J;
+    let playfair = playfair_from_keyword("PLAYFAIREXAMPLE",LATIN25_J, 5, 'X');
     println!("{}",playfair);
 
     let plaintext = "HIDETHEGOLDINTHETREESTUMP";

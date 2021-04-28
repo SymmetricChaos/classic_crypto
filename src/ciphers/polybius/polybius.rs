@@ -1,29 +1,9 @@
 use std::fmt;
 use std::collections::HashMap;
+use crate::auxiliary::keyed_alphabet;
 
 pub fn polybius_from_keyword(keyword: &str, alphabet: &str, labels: &str) -> Polybius {
-    let mut key_alpha = "".to_string();
-    for k in keyword.chars() {
-        let ks = &k.to_string();
-        if !alphabet.contains(ks) {
-            panic!("keyword must use symbols from the alphabet: {}",alphabet)
-        }
-        if key_alpha.contains(ks) {
-            continue
-        } else {
-            key_alpha.push(k)
-        }
-    }
-
-    for a in alphabet.chars() {
-        if key_alpha.contains(&a.to_string()) {
-            continue
-        } else {
-            key_alpha.push(a)
-        }
-    }
-
-    Polybius::new(&key_alpha,labels)
+    Polybius::new(&keyed_alphabet(keyword,alphabet),labels)
 }
 
 // Less memory intensive method?
@@ -110,8 +90,9 @@ impl fmt::Display for Polybius {
 
 #[test]
 fn polybius() {
+    use crate::auxiliary::LATIN36;
 
-    let poly = polybius_from_keyword("17ZEBRAS42","ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789","123456");
+    let poly = polybius_from_keyword("17ZEBRAS42",LATIN36,"123456");
     println!("{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = poly.encode(plaintext);
