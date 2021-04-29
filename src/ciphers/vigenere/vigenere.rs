@@ -1,75 +1,38 @@
 use std::fmt;
 
-use crate::errors::CipherError;
-use crate::alphabet::ModularAlphabet;
-use crate::modulus::*;
-
-
-
 pub struct Vigenere {
-    key: Vec<Modulo>,
+    key: Vec<usize>,
     key_name: String,
-    alpha: ModularAlphabet,
-    whitespace: bool,
+    alphabet: String,
+    length: usize,
 }
 
 impl Vigenere {
-    pub fn new(key: &str, alpha: ModularAlphabet) -> Vigenere {
+    pub fn new(key: &str, alpha: &str) -> Vigenere {
         let key_name = key.to_string();
-        let key = key.chars().map(|x| *alpha.char_to_val(x).unwrap()).collect();
-        Vigenere{ key, key_name, alpha, whitespace: false }
+        let key: Vec<usize> = key.chars().map(|x| alpha.chars().position(|c| c == x).unwrap()).collect();
+
+        Vigenere{ key, key_name, alphabet: alpha.to_string(), length: alpha.chars().count() }
     }
 
-    pub fn set_whitespace(&mut self, boolean: bool) {
-        self.whitespace = boolean
-    }
-
-    pub fn set_alpha(&mut self, alpha: ModularAlphabet) {
-        self.alpha = alpha
-    }
-
-    pub fn encrypt(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase();
-        let mut out = Vec::new();
-        let mut ckey = self.key.iter().cycle();
-        for c in ch.chars() {
-            if c.is_ascii_whitespace() {
-                if self.whitespace {
-                    out.push(c);
-                }
-            } else {
-                let v = match self.alpha.char_to_val(c) {
-                    Some(m) => *m,
-                    None => continue
-                };
-                let x = v + *ckey.next().unwrap();
-                out.push(*self.alpha.val_to_char(x).unwrap())
-            }
+    pub fn encrypt(&self, text: &str) -> String {
+        let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
+        let ckey = self.key.iter().cycle();
+        let mut out = "".to_string();
+        for (n,k) in nums.iter().zip(ckey) {
+            out.push(self.alphabet.chars().nth( (n+k)%self.length ).unwrap() )
         }
-        let val: String = out.iter().collect();
-        Ok(val)
+        out
     }
 
-    pub fn decrypt(&self, text: &str) -> Result<String,CipherError> {
-        let ch = text.to_ascii_uppercase();
-        let mut out = Vec::new();
-        let mut ckey = self.key.iter().cycle();
-        for c in ch.chars() {
-            if c.is_ascii_whitespace() {
-                if self.whitespace {
-                    out.push(c);
-                }
-            } else {
-                let v = match self.alpha.char_to_val(c) {
-                    Some(m) => *m,
-                    None => continue
-                };
-                let x = v - *ckey.next().unwrap();
-                out.push(*self.alpha.val_to_char(x).unwrap())
-            }
+    pub fn decrypt(&self, text: &str) -> String {
+        let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() + self.length ).collect();
+        let ckey = self.key.iter().cycle();
+        let mut out = "".to_string();
+        for (n,k) in nums.iter().zip(ckey) {
+            out.push(self.alphabet.chars().nth( (n-k)%self.length ).unwrap() )
         }
-        let val: String = out.iter().collect();
-        Ok(val)
+        out
     }
 }
 
@@ -80,13 +43,12 @@ impl fmt::Display for Vigenere {
 }
 
 #[test]
-fn affine() {
-    let alpha = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    let mut aff = Vigenere::new("SECRET", alpha);
-    aff.set_whitespace(true);
-    let plaintext = "the quick brown fox jumps over the lazy dog";
-    let ciphertext = aff.encrypt(plaintext).unwrap();
-    let cleartext = aff.decrypt(&ciphertext).unwrap();
+fn vigenere() {
+    use crate::auxiliary::LATIN26;
+    let vig = Vigenere::new("SECRET", LATIN26);
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
+    let ciphertext = vig.encrypt(plaintext);
+    let cleartext = vig.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
     

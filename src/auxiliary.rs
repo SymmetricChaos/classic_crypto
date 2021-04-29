@@ -6,6 +6,8 @@ pub const LATIN25_J: &str = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
 pub const LATIN25_Q: &str = "ABCDEFGHIJKLMNOPRSTUVWXYZ";
 pub const LATIN26: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 pub const LATIN36: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+pub const ASCII94: &str = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+pub const ASCII95: &str = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
 pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     let mut keyed_alpha = "".to_string();
