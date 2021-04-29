@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::{Polybius,polybius_from_keyword};
+use crate::ciphers::polybius::polybius::Polybius;
 use crate::ciphers::transposition::columnar::Columnar;
 
 /// The ADFGVX Cipher combines a 6x6 Polybius Square with Columnar Transposition to achieve surprisingly high security with a very simple cipher. It is an updated version of the ADFGX Cipher which used a 5x5 Polybius Square.
@@ -12,7 +12,7 @@ pub struct ADFGVX {
 // Automatically pads with the letter X during the columnar step meaning the message is padded with the last letter of the alphabet, this should be adjustable
 impl ADFGVX {
     pub fn new(keyword: &str, columnar_key: Vec<usize>) -> ADFGVX {
-        let polybius = polybius_from_keyword(keyword,"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789","ADFGVX");
+        let polybius = Polybius::new(keyword, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", "ADFGVX");
         let columnar = Columnar::new(columnar_key);
         ADFGVX{ polybius, columnar }
     }
