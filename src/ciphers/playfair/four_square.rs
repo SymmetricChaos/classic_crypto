@@ -31,7 +31,7 @@ impl FourSquare {
         alphabet.chars().nth(num).unwrap()
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -55,7 +55,7 @@ impl FourSquare {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -115,9 +115,9 @@ fn four_square() {
     //println!("{}",four_square);
 
     let plaintext = "HELPMEOBIWANKENOBI";
-    let ciphertext = &four_square.encode(plaintext);
-    let decoded = four_square.decode(ciphertext);
+    let ciphertext = &four_square.encrypt(plaintext);
+    let decryptd = four_square.decrypt(ciphertext);
     println!("\n\n{}",plaintext);
     println!("{}",ciphertext);
-    println!("{}",decoded);
+    println!("{}",decryptd);
 }

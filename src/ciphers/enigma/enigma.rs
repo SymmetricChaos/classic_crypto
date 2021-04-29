@@ -63,13 +63,13 @@ impl Rotor {
     // Signal starts on the right amd goes through the rotor then back
     // We will use and return usize instead of char to avoid constantly converting types
     // There MUST be an easier way to do this.
-    pub fn encode_rtl(&self, entry: usize) -> usize {
+    pub fn encrypt_rtl(&self, entry: usize) -> usize {
         let inner_position = (26+entry+self.position-self.ring)%26;
         let inner = self.wiring_rtl[inner_position];
         (inner+26-self.position+self.ring) % 26
     }
 
-    pub fn encode_ltr(&self, entry: usize) -> usize {
+    pub fn encrypt_ltr(&self, entry: usize) -> usize {
         let inner_position = (26+entry+self.position-self.ring)%26;
         let inner = self.wiring_ltr[inner_position];
         (inner+26-self.position+self.ring) % 26
@@ -197,23 +197,23 @@ impl Enigma {
 
     // Notice that the signal goes through the rotors starting on the right with the 3rd rotor, 
     // then through the reflector, and back through from left to right starting with the 1st rotor
-    fn encode_char(&mut self, c: char) -> char {
+    fn encrypt_char(&mut self, c: char) -> char {
         self.advance_rotors();
         //self.get_rotor_positions();
         let mut x = char_to_usize(self.plugboard.swap(c));
-        x = self.rotors.2.encode_rtl(x);
-        x = self.rotors.1.encode_rtl(x);
-        x = self.rotors.0.encode_rtl(x);
-        x = self.reflector.encode_rtl(x);
-        x = self.rotors.0.encode_ltr(x);
-        x = self.rotors.1.encode_ltr(x);
-        x = self.rotors.2.encode_ltr(x);
+        x = self.rotors.2.encrypt_rtl(x);
+        x = self.rotors.1.encrypt_rtl(x);
+        x = self.rotors.0.encrypt_rtl(x);
+        x = self.reflector.encrypt_rtl(x);
+        x = self.rotors.0.encrypt_ltr(x);
+        x = self.rotors.1.encrypt_ltr(x);
+        x = self.rotors.2.encrypt_ltr(x);
         self.plugboard.swap(usize_to_char(x))
     }
 
-    // Rotor positions are meant to be different for each message so here they are supplied when .encode() is called
-    // There is no .decode() method as the Enigma was involutive and thus needed no decode setting
-    pub fn encode(&mut self, text: &str, rotor_positions: (usize,usize,usize)) -> String {
+    // Rotor positions are meant to be different for each message so here they are supplied when .encrypt() is called
+    // There is no .decrypt() method as the Enigma was involutive and thus needed no decrypt setting
+    pub fn encrypt(&mut self, text: &str, rotor_positions: (usize,usize,usize)) -> String {
 
         self.rotors.0.set_position(rotor_positions.0);
         self.rotors.1.set_position(rotor_positions.1);
@@ -226,12 +226,12 @@ impl Enigma {
         let letters = text.chars();
         let mut out = String::new();
         for c in letters {
-            out.push(self.encode_char(c));
+            out.push(self.encrypt_char(c));
         }
         out
     }
 
-    pub fn encode_file(&mut self, source: &str, target: &str, rotor_positions: (usize,usize,usize)) -> Result<(),Error> {
+    pub fn encrypt_file(&mut self, source: &str, target: &str, rotor_positions: (usize,usize,usize)) -> Result<(),Error> {
 
         let mut target_file = File::create(target.to_string())?;
     
@@ -239,7 +239,7 @@ impl Enigma {
         let mut source_text = String::new();
         source_file.read_to_string(&mut source_text)?;
     
-        let ciphertext = self.encode(&source_text, rotor_positions);
+        let ciphertext = self.encrypt(&source_text, rotor_positions);
     
         target_file.write(ciphertext.as_bytes())?;
 
@@ -277,7 +277,7 @@ fn single_rotor() {
     let rotor = ROTOR_III.clone();
     println!("{}",rotor);
     let c = char_to_usize('A');
-    println!("{} -> {}", 'A', usize_to_char(rotor.encode_rtl(c)));
+    println!("{} -> {}", 'A', usize_to_char(rotor.encrypt_rtl(c)));
     println!("should get: A -> B")
 }
 
@@ -291,22 +291,22 @@ fn single_rotor_stepping() {
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
     
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
     
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
 
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
 
     println!("right column: BCDE\nleft column: BCDE")
 }
@@ -321,22 +321,22 @@ fn single_rotor_stepping_2() {
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
     
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
     
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
 
     rotor.step();
     println!("{}  {}",
         usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encode_rtl(0)));
+        usize_to_char(rotor.encrypt_rtl(0)));
 
     println!("right column: ABCD\nleft column: IBHO")
 }
@@ -355,12 +355,12 @@ fn enigma() {
     println!("\n{}\n",s);
 
     let text = "AAAAAAAAAAAAAAAAAAAAAAAAAA";
-    let out = s.encode(text,(0,0,0));
+    let out = s.encrypt(text,(0,0,0));
     println!("{}\n{}",text,out);
     assert_eq!(&out,"VDDXSYJOVCQYJSDJMLONNSSJQI");
 
     // Confirm involution property
     let text = "VDDXSYJOVCQYJSDJMLONNSSJQI";
-    let out = s.encode(text,(0,0,0));
+    let out = s.encrypt(text,(0,0,0));
     assert_eq!(&out,"AAAAAAAAAAAAAAAAAAAAAAAAAA");
 }

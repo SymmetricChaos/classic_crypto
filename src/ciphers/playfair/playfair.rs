@@ -40,7 +40,7 @@ impl Playfair {
         
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars().peekable();
         let mut out = "".to_string();
         loop {
@@ -84,7 +84,7 @@ impl Playfair {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         if text.chars().count() % 2 == 1 {
             panic!("Valid Playfair ciphertext cannot have and odd number of symbols")
         }
@@ -151,11 +151,11 @@ fn playfair() {
     println!("{}",playfair);
 
     let plaintext = "HIDETHEGOLDINTHETREESTUMP";
-    let ciphertext = playfair.encode(plaintext);
-    let decoded = playfair.decode(&ciphertext);
+    let ciphertext = playfair.encrypt(plaintext);
+    let decryptd = playfair.decrypt(&ciphertext);
 
     println!("{}",plaintext);
     println!("{}",ciphertext);
-    println!("{}",decoded);
+    println!("{}",decryptd);
     
 }

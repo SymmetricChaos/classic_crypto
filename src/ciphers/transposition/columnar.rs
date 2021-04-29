@@ -9,9 +9,15 @@ pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     text
 }
 
-/* pub fn word_to_ranks(text: &str) -> Vec<usize> {
-
-} */
+// sort then enumerate?
+pub fn word_to_ranks(text: &str, alphabet: &str) -> Vec<usize> {
+    let mut v = Vec::new();
+    for t in text.chars() {
+        v.push(alphabet.chars().position(|x| x == t).unwrap());
+    }
+    println!("{:?}",v);
+    v
+}
 
 
 // Given 5,2,1,3,0,4 we want to get 4,2,1,3,5,0
@@ -33,7 +39,7 @@ impl Columnar {
         Columnar{ key }
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut columns = Vec::new();
         for _ in 0..self.key.len() {
             columns.push(Vec::<char>::new());
@@ -54,7 +60,7 @@ impl Columnar {
     }
 
     // Decoding is very different
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let symbols: Vec<char> = text.chars().collect();
         let n_rows = text.len().div_ceil(&self.key.len());
         let rows: Vec<&[char]> = symbols.chunks(n_rows).collect();
@@ -80,9 +86,9 @@ fn columnar() {
     let col = Columnar::new(vec![5,2,1,3,0,4]);
     println!("{}",col);
     let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
-    let ciphertext = col.encode(plaintext);
-    let decoded = col.decode(&ciphertext);
+    let ciphertext = col.encrypt(plaintext);
+    let decryptd = col.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}",plaintext,ciphertext,decoded)
+    println!("{}\n{}\n{}",plaintext,ciphertext,decryptd)
 
 }

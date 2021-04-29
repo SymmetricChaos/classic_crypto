@@ -1,94 +1,72 @@
 use std::fmt;
 
-use crate::alphabet::ModularAlphabet;
-use crate::modulus::*;
-
+use crate::auxiliary::mul_inv;
 
 
 pub struct Affine {
-    key1: Modulo,
-    key2: Modulo,
-    akey2: Modulo,
-    alpha: ModularAlphabet,
-    whitespace: bool,
+    key1: usize,
+    key2: usize,
+    key2_inv: usize,
+    alphabet: String,
+    length: usize
 }
 
 impl Affine {
-    pub fn new(key: (u32,u32), alpha: ModularAlphabet) -> Affine {
-        let key1 = key.0.to_modulo(alpha.len() as u32);
-        let key2 = key.1.to_modulo(alpha.len() as u32);
-        let akey2 = match key2.mul_inv() {
+    pub fn new(key: (usize,usize), alphabet: &str) -> Affine {
+        let key1 = key.0;
+        let key2 = key.1;
+        let length = alphabet.chars().count();
+        let key2_inv = match mul_inv(key2, length) {
             Some(m) => m,
-            None => panic!("{} has no multiplicative inverse modulo {}",key2.value(),key2.modulus()),
+            None => panic!("{} has no multiplicative inverse modulo {}",key2,length),
         };
 
-        Affine{ key1, key2, akey2, alpha, whitespace: false }
+        Affine{ key1, key2, key2_inv, alphabet: alphabet.to_string(), length }
     }
 
-    pub fn set_whitespace(&mut self, boolean: bool) {
-        self.whitespace = boolean
+    fn char_to_val(&self, c: char) -> usize {
+        self.alphabet.chars().position(|x| x == c).unwrap()
     }
 
-    pub fn set_alpha(&mut self, alpha: ModularAlphabet) {
-        self.alpha = alpha
+    fn val_to_char(&self, v: usize) -> char {
+        self.alphabet.chars().nth(v).unwrap()
     }
 
-    pub fn encode(&self, text: &str) -> String {
-        let ch = text.to_ascii_uppercase();
-        let mut out = Vec::new();
-        for c in ch.chars() {
-            if c.is_ascii_whitespace() {
-                if self.whitespace {
-                    out.push(c);
-                }
-            } else {
-                let v = match self.alpha.char_to_val(c) {
-                    Some(m) => *m,
-                    None => continue,
-                };
-                let x = v * self.key2 + self.key1;
-                out.push(*self.alpha.val_to_char(x).unwrap())
-            }
+
+    pub fn encrypt(&self, text: &str) -> String {
+        let symbols = text.chars();
+        let mut out = "".to_string();
+        for s in symbols {
+            let n = (self.char_to_val(s) * self.key2 + self.key1) % self.length;
+            out.push(self.val_to_char(n))
         }
-        let val: String = out.iter().collect();
-        val
+        out
     }
 
-    pub fn decode(&self, text: &str) -> String {
-        let ch = text.to_ascii_uppercase();
-        let mut out = Vec::new();
-        for c in ch.chars() {
-            if c.is_ascii_whitespace() && self.whitespace {
-                out.push(c);
-            } else {
-                let v = match self.alpha.char_to_val(c) {
-                    Some(m) => *m,
-                    None => panic!("unknown character encountered while decoding"),
-                };
-                let x = (v - self.key1)*self.akey2;
-                out.push(*self.alpha.val_to_char(x).unwrap())
-            }
-
+    pub fn decrypt(&self, text: &str) -> String {
+        let symbols = text.chars();
+        let mut out = "".to_string();
+        for s in symbols {
+            let n = ((self.char_to_val(s) + self.length - self.key1) * self.key2_inv) % self.length;
+            out.push(self.val_to_char(n))
         }
-        let val: String = out.iter().collect();
-        val
+        out
     }
 }
 
 impl fmt::Display for Affine {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Affine Cipher\nkey: ({},{})",self.key1.value(),self.key2.value())
+        write!(f, "Affine Cipher\nkey: ({},{})",self.key1,self.key2)
     }
 }
 
 #[test]
 fn affine() {
-    let alpha = ModularAlphabet::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    let mut aff = Affine::new((1,3),alpha);
-    aff.set_whitespace(true);
-    let plaintext = "the quick brown fox jumps over the lazy dog";
-    let ciphertext = aff.encode(plaintext);
-    let cleartext = aff.decode(&ciphertext);
+    use crate::auxiliary::LATIN26;
+    let aff = Affine::new((1,3), LATIN26);
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
+    let ciphertext = aff.encrypt(plaintext);
+    let cleartext = aff.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
     

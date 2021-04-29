@@ -54,7 +54,7 @@ impl Polybius {
         Polybius{ map, map_inv, square }
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             let (a,b) = self.map[&c];
@@ -64,11 +64,11 @@ impl Polybius {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         let tlen = text.chars().count();
         if tlen % 2 == 1 {
-            panic!("Polybius Square Error: cannot decode a string with an odd number of characters")
+            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
         }
         let n_groups = tlen / 2;
         let mut symbols = text.chars();
@@ -94,8 +94,8 @@ fn polybius() {
     let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
     println!("{}",poly);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = poly.encode(plaintext);
-    let cleartext = poly.decode(&ciphertext);
+    let ciphertext = poly.encrypt(plaintext);
+    let cleartext = poly.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }

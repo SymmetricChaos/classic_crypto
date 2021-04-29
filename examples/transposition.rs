@@ -9,16 +9,16 @@ fn main() {
 
     let columnar = Columnar::new(vec![1,5,0,2,4,3]);
     println!("\n{}",columnar);
-    let ciphertext = columnar.encode(plaintext);
-    let cleartext = columnar.decode(&ciphertext);
+    let ciphertext = columnar.encrypt(plaintext);
+    let cleartext = columnar.decrypt(&ciphertext);
     println!("{}",ciphertext);
     assert_eq!(cleartext,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
 
 
     let scytale = Scytale::new(3);
     println!("\n{}",scytale);
-    let ciphertext = scytale.encode(plaintext);
-    let cleartext = scytale.decode(&ciphertext);
+    let ciphertext = scytale.encrypt(plaintext);
+    let cleartext = scytale.decrypt(&ciphertext);
     println!("{}",ciphertext);
     assert_eq!(cleartext,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
 

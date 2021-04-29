@@ -17,16 +17,16 @@ impl ADFGVX {
         ADFGVX{ polybius, columnar }
     }
 
-    pub fn encode(&self, text: &str) -> String {
-        let mut intermediate = self.polybius.encode(text);
-        intermediate = self.columnar.encode(&intermediate);
-        self.polybius.decode(&intermediate)
+    pub fn encrypt(&self, text: &str) -> String {
+        let mut intermediate = self.polybius.encrypt(text);
+        intermediate = self.columnar.encrypt(&intermediate);
+        self.polybius.decrypt(&intermediate)
     }
 
-    pub fn decode(&self, text: &str) -> String {
-        let mut intermediate = self.polybius.encode(text);
-        intermediate = self.columnar.decode(&intermediate);
-        self.polybius.decode(&intermediate)
+    pub fn decrypt(&self, text: &str) -> String {
+        let mut intermediate = self.polybius.encrypt(text);
+        intermediate = self.columnar.decrypt(&intermediate);
+        self.polybius.decrypt(&intermediate)
     }
 }
 
@@ -43,8 +43,8 @@ fn adfgvx() {
 
     println!("{}",adfgvx);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";
-    let ciphertext = adfgvx.encode(plaintext);
-    let cleartext = adfgvx.decode(&ciphertext);
+    let ciphertext = adfgvx.encrypt(plaintext);
+    let cleartext = adfgvx.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }

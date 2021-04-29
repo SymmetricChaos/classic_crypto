@@ -14,8 +14,8 @@ impl Nihilist {
         Nihilist{ polybius, vigenere: vigenere_key }
     }
 
-    pub fn encode(&self, text: &str) -> String {
-        let poly_pairs = self.polybius.encode(text).chars().collect::<Vec<char>>();
+    pub fn encrypt(&self, text: &str) -> String {
+        let poly_pairs = self.polybius.encrypt(text).chars().collect::<Vec<char>>();
         let mut vkey = self.vigenere.iter().cycle();
 
         let mut out = "".to_string();
@@ -29,7 +29,7 @@ impl Nihilist {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let groups = text.trim_end().split(' ').collect::<Vec<&str>>()
                                    .iter().map(|x| x.parse::<usize>().unwrap())
                                    .collect::<Vec<usize>>();
@@ -41,7 +41,7 @@ impl Nihilist {
             }
             s
         };
-        self.polybius.decode(&poly_groups)
+        self.polybius.decrypt(&poly_groups)
     }
 }
 
@@ -65,8 +65,8 @@ impl NihilistCyrillic {
         NihilistCyrillic{ polybius, vigenere: vigenere_key }
     }
 
-    pub fn encode(&self, text: &str) -> String {
-        let poly_pairs = self.polybius.encode(text).chars().collect::<Vec<char>>();
+    pub fn encrypt(&self, text: &str) -> String {
+        let poly_pairs = self.polybius.encrypt(text).chars().collect::<Vec<char>>();
         let mut vkey = self.vigenere.iter().cycle();
 
         let mut out = "".to_string();
@@ -80,7 +80,7 @@ impl NihilistCyrillic {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let groups = text.trim_end().split(' ').collect::<Vec<&str>>()
                                    .iter().map(|x| x.parse::<usize>().unwrap())
                                    .collect::<Vec<usize>>();
@@ -92,7 +92,7 @@ impl NihilistCyrillic {
             }
             s
         };
-        self.polybius.decode(&poly_groups)
+        self.polybius.decrypt(&poly_groups)
     }
 }
 
@@ -109,15 +109,15 @@ fn nihilist() {
 
     let nihilist = Nihilist::new("ZEBRAS",vec![20,21,22,23,24]);
     let plaintext = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
-    let ciphertext = nihilist.encode(plaintext);
-    let cleartext = nihilist.decode(&ciphertext);
+    let ciphertext = nihilist.encrypt(plaintext);
+    let cleartext = nihilist.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 
     let nihilist = NihilistCyrillic::new("РОССИЯ",vec![20,21,22,23,24]);
     let plaintext = "АТАКАНАЗИМНИЙДВОРЕЦ";
-    let ciphertext = nihilist.encode(plaintext);
-    let cleartext = nihilist.decode(&ciphertext);
+    let ciphertext = nihilist.encrypt(plaintext);
+    let cleartext = nihilist.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
 }

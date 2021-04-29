@@ -19,7 +19,7 @@ impl Scytale {
         Scytale{ key }
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
         let mut symbols = text.chars();
         let mut rows = Vec::new();
@@ -44,7 +44,7 @@ impl Scytale {
     }
 
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
         let mut symbols = text.chars();
         let mut rows = Vec::new();
@@ -81,8 +81,8 @@ fn scytale() {
     let scytale = Scytale::new(3);
     println!("{}",scytale);
     let plaintext = "WEAREDISCOVEREDFLEEATONCE";
-    let ciphertext = scytale.encode(plaintext);
-    let cleartext = scytale.decode(&ciphertext);
+    let ciphertext = scytale.encrypt(plaintext);
+    let cleartext = scytale.decrypt(&ciphertext);
 
     println!("{}",ciphertext);
     println!("{}",cleartext);

@@ -17,7 +17,7 @@ fn main() -> Result<(),Error> {
 
     let mut s = Enigma::new( plugs, rotors, reflector, ring_positions );
 
-    s.encode_file("enigma_plaintext.txt", "engima_ciphertext.txt", (0,0,0))?;
+    s.encrypt_file("enigma_plaintext.txt", "engima_ciphertext.txt", (0,0,0))?;
 
     Ok(())
 }

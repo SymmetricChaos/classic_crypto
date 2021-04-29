@@ -29,7 +29,7 @@ impl Autokey {
         self.alpha = alpha
     }
 
-    pub fn encode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn encrypt(&self, text: &str) -> Result<String,CipherError> {
         let ch = text.to_ascii_uppercase();
         let mut out = Vec::new();
         let mut akey: VecDeque<Modulo> = self.key.clone().into_iter().collect();
@@ -52,7 +52,7 @@ impl Autokey {
         Ok(val)
     }
 
-    pub fn decode(&self, text: &str) -> Result<String,CipherError> {
+    pub fn decrypt(&self, text: &str) -> Result<String,CipherError> {
         let ch = text.to_ascii_uppercase();
         let mut out = Vec::new();
         let mut akey: VecDeque<Modulo> = self.key.clone().into_iter().collect();
@@ -88,8 +88,8 @@ fn affine() {
     let mut aff = Autokey::new("SECRET", alpha);
     aff.set_whitespace(true);
     let plaintext = "the quick brown fox jumps over the lazy dog";
-    let ciphertext = aff.encode(plaintext).unwrap();
-    let cleartext = aff.decode(&ciphertext).unwrap();
+    let ciphertext = aff.encrypt(plaintext).unwrap();
+    let cleartext = aff.decrypt(&ciphertext).unwrap();
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
     

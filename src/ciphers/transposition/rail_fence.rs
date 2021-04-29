@@ -14,7 +14,7 @@ impl RailFence {
         RailFence{ key }
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();
         let mut rows = Vec::new();
         for _ in 0..self.key {
@@ -41,7 +41,7 @@ impl RailFence {
     }
 
 
-/*     pub fn decode(&self, text: &str) -> String {
+/*     pub fn decrypt(&self, text: &str) -> String {
 
     } */
 }
@@ -58,8 +58,8 @@ fn fail_fence() {
     let railfence = RailFence::new(3);
     println!("{}",railfence);
     let plaintext = "WEAREDISCOVEREDFLEEATONCE";
-    let ciphertext = railfence.encode(plaintext);
-    //let cleartext = railfence.decode(&ciphertext);
+    let ciphertext = railfence.encrypt(plaintext);
+    //let cleartext = railfence.decrypt(&ciphertext);
 
     println!("{}",ciphertext);
     //println!("{}",cleartext);

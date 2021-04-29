@@ -30,3 +30,22 @@ pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     }
     keyed_alpha
 }
+
+fn egcd(a: i64, b: i64) -> (i64,i64,i64) {
+    if a == 0 {
+        (b,0,1)
+    } else {
+        let (g, y, x) = egcd(b%a, a);
+        (g,x-(b/a)*y,y)
+    }
+}
+
+pub fn mul_inv(num: usize, modulus: usize) -> Option<usize> {
+    let (g, x, _) = egcd(num  as i64, modulus as i64);
+    if g != 1 {
+        None 
+    } else {
+        let t = x as usize;
+        Some( t.rem_euclid(modulus) )
+    }
+}

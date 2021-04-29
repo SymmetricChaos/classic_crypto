@@ -13,7 +13,7 @@ impl Route {
         Route{ key }
     }
 
-/*     pub fn encode(&self, text: &str) -> String {
+/*     pub fn encrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
         let symbols = text.chars();
         let mut rows = Vec::new();
@@ -21,7 +21,7 @@ impl Route {
         Ok("".to_string())
     } */
 
-/*     pub fn decode(&self, text: &str) -> String {
+/*     pub fn decrypt(&self, text: &str) -> String {
 
     } */
 }
@@ -38,6 +38,6 @@ fn route() {
     let Route = Route::new(3);
     println!("Route Cipher: {}",Route);
     let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";
-    let ciphertext = Route.encode(plaintext);
+    let ciphertext = Route.encrypt(plaintext);
 
 } */

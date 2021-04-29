@@ -51,7 +51,7 @@ impl Substitution {
         self.map_inv = map_inv;
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             if self.whitespace && c.is_whitespace() {
@@ -63,7 +63,7 @@ impl Substitution {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    pub fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
             if self.whitespace && c.is_whitespace() {
@@ -89,8 +89,8 @@ fn substitution() {
     println!("{}\n",substitution);
 
     let plaintext = "thequickbrownfoxjumpsoverthelazydog";
-    let ciphertext = substitution.encode(plaintext);
-    let decrypt = substitution.decode(&ciphertext);
+    let ciphertext = substitution.encrypt(plaintext);
+    let decrypt = substitution.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 
@@ -102,8 +102,8 @@ fn substitution_unicode() {
     let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
     
     let plaintext = "thequickbrownfoxjumpsoverthelazydog";
-    let ciphertext = substitution.encode(plaintext);
-    let decrypt = substitution.decode(&ciphertext);
+    let ciphertext = substitution.encrypt(plaintext);
+    let decrypt = substitution.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 

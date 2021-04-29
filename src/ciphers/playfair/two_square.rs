@@ -39,7 +39,7 @@ impl TwoSquare {
         self.alphabet2.chars().nth(num).unwrap()
     }
 
-    pub fn encode(&self, text: &str) -> String {
+    pub fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -63,8 +63,8 @@ impl TwoSquare {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
-        self.encode(text)
+    pub fn decrypt(&self, text: &str) -> String {
+        self.encrypt(text)
     }
 }
 
@@ -98,9 +98,9 @@ fn two_square() {
     println!("{}",two_square);
 
     let plaintext = "HELPMEOBIWANKENOBI";
-    let ciphertext = &two_square.encode(plaintext);
-    let decoded = two_square.decode(ciphertext);
+    let ciphertext = &two_square.encrypt(plaintext);
+    let decryptd = two_square.decrypt(ciphertext);
     println!("\n\n{}",plaintext);
     println!("{}",ciphertext);
-    println!("{}",decoded);
+    println!("{}",decryptd);
 }
