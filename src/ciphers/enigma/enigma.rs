@@ -182,7 +182,7 @@ impl Enigma {
             self.ring_positions.2)
     }
 
-    // Need to include double-stepping
+    // Need to validate double-stepping
     fn advance_rotors(&mut self) {
         let mut on_notch = self.rotors.2.position == self.rotors.2.notch;
         self.rotors.2.step();

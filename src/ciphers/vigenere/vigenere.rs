@@ -44,7 +44,7 @@ impl fmt::Display for Vigenere {
 
 #[test]
 fn vigenere() {
-    use crate::auxiliary::LATIN26;
+    use crate::alphabets::LATIN26;
     let vig = Vigenere::new("SECRET", LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = vig.encrypt(plaintext);

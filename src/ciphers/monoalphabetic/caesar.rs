@@ -1,6 +1,6 @@
 use std::fmt;
 
-
+/// The Caesar Cipher substitutes symbols simply by shifting them some distance along the alphabet
 pub struct Caesar {
     key: usize,
     alphabet: String,
@@ -47,14 +47,17 @@ impl fmt::Display for Caesar {
     }
 }
 
+
+
+
 #[test]
 fn caesar() {
-    use crate::auxiliary::LATIN26;
+    use crate::alphabets::LATIN26;
     let caesar  = Caesar::new(1, LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = caesar.encrypt(plaintext);
-    let cleartext = caesar.decrypt(&ciphertext);
-
-    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    let decrypted = caesar.decrypt(&ciphertext);
+    assert_eq!(&ciphertext,"UIFRVJDLCSPXOGPYKVNQTPWFSUIFMBAZEPH");
+    assert_eq!(&decrypted,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG");
     
 }

@@ -52,8 +52,8 @@ impl fmt::Display for Autokey {
 
 #[test]
 fn autokey() {
-    use crate::auxiliary::LATIN26;
-let auto = Autokey::new("SECRET", LATIN26);
+    use crate::alphabets::LATIN26;
+    let auto = Autokey::new("SECRET", LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = auto.encrypt(plaintext);
     let cleartext = auto.decrypt(&ciphertext);

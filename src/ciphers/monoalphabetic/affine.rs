@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::auxiliary::mul_inv;
 
-
+/// The Affine Cipher augments the Caesar Cipher by including a multiplicative aspect to the key.
 pub struct Affine {
     key1: usize,
     key2: usize,
@@ -62,12 +62,13 @@ impl fmt::Display for Affine {
 
 #[test]
 fn affine() {
-    use crate::auxiliary::LATIN26;
+    use crate::alphabets::LATIN26;
     let aff = Affine::new((1,3), LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = aff.encrypt(plaintext);
-    let cleartext = aff.decrypt(&ciphertext);
+    let decrypted = aff.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    assert_eq!(&ciphertext,"GWNXJZHFEARPOQRSCJLUDRMNAGWNIBYVKRT");
+    assert_eq!(&decrypted,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG");
     
 }

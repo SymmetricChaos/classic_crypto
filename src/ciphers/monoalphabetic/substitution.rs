@@ -2,7 +2,7 @@ use std::fmt;
 use std::collections::HashMap;
 
 
-
+/// The most general substitution cipher operates by replacing each symbol in the first alphabet with a corresponding symbol in another alphabet
 pub struct Substitution {
     key1: String,
     key2: String,
@@ -99,13 +99,14 @@ fn substitution() {
 
 #[test]
 fn substitution_unicode() {
-    let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
+    use crate::alphabets::LATIN26;
+    let substitution = Substitution::new(LATIN26,"🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
     
-    let plaintext = "thequickbrownfoxjumpsoverthelazydog";
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = substitution.encrypt(plaintext);
-    let decrypt = substitution.decrypt(&ciphertext);
+    let decrypted = substitution.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
+    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypted)
 
     
 }

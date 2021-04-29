@@ -89,7 +89,7 @@ impl fmt::Display for Polybius {
 
 #[test]
 fn polybius() {
-    use crate::auxiliary::LATIN36;
+    use crate::alphabets::LATIN36;
 
     let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
     println!("{}",poly);

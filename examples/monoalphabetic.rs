@@ -1,5 +1,5 @@
 use classic_crypto::ciphers::monoalphabetic::{Caesar,Substitution};
-use classic_crypto::auxiliary::LATIN26;
+use classic_crypto::alphabets::LATIN26;
 
 fn main() {
 

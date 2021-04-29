@@ -109,7 +109,7 @@ impl fmt::Display for FourSquare {
 
 #[test]
 fn four_square() {
-    use crate::auxiliary::LATIN25_Q;
+    use crate::alphabets::LATIN25_Q;
     let four_square = FourSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
 
     //println!("{}",four_square);

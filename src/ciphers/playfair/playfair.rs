@@ -146,7 +146,7 @@ impl fmt::Display for Playfair {
 
 #[test]
 fn playfair() {
-    use crate::auxiliary::LATIN25_J;
+    use crate::alphabets::LATIN25_J;
     let playfair = Playfair::new("PLAYFAIREXAMPLE", LATIN25_J,5,'X');
     println!("{}",playfair);
 

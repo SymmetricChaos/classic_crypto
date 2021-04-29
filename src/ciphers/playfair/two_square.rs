@@ -91,7 +91,7 @@ impl fmt::Display for TwoSquare {
 
 #[test]
 fn two_square() {
-    use crate::auxiliary::LATIN25_Q;
+    use crate::alphabets::LATIN25_Q;
 
     let two_square = TwoSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
 
