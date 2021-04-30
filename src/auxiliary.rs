@@ -1,3 +1,5 @@
+use std::ops::Shr;
+
 pub fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()
 }
@@ -46,3 +48,14 @@ pub fn mul_inv(num: usize, modulus: usize) -> Option<usize> {
         Some( t.rem_euclid(modulus) )
     }
 }
+
+pub fn log2(n: usize) -> usize {
+    let mut ctr = 0;
+    let mut n = n;
+    while n != 0 {
+        ctr += 1;
+        n = n.shr(1);
+    }
+    ctr
+}
+

@@ -1,5 +1,9 @@
 use lazy_static::lazy_static;
 use std::collections::HashMap;
+use num::Integer;
+
+use crate::auxiliary::log2;
+use crate::codes::binary::code_generators::BaconCode;
 
 lazy_static! {
     pub static ref BACON_MAP: HashMap<char, &'static str> = {
@@ -37,7 +41,14 @@ pub struct Bacon {
 
 impl Bacon {
 
-    pub fn new() -> Bacon {
+/*     pub fn new(alphabet: &str) -> Bacon {
+        let length = alphabet.chars().count();
+        let width = log2(length);
+        // generate bitstrings of the given width and put them into the hashmaps
+        
+    } */
+
+    pub fn default() -> Bacon {
         Bacon{ map: BACON_MAP.clone(), map_inv: BACON_MAP_INV.clone() }
     }
 
@@ -61,7 +72,7 @@ impl Bacon {
 
 #[test]
 fn bacon() {
-    let bacon = Bacon::new();
+    let bacon = Bacon::default();
     let plaintext = "THEQUICK";
     let coded = bacon.encode(plaintext);
     let decoded = bacon.decode(&coded);
