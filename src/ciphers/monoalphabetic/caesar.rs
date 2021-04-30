@@ -1,4 +1,6 @@
 use std::fmt;
+use rand::Rng;
+
 
 /// The Caesar Cipher substitutes symbols simply by shifting them some distance along the alphabet
 pub struct Caesar {
@@ -9,6 +11,12 @@ pub struct Caesar {
 
 impl Caesar {
     pub fn new(key: usize, alphabet: &str) -> Caesar {
+        Caesar{ key, alphabet: alphabet.to_string(), length: alphabet.chars().count() }
+    }
+
+    pub fn random(alphabet: &str) -> Caesar {
+        let mut rng = rand::thread_rng();
+        let key = rng.gen_range(0..10);
         Caesar{ key, alphabet: alphabet.to_string(), length: alphabet.chars().count() }
     }
 

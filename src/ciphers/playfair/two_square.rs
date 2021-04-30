@@ -1,5 +1,6 @@
 use std::fmt;
 use crate::auxiliary::keyed_alphabet;
+use crate::alphabets::scramble_alphabet;
 
 /// The Two Square cipher is a slightly version of the Playfair Cipher that uses two seperate squares to cover for some weaknesses of the Playfair.
 pub struct TwoSquare {
@@ -17,6 +18,15 @@ impl TwoSquare {
         TwoSquare{ alphabet1: keyed_alphabet(key1,alphabet), 
                    alphabet2: keyed_alphabet(key2,alphabet), 
                    size }
+    }
+
+    
+    pub fn random(alphabet: &str, size: usize) -> TwoSquare {
+        let alphabet1 = scramble_alphabet(alphabet);
+        let alphabet2 = scramble_alphabet(alphabet);
+
+        TwoSquare{ alphabet1, alphabet2,
+                    size }
     }
 
     fn symbol_to_pair_1(&self, symbol: char) -> (usize,usize) {
