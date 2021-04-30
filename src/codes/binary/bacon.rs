@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt};
 use num::Integer;
 
 use crate::auxiliary::log2;
@@ -32,6 +32,7 @@ pub struct Bacon {
     map: HashMap<char, String>,
     map_inv: HashMap<String, char>,
     width: usize,
+    alphabet: String,
 }
 
 impl Bacon {
@@ -43,16 +44,15 @@ impl Bacon {
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
         for (l,c) in alphabet.chars().zip(codes) {
-            println!("{}",c.clone());
             map.insert(l,c.clone() );
             map_inv.insert(c, l);
         }
-        Bacon{ map, map_inv, width }
+        Bacon{ map, map_inv, width, alphabet: alphabet.to_string() }
         
     }
 
     pub fn default() -> Bacon {
-        Bacon{ map: BACON_MAP.clone(), map_inv: BACON_MAP_INV.clone(), width: 5 }
+        Bacon{ map: BACON_MAP.clone(), map_inv: BACON_MAP_INV.clone(), width: 5, alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string() }
     }
 
     pub fn encode(&self, text: &str) -> String {
@@ -74,12 +74,25 @@ impl Bacon {
     }
 }
 
+impl fmt::Display for Bacon {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut s = "".to_string();
+        for c in self.alphabet.chars() {
+            s.push_str(&format!("{}: {}\n",c,self.map[&c]))
+        }
+        write!(f, "Bacon Cipher\n{}",s)
+    }
+}
+
+
 #[test]
 fn bacon_default() {
     let bacon = Bacon::default();
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let coded = bacon.encode(plaintext);
     let decoded = bacon.decode(&coded);
+
+    //println!("{}",bacon);
 
     println!("{}",plaintext);
     println!("{}",coded);
@@ -88,11 +101,13 @@ fn bacon_default() {
 
 #[test]
 fn bacon_ascii() {
-    use crate::alphabets::ASCII94;
-    let bacon = Bacon::new(ASCII94);
-    let plaintext = "THEQUICK(BROWN)FOXJUMPS!OVERTHELAZYDOG?";
+    use crate::alphabets::ASCII95;
+    let bacon = Bacon::new(ASCII95);
+    let plaintext = "The quick (BROWN) fox jumps over the [LAZY] dog!";
     let coded = bacon.encode(plaintext);
     let decoded = bacon.decode(&coded);
+
+    //println!("{}",bacon);
 
     println!("{}",plaintext);
     println!("{}",coded);
