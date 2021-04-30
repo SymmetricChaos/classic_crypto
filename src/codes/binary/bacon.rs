@@ -6,28 +6,22 @@ use crate::auxiliary::log2;
 use crate::codes::binary::code_generators::BaconCode;
 
 lazy_static! {
-    pub static ref BACON_MAP: HashMap<char, &'static str> = {
+    pub static ref BACON_MAP: HashMap<char, String> = {
         let mut m = HashMap::new();
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let codes = ["00000","00001","00010","00011","00100","00101","00110","00111",
-                     "01000","01001","01010","01011","01100","01101","01110","01111",
-                     "10000","10001","10010","10011","10100","10101","10110","10111",
-                     "11000","11001"];
-        for (l,c) in letters.chars().zip(codes.iter()) {
-            m.insert(l, *c);
+        let codes = BaconCode::new(5);
+        for (l,c) in letters.chars().zip(codes) {
+            m.insert(l, c);
         }
         m
     };
 
-    pub static ref BACON_MAP_INV: HashMap<&'static str, char> = {
+    pub static ref BACON_MAP_INV: HashMap<String, char> = {
         let mut m = HashMap::new();
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let codes = ["00000","00001","00010","00011","00100","00101","00110","00111",
-                     "01000","01001","01010","01011","01100","01101","01110","01111",
-                     "10000","10001","10010","10011","10100","10101","10110","10111",
-                     "11000","11001"];
-        for (l,c) in letters.chars().zip(codes.iter()) {
-            m.insert(*c,l);
+        let codes = BaconCode::new(5);
+        for (l,c) in letters.chars().zip(codes) {
+            m.insert(c,l);
         }
         m
     };
@@ -35,51 +29,72 @@ lazy_static! {
 }
 
 pub struct Bacon {
-    map: HashMap<char, &'static str>,
-    map_inv: HashMap<&'static str, char>,
+    map: HashMap<char, String>,
+    map_inv: HashMap<String, char>,
+    width: usize,
 }
 
 impl Bacon {
 
-/*     pub fn new(alphabet: &str) -> Bacon {
+    pub fn new(alphabet: &str) -> Bacon {
         let length = alphabet.chars().count();
         let width = log2(length);
-        // generate bitstrings of the given width and put them into the hashmaps
+        let codes = BaconCode::new(width);
+        let mut map = HashMap::new();
+        let mut map_inv = HashMap::new();
+        for (l,c) in alphabet.chars().zip(codes) {
+            println!("{}",c.clone());
+            map.insert(l,c.clone() );
+            map_inv.insert(c, l);
+        }
+        Bacon{ map, map_inv, width }
         
-    } */
+    }
 
     pub fn default() -> Bacon {
-        Bacon{ map: BACON_MAP.clone(), map_inv: BACON_MAP_INV.clone() }
+        Bacon{ map: BACON_MAP.clone(), map_inv: BACON_MAP_INV.clone(), width: 5 }
     }
 
     pub fn encode(&self, text: &str) -> String {
         let mut out = "".to_string();
         for s in text.chars() {
-            out.push_str(self.map[&s])
+            out.push_str(self.map.get(&s).expect(&format!("The symbol `{}` is not in the alphabet",s)))
         }
         out
     }
 
     pub fn decode(&self, text: &str) -> String {
         let mut out = "".to_string();
-        for p in 0..(text.len()/5) {
-            let group = &text[(p*5)..(p*5)+5];
-            out.push(self.map_inv[group])
+        let w = self.width;
+        for p in 0..(text.len()/w) {
+            let group = &text[(p*w)..(p*w)+w];
+            out.push(*self.map_inv.get(group).expect(&format!("the group `{}` is not valid for this Bacon Code",group)) )
         }
         out
     }
 }
 
 #[test]
-fn bacon() {
+fn bacon_default() {
     let bacon = Bacon::default();
-    let plaintext = "THEQUICK";
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let coded = bacon.encode(plaintext);
     let decoded = bacon.decode(&coded);
 
     println!("{}",plaintext);
     println!("{}",coded);
     println!("{}",decoded);
+}
 
-    
+#[test]
+fn bacon_ascii() {
+    use crate::alphabets::ASCII94;
+    let bacon = Bacon::new(ASCII94);
+    let plaintext = "THEQUICK(BROWN)FOXJUMPS!OVERTHELAZYDOG?";
+    let coded = bacon.encode(plaintext);
+    let decoded = bacon.decode(&coded);
+
+    println!("{}",plaintext);
+    println!("{}",coded);
+    println!("{}",decoded);
 }

@@ -1,6 +1,3 @@
-use std::collections::HashMap;
-use num::Integer;
-
 // https://en.wikipedia.org/wiki/Fibonacci_coding
 pub struct FibonnaciCode {
 
@@ -40,7 +37,7 @@ impl Iterator for BaconCode {
 #[test]
 fn bacon_code_gen() {
     let mut code = BaconCode::new(3);
-    for i in 0..10 {
+    for _ in 0..10 {
         println!("{}",code.next().unwrap())
     }
 }
