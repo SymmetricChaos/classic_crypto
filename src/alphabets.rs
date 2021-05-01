@@ -15,6 +15,9 @@ pub const LATIN36: &'static str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 /// The 23 letter classical Latin alphabet
 pub const LATIN23: &'static str = "ABCDEFGHIKLMNOPQRSTVXY";
 
+/// The 26 letter Latin alphabet used in English sorted by approximate frequency
+pub const LATIN26_FREQ: &'static str = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
+
 /// The 95 printing ASCII characters
 pub const ASCII95: &'static str = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
