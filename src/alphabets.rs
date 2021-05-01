@@ -27,9 +27,26 @@ pub const ASCII94: &'static str = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL
 /// The 24 letter modern Greek alphabet
 pub const GREEK24: &'static str = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"; 
 
+/// The Russian alphabet
+pub const CYRILLIC33: &'static str = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"; 
+
 pub fn scramble_alphabet(alphabet: &str) -> String {
     let mut rng = thread_rng();
     let mut v: Vec<char> = alphabet.chars().collect();
     v.shuffle(&mut rng);
     v.iter().collect::<String>()
+}
+
+// confirm that they're not doing anything weird with unicode that could trip us up
+#[test]
+fn check_alphabets() {
+    for s in CYRILLIC33.chars() {
+        print!("{} ",s)
+    }
+    println!();
+
+    for s in GREEK24.chars() {
+        print!("{} ",s)
+    }
+    println!();
 }
