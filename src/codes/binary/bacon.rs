@@ -1,6 +1,5 @@
 use lazy_static::lazy_static;
 use std::{collections::HashMap, fmt};
-use num::Integer;
 
 use crate::auxiliary::log2;
 use crate::codes::binary::code_generators::BaconCode;
