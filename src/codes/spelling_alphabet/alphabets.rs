@@ -37,7 +37,6 @@ lazy_static! {
 
     pub static ref CCB_MAP: HashMap<char, String> = {
         let mut m = HashMap::new();
-        // Yes, ALFA and JULIETT are meant to be spelled that way
         let words = ["ABLE", "BAKER", "CHARLIE", "DOG", "EASY", "FOX",
                      "GEORGE", "HOW", "ITEM", "JIG", "KING", "LOVE",
                      "MIKE", "NAN", "OBOE", "PETER", "QUEEN", "ROGER",
@@ -52,7 +51,6 @@ lazy_static! {
 
     pub static ref CCB_MAP_INV: HashMap<String, char> = {
         let mut m = HashMap::new();
-        // Yes, ALFA and JULIETT are meant to be spelled that way
         let words = ["ABLE", "BAKER", "CHARLIE", "DOG", "EASY", "FOX",
                      "GEORGE", "HOW", "ITEM", "JIG", "KING", "LOVE",
                      "MIKE", "NAN", "OBOE", "PETER", "QUEEN", "ROGER",

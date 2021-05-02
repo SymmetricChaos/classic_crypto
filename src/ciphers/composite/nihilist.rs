@@ -104,7 +104,7 @@ impl fmt::Display for NihilistCyrillic {
 
 
 
- #[test]
+#[test]
 fn nihilist() {
 
     let nihilist = Nihilist::new("ZEBRAS",vec![20,21,22,23,24]);
