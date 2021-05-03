@@ -37,7 +37,6 @@ impl Playfair {
     fn pair_to_symbol(&self, pair: (usize,usize)) -> char {
         let num = pair.0*self.size + pair.1;
         self.alphabet.chars().nth(num).unwrap()
-        
     }
 
     pub fn encrypt(&self, text: &str) -> String {
