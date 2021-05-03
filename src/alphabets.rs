@@ -18,6 +18,15 @@ pub const LATIN23: &'static str = "ABCDEFGHIKLMNOPQRSTVXY";
 /// The 26 letter Latin alphabet used in English sorted by approximate frequency
 pub const LATIN26_FREQ: &'static str = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
 
+/// The 26 letter Latin alphabet used in English sorted by the order on the QWERTY keyboard
+pub const LATIN26_QWERTY: &'static str = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
+/// The 26 letter Latin alphabet used in English sorted by the order on the AZERTY keyboard
+pub const LATIN26_AZERTY: &'static str = "AZERTYUIOPQSDFGHJKLMWXCVBN";
+
+/// The 26 letter Latin alphabet used in English sorted by the order on the QWERTZ keyboard
+pub const LATIN26_QWERTZ: &'static str = "QWERTZUIOPASDFGHJKLYXCVBNM";
+
 /// The 95 printing ASCII characters
 pub const ASCII95: &'static str = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
