@@ -64,6 +64,16 @@ impl Polybius {
         out
     }
 
+    pub fn encrypt_to_vec(&self, text: &str) -> Vec<char> {
+        let mut out = Vec::new();
+        for c in text.chars() {
+            let (a,b) = self.map[&c];
+            out.push(a);
+            out.push(b);
+        }
+        out
+    }
+
     pub fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         let tlen = text.chars().count();
@@ -74,6 +84,20 @@ impl Polybius {
         let mut symbols = text.chars();
         for _ in 0..n_groups {
             let t = (symbols.next().unwrap(),symbols.next().unwrap());
+            out.push(self.map_inv[&t]);
+        }
+        out
+    }
+
+    pub fn decrypt_from_vec(&self, text: &Vec<char>) -> String {
+        let mut out = "".to_string();
+        if  text.len() % 2 == 1 {
+            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
+        }
+        let n_groups = text.len() / 2;
+        let mut symbols = text.iter();
+        for _ in 0..n_groups {
+            let t = (*symbols.next().unwrap(),*symbols.next().unwrap());
             out.push(self.map_inv[&t]);
         }
         out
@@ -98,4 +122,17 @@ fn polybius() {
     let cleartext = poly.decrypt(&ciphertext);
 
     println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+}
+
+#[test]
+fn polybius_vec() {
+    use crate::alphabets::LATIN36;
+
+    let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
+    println!("{}",poly);
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
+    let ciphertext = poly.encrypt_to_vec(plaintext);
+    let cleartext = poly.decrypt_from_vec(&ciphertext);
+
+    println!("{}\n{:?}\n{}",plaintext,ciphertext,cleartext);
 }
