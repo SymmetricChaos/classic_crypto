@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::polybius::Polybius;
+use classic_crypto::ciphers::Polybius;
 use classic_crypto::ciphers::transposition::Columnar;
 
 fn main()  {

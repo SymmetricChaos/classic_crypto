@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::vigenere::{Vigenere,Autokey};
+use classic_crypto::ciphers::{Vigenere,Autokey};
 use classic_crypto::alphabets::LATIN26;
 
 //

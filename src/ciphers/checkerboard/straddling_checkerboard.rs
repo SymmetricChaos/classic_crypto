@@ -54,14 +54,19 @@ impl StraddlingCheckerboard {
     fn decrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let mut symbols = text.chars();
+        
         while let Some(c) = symbols.next() {
             let y = c.to_digit(10).unwrap() as usize;
-            if self.gaps.0 == y || self.gaps.1 == y {
+
+            if y == self.gaps.0 {
                 let x = symbols.next().unwrap().to_digit(10).unwrap() as usize;
-                println!("{}{}",y,x);
-                out.push(self.rows.chars().nth(x + y * 10).unwrap())
+                out.push(self.rows.chars().nth(x + 10).unwrap())
+            
+            } else if y == self.gaps.1 {
+                let x = symbols.next().unwrap().to_digit(10).unwrap() as usize;
+                out.push(self.rows.chars().nth(x + 20).unwrap())
+            
             } else {
-                println!("{}",y);
                 out.push(self.rows.chars().nth(y).unwrap())
             }
         }
@@ -106,11 +111,8 @@ fn checkerboard() {
 
     let plaintext = "ATTACKATDAWN";
     let ciphertext = checkerboard.encrypt(plaintext);
-    
     println!("\n{}",ciphertext);
+
     let cleartext = checkerboard.decrypt(&ciphertext);
-
-    //println!("\n{}",cleartext);
-
-    //println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    println!("\n{}",cleartext);
 }
