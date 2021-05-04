@@ -2,18 +2,19 @@ use std::fmt;
 
 use crate::ciphers::polybius::polybius::Polybius;
 use crate::ciphers::transposition::columnar::Columnar;
+use crate::alphabets::{LATIN25_J,LATIN26};
 
-/// The ADFGX Cipher combines a 5x5 Polybius Square with Columnar Transposition to achieve surprisingly high security with a very simple cipher. It was later replaced by the ADFGVX Cipher which used a 6x6 Polybius Square.
+/// The ADFGX Cipher combines a 5x5 Polybius Square (replacing J with I) and Columnar Transposition to achieve surprisingly high security with a very simple cipher. It was later replaced by the ADFGVX Cipher which used a 6x6 Polybius Square.
 pub struct ADFGX {
     polybius: Polybius,
     columnar: Columnar,
 }
 
-// Automatically pads with the letter X during the columnar step meaning the message is padded with the last letter of the alphabet, this should be adjustable
+
 impl ADFGX {
-    pub fn new(keyword: &str, columnar_key: Vec<usize>) -> ADFGX {
-        let polybius = Polybius::new(keyword, "ABCDEFGHIKLMNOPQRSTUVWXYZ", "ADFGX");
-        let columnar = Columnar::new(columnar_key);
+    pub fn new(keyword: &str, columnar_keyword: &str) -> ADFGX {
+        let polybius = Polybius::new(keyword, LATIN25_J, "ADFGX");
+        let columnar = Columnar::new_keyword(columnar_keyword, LATIN26);
         ADFGX{ polybius, columnar }
     }
 
@@ -40,7 +41,7 @@ impl fmt::Display for ADFGX {
 #[test]
 fn adfgx() {
 
-    let adfgx = ADFGX::new("ABCDEFGHIKLMNOPQRSTUVWXYZ", vec![5,2,1,3,0,4]);
+    let adfgx = ADFGX::new("ELPEHANTS", "ZEBRAS");
 
     println!("{}",adfgx);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";

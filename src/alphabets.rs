@@ -27,6 +27,12 @@ pub const LATIN26_AZERTY: &'static str = "AZERTYUIOPQSDFGHJKLMWXCVBN";
 /// The 26 letter Latin alphabet used in English sorted by the order on the QWERTZ keyboard
 pub const LATIN26_QWERTZ: &'static str = "QWERTZUIOPASDFGHJKLYXCVBNM";
 
+/// The 10 digits from 0 to 9
+pub const DIGITS_0: &'static str = "0123456789";
+
+/// The 10 digits from 1 to 0
+pub const DIGITS_1: &'static str = "1234567890";
+
 /// The 95 printing ASCII characters
 pub const ASCII95: &'static str = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 

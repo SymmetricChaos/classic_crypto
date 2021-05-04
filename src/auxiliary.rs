@@ -1,4 +1,5 @@
-use std::ops::Shr;
+use std::{cmp::min, ops::Shr};
+use std::collections::HashMap;
 
 pub fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()
@@ -59,3 +60,34 @@ pub fn log2(n: usize) -> usize {
     ctr
 }
 
+
+
+pub fn rank_str(text: &str, alphabet: &str) -> Vec<usize> {
+    let mut values = text.chars().map(|x| alphabet.chars().position(|c| x == c).unwrap()).collect::<Vec<usize>>();
+
+    let len = values.len();
+    let biggest = alphabet.len();
+
+    let mut out = vec![0usize;len];
+
+
+    for i in 0..len {
+        let m = values.iter().min().unwrap();
+        for (pos,v) in values.iter().enumerate() {
+            if v == m {
+                out[pos] = i;
+                values[pos] = biggest;
+                break
+            }
+        }
+    }
+
+    out
+}
+
+#[test]
+fn check_ranker() {
+
+    assert_eq!(rank_str("ACDC","ABCDEFGHIJKLMNOPQRSTUVWXYZ"),vec![0,1,3,2]);
+
+}

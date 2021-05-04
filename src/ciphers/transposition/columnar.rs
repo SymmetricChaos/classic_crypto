@@ -1,6 +1,8 @@
 use std::fmt;
 use num::Integer;
 
+use crate::auxiliary::rank_str;
+
 pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     let mut text = text.to_string();
     while text.chars().count() % length != 0 {
@@ -36,6 +38,11 @@ pub struct Columnar {
 
 impl Columnar {
     pub fn new(key: Vec<usize>) -> Columnar {
+        Columnar{ key }
+    }
+
+    pub fn new_keyword(keyword: &str, alphabet: &str) -> Columnar {
+        let key = rank_str(keyword,alphabet);
         Columnar{ key }
     }
 

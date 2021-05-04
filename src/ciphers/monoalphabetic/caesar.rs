@@ -14,6 +14,10 @@ impl Caesar {
         Caesar{ key, alphabet: alphabet.to_string(), length: alphabet.chars().count() }
     }
 
+    pub fn rot13() -> Caesar {
+        Caesar{ key: 13, alphabet: crate::alphabets::LATIN26.to_string(), length: 26 }
+    }
+
     pub fn random(alphabet: &str) -> Caesar {
         let mut rng = rand::thread_rng();
         let key = rng.gen_range(0..10);
