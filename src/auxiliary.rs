@@ -70,7 +70,6 @@ pub fn rank_str(text: &str, alphabet: &str) -> Vec<usize> {
 
     let mut out = vec![0usize;len];
 
-
     for i in 0..len {
         let m = values.iter().min().unwrap();
         for (pos,v) in values.iter().enumerate() {
