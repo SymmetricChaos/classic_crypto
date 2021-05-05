@@ -54,15 +54,6 @@ impl Polybius {
         Polybius{ map, map_inv, square }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
-        let mut out = "".to_string();
-        for c in text.chars() {
-            let (a,b) = self.map[&c];
-            let s = format!("{}{}",a,b);
-            out.push_str(&s);
-        }
-        out
-    }
 
     pub fn encrypt_to_vec(&self, text: &str) -> Vec<char> {
         let mut out = Vec::new();
@@ -74,20 +65,7 @@ impl Polybius {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
-        let mut out = "".to_string();
-        let tlen = text.chars().count();
-        if tlen % 2 == 1 {
-            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
-        }
-        let n_groups = tlen / 2;
-        let mut symbols = text.chars();
-        for _ in 0..n_groups {
-            let t = (symbols.next().unwrap(),symbols.next().unwrap());
-            out.push(self.map_inv[&t]);
-        }
-        out
-    }
+
 
     pub fn decrypt_from_vec(&self, text: &Vec<char>) -> String {
         let mut out = "".to_string();
@@ -104,6 +82,36 @@ impl Polybius {
     }
 }
 
+impl crate::auxiliary::Cipher for Polybius {
+
+    fn encrypt(&self, text: &str) -> String {
+        let mut out = "".to_string();
+        for c in text.chars() {
+            let (a,b) = self.map[&c];
+            let s = format!("{}{}",a,b);
+            out.push_str(&s);
+        }
+        out
+    }
+
+
+    fn decrypt(&self, text: &str) -> String {
+        let mut out = "".to_string();
+        let tlen = text.chars().count();
+        if tlen % 2 == 1 {
+            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
+        }
+        let n_groups = tlen / 2;
+        let mut symbols = text.chars();
+        for _ in 0..n_groups {
+            let t = (symbols.next().unwrap(),symbols.next().unwrap());
+            out.push(self.map_inv[&t]);
+        }
+        out
+    }
+
+}
+
 impl fmt::Display for Polybius {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Polybius Square\n{}",self.square)
@@ -114,6 +122,7 @@ impl fmt::Display for Polybius {
 #[test]
 fn polybius() {
     use crate::alphabets::LATIN36;
+    use crate::Cipher;
 
     let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
     println!("{}",poly);

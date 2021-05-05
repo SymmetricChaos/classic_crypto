@@ -17,7 +17,12 @@ impl Autokey {
         Autokey{ key, key_name, alphabet: alpha.to_string(), length: alpha.chars().count() }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Autokey {
+
+    fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         let mut akey: VecDeque<usize> = self.key.clone().into_iter().collect();
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
@@ -29,7 +34,7 @@ impl Autokey {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         let mut akey: VecDeque<usize> = self.key.clone().into_iter().collect();
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
@@ -42,6 +47,7 @@ impl Autokey {
         }
         out
     }
+
 }
 
 impl fmt::Display for Autokey {
@@ -52,6 +58,7 @@ impl fmt::Display for Autokey {
 
 #[test]
 fn autokey() {
+    use crate::Cipher;
     use crate::alphabets::LATIN26;
     let auto = Autokey::new("SECRET", LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";

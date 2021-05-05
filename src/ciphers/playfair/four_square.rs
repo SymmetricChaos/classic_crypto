@@ -41,7 +41,12 @@ impl FourSquare {
         alphabet.chars().nth(num).unwrap()
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for FourSquare {
+
+    fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -65,7 +70,7 @@ impl FourSquare {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -88,6 +93,7 @@ impl FourSquare {
         }
         out
     }
+
 }
 
 impl fmt::Display for FourSquare {
@@ -120,6 +126,7 @@ impl fmt::Display for FourSquare {
 #[test]
 fn four_square() {
     use crate::alphabets::LATIN25_Q;
+    use crate::Cipher;
     let four_square = FourSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
 
     //println!("{}",four_square);

@@ -54,7 +54,7 @@ impl StraddlingCheckerboard {
     fn decrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let mut symbols = text.chars();
-        
+
         while let Some(c) = symbols.next() {
             let y = c.to_digit(10).unwrap() as usize;
 
@@ -106,13 +106,11 @@ impl fmt::Display for StraddlingCheckerboard {
 fn checkerboard() {
 
     let checkerboard = StraddlingCheckerboard::new("ETAONRISBCDFGHJKLMPQ/UVWXYZ.",(2,6));
-
-    println!("{}",checkerboard);
-
+    
     let plaintext = "ATTACKATDAWN";
     let ciphertext = checkerboard.encrypt(plaintext);
-    println!("\n{}",ciphertext);
+    assert_eq!(ciphertext,"3113212731223655");
 
     let cleartext = checkerboard.decrypt(&ciphertext);
-    println!("\n{}",cleartext);
+    assert_eq!(cleartext,"ATTACKATDAWN");
 }

@@ -49,7 +49,11 @@ impl TwoSquare {
         self.alphabet2.chars().nth(num).unwrap()
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+}
+
+impl crate::Cipher for TwoSquare {
+
+    fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars();
         let mut out = "".to_string();
         loop {
@@ -73,9 +77,10 @@ impl TwoSquare {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         self.encrypt(text)
     }
+
 }
 
 impl fmt::Display for TwoSquare {
@@ -102,6 +107,7 @@ impl fmt::Display for TwoSquare {
 #[test]
 fn two_square() {
     use crate::alphabets::LATIN25_Q;
+    use crate::Cipher;
 
     let two_square = TwoSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
 

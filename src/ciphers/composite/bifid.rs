@@ -15,7 +15,12 @@ impl Bifid {
         Bifid{ polybius, block_size }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Bifid {
+
+    fn encrypt(&self, text: &str) -> String {
         let len = text.chars().count();
         if len % self.block_size != 0 {
             panic!("text length must be a multiple of the block size, add {} characters of padding",self.block_size-(len%self.block_size))
@@ -42,11 +47,11 @@ impl Bifid {
 
     }
 
-/*     pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let len = text.chars().count();
         let n_blocks = len/self.block_size;
         let mut out = String::with_capacity(len*2);
-        for block in 0..n_blocks {
+/*         for block in 0..n_blocks {
             let clip = &text[block*self.block_size..block*self.block_size+self.block_size];
             let poly = self.polybius.encrypt(clip);
 
@@ -54,9 +59,10 @@ impl Bifid {
 
             out.push_str(&self.polybius.decrypt(&something))
         }
-
+ */
         out
-    } */
+    }
+
 }
 
 impl fmt::Display for Bifid {
@@ -68,6 +74,7 @@ impl fmt::Display for Bifid {
 #[test]
 fn bifid() {
     use crate::alphabets::LATIN25_J;
+    use crate::Cipher;
 
     let bifid = Bifid::new("ZEBRAS", LATIN25_J, "12345", 7);
     println!("{}",bifid);

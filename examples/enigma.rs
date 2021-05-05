@@ -1,7 +1,7 @@
 
 use std::io::Error;
 
-use classic_crypto::ciphers::enigma::{Enigma,prep_file,ENIGMA_ROTORS,ENIGMA_REFLECTORS};
+use classic_crypto::ciphers::enigma::{EnigmaM3,prep_file,ENIGMA_ROTORS,ENIGMA_REFLECTORS};
 
 fn main() -> Result<(),Error> {
 
@@ -15,9 +15,9 @@ fn main() -> Result<(),Error> {
     let reflector = ENIGMA_REFLECTORS["B"].clone();
     let ring_positions = (14,22,25);
 
-    let mut s = Enigma::new( plugs, rotors, reflector, ring_positions );
+    let mut s = EnigmaM3::new( plugs, rotors, reflector, ring_positions );
 
-    s.encrypt_file("enigma_plaintext.txt", "engima_ciphertext.txt", (0,0,0))?;
+    s.encrypt_file("enigma_plaintext.txt", "engima_ciphertext.txt")?;
 
     Ok(())
 }

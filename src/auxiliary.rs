@@ -84,9 +84,20 @@ pub fn rank_str(text: &str, alphabet: &str) -> Vec<usize> {
     out
 }
 
+
+
+pub trait Cipher { 
+    fn encrypt(&self, text: &str) -> String;
+    fn decrypt(&self, text: &str) -> String;
+}
+
+
+
 #[test]
 fn check_ranker() {
 
     assert_eq!(rank_str("ACDC","ABCDEFGHIJKLMNOPQRSTUVWXYZ"),vec![0,1,3,2]);
 
 }
+
+

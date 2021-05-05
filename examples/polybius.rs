@@ -1,5 +1,6 @@
 use classic_crypto::ciphers::Polybius;
 use classic_crypto::ciphers::transposition::Columnar;
+use classic_crypto::Cipher;
 
 fn main()  {
 

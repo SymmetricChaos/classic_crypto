@@ -17,18 +17,22 @@ impl ADFGVX {
         let columnar = Columnar::new_keyword(columnar_keyword, LATIN26);
         ADFGVX{ polybius, columnar }
     }
+}
 
-    pub fn encrypt(&self, text: &str) -> String {
+impl crate::auxiliary::Cipher for ADFGVX {
+    
+    fn encrypt(&self, text: &str) -> String {
         let mut intermediate = self.polybius.encrypt(text);
         intermediate = self.columnar.encrypt(&intermediate);
         self.polybius.decrypt(&intermediate)
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let mut intermediate = self.polybius.encrypt(text);
         intermediate = self.columnar.decrypt(&intermediate);
         self.polybius.decrypt(&intermediate)
     }
+
 }
 
 impl fmt::Display for ADFGVX {
@@ -39,13 +43,14 @@ impl fmt::Display for ADFGVX {
 
 #[test]
 fn adfgvx() {
+    use crate::Cipher;
 
     let adfgvx = ADFGVX::new("17ZEBRAS42", "ELEPHANTS");
 
-    println!("{}",adfgvx);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";
     let ciphertext = adfgvx.encrypt(plaintext);
     let cleartext = adfgvx.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    assert_eq!(ciphertext,"NNCZU1NRIOOQBXD2Z6AMQPL7GPTEXGVX0JNJ");
+    assert_eq!(cleartext, "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
 }

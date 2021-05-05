@@ -46,7 +46,12 @@ impl Columnar {
         Columnar{ key }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Columnar {
+
+    fn encrypt(&self, text: &str) -> String {
         let mut columns = Vec::new();
         for _ in 0..self.key.len() {
             columns.push(Vec::<char>::new());
@@ -67,7 +72,7 @@ impl Columnar {
     }
 
     // Decoding is very different
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let symbols: Vec<char> = text.chars().collect();
         let n_rows = text.len().div_ceil(&self.key.len());
         let rows: Vec<&[char]> = symbols.chunks(n_rows).collect();
@@ -79,6 +84,7 @@ impl Columnar {
         }
         out
     }
+
 }
 
 impl fmt::Display for Columnar {
@@ -89,7 +95,7 @@ impl fmt::Display for Columnar {
 
 #[test]
 fn columnar() {
-
+    use crate::Cipher;
     let col = Columnar::new(vec![5,2,1,3,0,4]);
     println!("{}",col);
     let plaintext = "WEAREDISCOVEREDFLEEATONCEQKJEU";

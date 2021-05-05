@@ -1,5 +1,7 @@
 use std::fmt;
 
+
+
 pub struct Vigenere {
     key: Vec<usize>,
     key_name: String,
@@ -11,11 +13,13 @@ impl Vigenere {
     pub fn new(key: &str, alpha: &str) -> Vigenere {
         let key_name = key.to_string();
         let key: Vec<usize> = key.chars().map(|x| alpha.chars().position(|c| c == x).unwrap()).collect();
-
         Vigenere{ key, key_name, alphabet: alpha.to_string(), length: alpha.chars().count() }
     }
+}
 
-    pub fn encrypt(&self, text: &str) -> String {
+impl crate::auxiliary::Cipher for Vigenere {
+
+    fn encrypt(&self, text: &str) -> String {
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
         let ckey = self.key.iter().cycle();
         let mut out = "".to_string();
@@ -25,7 +29,7 @@ impl Vigenere {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() + self.length ).collect();
         let ckey = self.key.iter().cycle();
         let mut out = "".to_string();
@@ -34,6 +38,7 @@ impl Vigenere {
         }
         out
     }
+
 }
 
 impl fmt::Display for Vigenere {
@@ -44,6 +49,7 @@ impl fmt::Display for Vigenere {
 
 #[test]
 fn vigenere() {
+    use crate::Cipher;
     use crate::alphabets::LATIN26;
     let vig = Vigenere::new("SECRET", LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";

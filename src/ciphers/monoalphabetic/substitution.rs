@@ -4,86 +4,75 @@ use std::collections::HashMap;
 
 /// The most general substitution cipher operates by replacing each symbol in the first alphabet with a corresponding symbol in another alphabet
 pub struct Substitution {
-    key1: String,
-    key2: String,
+    alphabet1: String,
+    alphabet2: String,
     map: HashMap<char,char>,
     map_inv: HashMap<char,char>,
-    whitespace: bool,
 }
 
 impl Substitution {
-    pub fn new(key1: &str, key2: &str) -> Substitution {
-        if key1.chars().count() != key2.chars().count() {
-            panic!("key1 is of length {} but key2 is of length {}",key1.chars().count(),key2.chars().count())
+    pub fn new(alphabet1: &str, alphabet2: &str) -> Substitution {
+        if alphabet1.chars().count() != alphabet2.chars().count() {
+            panic!("alphabet1 is of length {} but alphabet2 is of length {}",alphabet1.chars().count(),alphabet2.chars().count())
         }
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
-        for (a, b) in key1.chars().zip(key2.chars()) {
+        for (a, b) in alphabet1.chars().zip(alphabet2.chars()) {
             if a.is_whitespace() || b.is_whitespace() {
                 panic!("whitespace is not allowed as a substitution symbol")
             }
             map.insert(a, b);
             map_inv.insert(b, a);
         }
-        Substitution{ key1: key1.to_string(), key2: key2.to_string(), map, map_inv, whitespace: false }
+        Substitution{ alphabet1: alphabet1.to_string(), alphabet2: alphabet2.to_string(), map, map_inv }
     }
 
-    pub fn set_whitespace(&mut self, boolean: bool) {
-        self.whitespace = boolean
-    }
-
-    pub fn set_key(&mut self, key1: &str, key2: &str) {
-        if key1.len() != key2.len() {
-            panic!("Must provide two equal length strings")
-        }
+    pub fn atbash(alphabet: &str) -> Substitution {
+        let alphabet1 = alphabet.to_string();
+        let alphabet2: String = alphabet.chars().rev().collect();
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
-        for (a, b) in key1.chars().zip(key2.chars()) {
+        for (a, b) in alphabet1.chars().zip(alphabet2.chars()) {
             if a.is_whitespace() || b.is_whitespace() {
                 panic!("whitespace is not allowed as a substitution symbol")
             }
             map.insert(a, b);
             map_inv.insert(b, a);
         }
-        self.key1 = key1.to_string();
-        self.key2 = key2.to_string();
-        self.map = map;
-        self.map_inv = map_inv;
+        Substitution{ alphabet1, alphabet2, map, map_inv }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+}
+
+impl crate::auxiliary::Cipher for Substitution {
+
+    fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
-            if self.whitespace && c.is_whitespace() {
-                out.push(c)
-            } else {
-                out.push(self.map[&c])
-            }
+            out.push(self.map[&c])
         }
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
         for c in text.chars() {
-            if self.whitespace && c.is_whitespace() {
-                out.push(c)
-            } else {
-                out.push(self.map_inv[&c])
-            }
+            out.push(self.map_inv[&c])
         }
         out
     }
+
 }
 
 impl fmt::Display for Substitution {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Simple Substitution\n{}\n{}",self.key1,self.key2)
+        write!(f, "Simple Substitution\n{}\n{}",self.alphabet1,self.alphabet2)
     }
 }
 
 #[test]
 fn substitution() {
+    use crate::Cipher;
     let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","QWERTYUIOPASDFGHJKLZXCVBNM");
     
     println!("{}\n",substitution);
@@ -94,11 +83,11 @@ fn substitution() {
 
     println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
 
-    
 }
 
 #[test]
 fn substitution_unicode() {
+    use crate::Cipher;
     use crate::alphabets::LATIN26;
     let substitution = Substitution::new(LATIN26,"🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
     

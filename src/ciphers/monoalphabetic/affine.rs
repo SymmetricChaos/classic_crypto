@@ -33,7 +33,12 @@ impl Affine {
     }
 
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Affine {
+
+    fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();
         let mut out = "".to_string();
         for s in symbols {
@@ -43,7 +48,7 @@ impl Affine {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let symbols = text.chars();
         let mut out = "".to_string();
         for s in symbols {
@@ -52,6 +57,7 @@ impl Affine {
         }
         out
     }
+
 }
 
 impl fmt::Display for Affine {
@@ -63,6 +69,7 @@ impl fmt::Display for Affine {
 #[test]
 fn affine() {
     use crate::alphabets::LATIN26;
+    use crate::Cipher;
     let aff = Affine::new((1,3), LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = aff.encrypt(plaintext);

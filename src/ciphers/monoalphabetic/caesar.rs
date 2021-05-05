@@ -32,7 +32,12 @@ impl Caesar {
         self.alphabet.chars().nth(v).unwrap()
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Caesar {
+
+    fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();
         let mut out = "".to_string();
         for s in symbols {
@@ -42,7 +47,7 @@ impl Caesar {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let symbols = text.chars();
         let mut out = "".to_string();
         for s in symbols {
@@ -51,6 +56,7 @@ impl Caesar {
         }
         out
     }
+
 }
 
 impl fmt::Display for Caesar {
@@ -65,6 +71,7 @@ impl fmt::Display for Caesar {
 #[test]
 fn caesar() {
     use crate::alphabets::LATIN26;
+    use crate::Cipher;
     let caesar  = Caesar::new(1, LATIN26);
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
     let ciphertext = caesar.encrypt(plaintext);

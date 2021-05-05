@@ -1,5 +1,5 @@
-
 use classic_crypto::ciphers::transposition::{Columnar,Scytale};
+use classic_crypto::Cipher;
 
 fn main() {
 

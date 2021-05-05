@@ -6,8 +6,8 @@ use lazy_static::lazy_static;
 
 // References
 // This is the M3 Enigma
-// https://github.com/aurbano/enigma_py
-// https://cryptii.com/pipes/enigma-machine
+// https://github.com/aurbano/EnigmaM3_py
+// https://cryptii.com/pipes/EnigmaM3-machine
 
 fn char_to_usize(c: char) -> usize {
     (c as u8 as usize) - 65
@@ -154,18 +154,24 @@ impl fmt::Display for Plugboard {
 
 
 #[derive(Clone,Debug)]
-pub struct Enigma {
+pub struct EnigmaM3 {
     plugboard: Plugboard,
     rotors: (Rotor,Rotor,Rotor),
     reflector: Rotor,
     ring_positions: (usize,usize,usize),
 }
 
-impl Enigma {
+impl EnigmaM3 {
     // Note that rotor positions are not provided here. Only the key settings are.
-    pub fn new(plugs: &str, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (usize,usize,usize)) -> Enigma {
+    pub fn new(plugs: &str, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (usize,usize,usize)) -> EnigmaM3 {
         let plugboard = Plugboard::new(plugs);
-        Enigma{ plugboard, rotors, reflector, ring_positions }
+        EnigmaM3{ plugboard, rotors, reflector, ring_positions }
+    }
+
+    pub fn set_rotors(&mut self, rotor_positions: (usize,usize,usize)) {
+        self.rotors.0.set_position(rotor_positions.0);
+        self.rotors.1.set_position(rotor_positions.1);
+        self.rotors.2.set_position(rotor_positions.2);
     }
 
     pub fn print_rotor_positions(&self) {
@@ -211,13 +217,8 @@ impl Enigma {
         self.plugboard.swap(usize_to_char(x))
     }
 
-    // Rotor positions are meant to be different for each message so here they are supplied when .encrypt() is called
-    // There is no .decrypt() method as the Enigma was involutive and thus needed no decrypt setting
-    pub fn encrypt(&mut self, text: &str, rotor_positions: (usize,usize,usize)) -> String {
-
-        self.rotors.0.set_position(rotor_positions.0);
-        self.rotors.1.set_position(rotor_positions.1);
-        self.rotors.2.set_position(rotor_positions.2);
+    // Rotor positions are meant to be different for each message so .set_rotors() should be called before use
+    pub fn encrypt(&mut self, text: &str) -> String {
 
         self.rotors.0.set_ring(self.ring_positions.0);
         self.rotors.1.set_ring(self.ring_positions.1);
@@ -231,7 +232,12 @@ impl Enigma {
         out
     }
 
-    pub fn encrypt_file(&mut self, source: &str, target: &str, rotor_positions: (usize,usize,usize)) -> Result<(),Error> {
+    // This method is just for compatibility as the Enigma machines were all involutive, encryption and decryption were the same process
+    pub fn decrypt(&mut self, text: &str) -> String {
+        self.encrypt(text)
+    }
+
+    pub fn encrypt_file(&mut self, source: &str, target: &str) -> Result<(),Error> {
 
         let mut target_file = File::create(target.to_string())?;
     
@@ -239,7 +245,7 @@ impl Enigma {
         let mut source_text = String::new();
         source_file.read_to_string(&mut source_text)?;
     
-        let ciphertext = self.encrypt(&source_text, rotor_positions);
+        let ciphertext = self.encrypt(&source_text);
     
         target_file.write(ciphertext.as_bytes())?;
 
@@ -247,9 +253,9 @@ impl Enigma {
     }
 }
 
-impl fmt::Display for Enigma {
+impl fmt::Display for EnigmaM3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Enigma Machine\n{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
+        write!(f, "EnigmaM3 Machine\n{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
             self.plugboard,
             self.rotors.0,
             self.ring_positions.0,
@@ -350,17 +356,18 @@ fn enigma() {
     let reflector = REFLECTOR_B.clone();
     let ring_positions = (14,22,25);
 
-    let mut s = Enigma::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );
+    let mut s = EnigmaM3::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );
 
     println!("\n{}\n",s);
 
+    s.set_rotors((0,0,0));
     let text = "AAAAAAAAAAAAAAAAAAAAAAAAAA";
-    let out = s.encrypt(text,(0,0,0));
+    let out = s.encrypt(text);
     println!("{}\n{}",text,out);
     assert_eq!(&out,"VDDXSYJOVCQYJSDJMLONNSSJQI");
 
     // Confirm involution property
     let text = "VDDXSYJOVCQYJSDJMLONNSSJQI";
-    let out = s.encrypt(text,(0,0,0));
+    let out = s.encrypt(text);
     assert_eq!(&out,"AAAAAAAAAAAAAAAAAAAAAAAAAA");
 }

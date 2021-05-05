@@ -18,18 +18,23 @@ impl ADFGX {
         ADFGX{ polybius, columnar }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+}
+
+impl crate::auxiliary::Cipher for ADFGX {
+
+    fn encrypt(&self, text: &str) -> String {
         let text = text.replace('J',"I");
         let mut intermediate = self.polybius.encrypt(&text);
         intermediate = self.columnar.encrypt(&intermediate);
         self.polybius.decrypt(&intermediate)
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let mut intermediate = self.polybius.encrypt(text);
         intermediate = self.columnar.decrypt(&intermediate);
         self.polybius.decrypt(&intermediate)
     }
+
 }
 
 impl fmt::Display for ADFGX {
@@ -40,6 +45,7 @@ impl fmt::Display for ADFGX {
 
 #[test]
 fn adfgx() {
+    use crate::Cipher;
 
     let adfgx = ADFGX::new("ELPEHANTS", "ZEBRAS");
 
@@ -48,5 +54,6 @@ fn adfgx() {
     let ciphertext = adfgx.encrypt(plaintext);
     let cleartext = adfgx.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+    assert_eq!(ciphertext,"PCRNEKHIGANXSYPLMWUWBDTQHOCDUPBBCRMY");
+    assert_eq!(cleartext, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
 }

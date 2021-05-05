@@ -39,7 +39,11 @@ impl Playfair {
         self.alphabet.chars().nth(num).unwrap()
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+}
+
+impl crate::auxiliary::Cipher for Playfair {
+    
+    fn encrypt(&self, text: &str) -> String {
         let mut symbols = text.chars().peekable();
         let mut out = "".to_string();
         loop {
@@ -83,7 +87,7 @@ impl Playfair {
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         if text.chars().count() % 2 == 1 {
             panic!("Valid Playfair ciphertext cannot have and odd number of symbols")
         }
@@ -128,6 +132,7 @@ impl Playfair {
         }
         out
     }
+
 }
 
 impl fmt::Display for Playfair {
@@ -145,6 +150,7 @@ impl fmt::Display for Playfair {
 
 #[test]
 fn playfair() {
+    use crate::Cipher;
     use crate::alphabets::LATIN25_J;
     let playfair = Playfair::new("PLAYFAIREXAMPLE", LATIN25_J,5,'X');
     println!("{}",playfair);

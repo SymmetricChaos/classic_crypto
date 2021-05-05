@@ -19,7 +19,12 @@ impl Scytale {
         Scytale{ key }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+
+}
+
+impl crate::auxiliary::Cipher for Scytale {
+
+    fn encrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
         let mut symbols = text.chars();
         let mut rows = Vec::new();
@@ -44,7 +49,7 @@ impl Scytale {
     }
 
 
-    pub fn decrypt(&self, text: &str) -> String {
+    fn decrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);
         let mut symbols = text.chars();
         let mut rows = Vec::new();
@@ -67,6 +72,7 @@ impl Scytale {
 
         out
     }
+
 }
 
 impl fmt::Display for Scytale {
@@ -77,7 +83,7 @@ impl fmt::Display for Scytale {
 
 #[test]
 fn scytale() {
-
+    use crate::Cipher;
     let scytale = Scytale::new(3);
     println!("{}",scytale);
     let plaintext = "WEAREDISCOVEREDFLEEATONCE";
