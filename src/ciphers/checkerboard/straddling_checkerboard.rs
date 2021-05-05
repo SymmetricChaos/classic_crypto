@@ -43,6 +43,10 @@ impl StraddlingCheckerboard {
         }
     }
 
+}
+
+impl crate::auxiliary::Cipher for StraddlingCheckerboard {
+    
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
         for s in text.chars() {
@@ -104,9 +108,10 @@ impl fmt::Display for StraddlingCheckerboard {
 
 #[test]
 fn checkerboard() {
+    use crate::Cipher;
 
     let checkerboard = StraddlingCheckerboard::new("ETAONRISBCDFGHJKLMPQ/UVWXYZ.",(2,6));
-    
+
     let plaintext = "ATTACKATDAWN";
     let ciphertext = checkerboard.encrypt(plaintext);
     assert_eq!(ciphertext,"3113212731223655");

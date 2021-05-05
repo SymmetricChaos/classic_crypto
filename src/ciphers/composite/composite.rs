@@ -1,15 +1,15 @@
 use std::fmt;
 
-use crate::auxiliary::Cipher;
+use crate::Cipher;
 
 /// A composite cipher applies several ciphers in succession. 
-pub struct CompositeCipher <'a> {
-    ciphers: Vec<&'a dyn Cipher>,
+pub struct CompositeCipher {
+    ciphers: Vec<Box<dyn Cipher>>,
 }
 
 
-impl <'a> CompositeCipher <'a> {
-    pub fn new(ciphers: Vec<&'a dyn Cipher>) -> CompositeCipher {
+impl CompositeCipher {
+    pub fn new(ciphers: Vec<Box<dyn Cipher>>) -> CompositeCipher {
         CompositeCipher{ ciphers }
     }
 
@@ -30,8 +30,25 @@ impl <'a> CompositeCipher <'a> {
     }
 }
 
-impl fmt::Display for CompositeCipher<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Composite Cipher")
-    }
+
+#[test]
+fn composite() {
+    use crate::alphabets::LATIN26;
+    use crate::ciphers::{Caesar,transposition::Scytale};
+
+    let c1 = Caesar::new(7, LATIN26);
+    let c2 = Scytale::new(3);
+
+    let composite = CompositeCipher::new(vec![Box::new(c1), Box::new(c2)]);
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ";
+    let ciphertext = composite.encrypt(plaintext);
+    let decrypt = composite.decrypt(&ciphertext);
+
+    println!("{}",ciphertext);
+    println!("{}",decrypt);
+
+/*     assert_eq!(ciphertext,"");
+    assert_eq!(cleartext, ""); */
+
+
 }

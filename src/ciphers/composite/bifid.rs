@@ -22,14 +22,12 @@ impl crate::auxiliary::Cipher for Bifid {
 
     fn encrypt(&self, text: &str) -> String {
         let len = text.chars().count();
-        if len % self.block_size != 0 {
-            panic!("text length must be a multiple of the block size, add {} characters of padding",self.block_size-(len%self.block_size))
-        }
-        let n_blocks = len/self.block_size;
+        let vector: Vec<char> = text.chars().collect();
         let mut out = String::with_capacity(len*2);
-        for block in 0..n_blocks {
-            let clip = &text[block*self.block_size..block*self.block_size+self.block_size];
-            let poly = self.polybius.encrypt(clip);
+
+        for block in vector.chunks(self.block_size).map(|x| x.to_vec()) {
+            let clip: String = block.iter().collect();
+            let poly = self.polybius.encrypt(&clip);
             let mut left = String::with_capacity(len);
             let mut right = String::with_capacity(len);
             for (pos, s) in poly.chars().enumerate() {
@@ -49,17 +47,26 @@ impl crate::auxiliary::Cipher for Bifid {
 
     fn decrypt(&self, text: &str) -> String {
         let len = text.chars().count();
-        let n_blocks = len/self.block_size;
-        let mut out = String::with_capacity(len*2);
-/*         for block in 0..n_blocks {
-            let clip = &text[block*self.block_size..block*self.block_size+self.block_size];
-            let poly = self.polybius.encrypt(clip);
 
-            // Sort the letters back to their proper positions
+        let vector: Vec<char> = text.chars().collect();
+        let mut out = String::with_capacity(len);
 
-            out.push_str(&self.polybius.decrypt(&something))
+        for block in vector.chunks(self.block_size).map(|x| x.to_vec()) {
+            let clip: String = block.iter().collect();
+            let poly: String = self.polybius.encrypt(&clip);
+
+            let left = &poly[0..self.block_size];
+            let right = &poly[self.block_size..self.block_size*2];
+
+            let mut sorted = String::with_capacity(self.block_size);
+            for (l, r) in left.chars().zip(right.chars()) {
+                sorted.push(l);
+                sorted.push(r);
+            }
+
+            out.push_str(&self.polybius.decrypt(&sorted))
         }
- */
+
         out
     }
 
@@ -77,14 +84,12 @@ fn bifid() {
     use crate::Cipher;
 
     let bifid = Bifid::new("ZEBRAS", LATIN25_J, "12345", 7);
-    println!("{}",bifid);
 
     let plaintext = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
-    println!("{}",plaintext);
 
     let ciphertext = bifid.encrypt(plaintext);
-    println!("{}",ciphertext);
+    assert_eq!(ciphertext,"PRWGENCHRXDLDRTMLCOAHTZPECTEHAFFUWG");
 
-    //let decrypted = bifid.decrypt(&ciphertext);
-    //println!("{}",decrypted);
+    let decrypted = bifid.decrypt(&ciphertext);
+    assert_eq!(decrypted,"THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
 }
