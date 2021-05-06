@@ -19,7 +19,7 @@ fn plugboard() {
 
 #[test]
 fn single_rotor() {
-    let rotor = ROTOR["III"].clone();
+    let rotor = ROTOR["III"];
     println!("{}",rotor);
     let c = char_to_usize('A');
     println!("{} -> {}", 'A', usize_to_char(rotor.encrypt_rtl(c)));
@@ -28,7 +28,7 @@ fn single_rotor() {
 
 #[test]
 fn single_rotor_stepping() {
-    let mut rotor = ROTOR["III"].clone();
+    let mut rotor = ROTOR["III"];
     println!("{}",rotor);
     rotor.set_ring(1);
     rotor.set_position(0);
@@ -58,7 +58,7 @@ fn single_rotor_stepping() {
 
 #[test]
 fn single_rotor_stepping_2() {
-    let mut rotor = ROTOR["II"].clone();
+    let mut rotor = ROTOR["II"];
     println!("{}",rotor);
     rotor.set_ring(25);
     rotor.set_position(25);
@@ -88,11 +88,11 @@ fn single_rotor_stepping_2() {
 
 #[test]
 fn enigma() {
-    let rotor1 = ROTOR["IV"].clone();
-    let rotor2 = ROTOR["II"].clone();
-    let rotor3 = ROTOR["V"].clone();
+    let rotor1 = ROTOR["IV"];
+    let rotor2 = ROTOR["II"];
+    let rotor3 = ROTOR["V"];
     let rotors = (rotor1, rotor2, rotor3);
-    let reflector = REFLECTOR["B"].clone();
+    let reflector = REFLECTOR["B"];
     let ring_positions = (14,22,25);
 
     let mut s = EnigmaM3::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );

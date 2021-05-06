@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use crate::ciphers::enigma::enigma::Rotor;
 
 lazy_static! {
-    pub static ref ROTOR: HashMap<&'static str, Rotor> = {
+    pub static ref ROTOR: HashMap<&'static str, Rotor<'static>> = {
         let mut m = HashMap::new();
         m.insert("I", Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", (16,16) ));
         m.insert("II", Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", (4,4) ));
@@ -17,7 +17,7 @@ lazy_static! {
         m
     };
 
-    pub static ref REFLECTOR: HashMap<&'static str, Rotor> = {
+    pub static ref REFLECTOR: HashMap<&'static str, Rotor<'static>> = {
         let mut m = HashMap::new();
         m.insert("Alpha", Rotor::new("LEYJVCNIXWPBQMDRTAKZGFUHOS", (26,26)));
         m.insert("Beta", Rotor::new("FSOKANUERHMBTIYCWLQPZXVGJD", (26,26)));

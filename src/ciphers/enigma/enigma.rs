@@ -18,17 +18,17 @@ fn usize_to_char(n: usize) -> char {
 
 
 
-#[derive(Clone,Debug)]
-pub struct Rotor {
+#[derive(Clone,Debug,Copy)]
+pub struct Rotor<'a> {
     wiring_rtl: [usize; 26],
     wiring_ltr: [usize; 26],
     notch: (usize,usize),
     position: usize,
     ring: usize,
-    wiring_display: String,
+    wiring_display: &'a str,
 }
 
-impl Rotor {
+impl Rotor<'_> {
     pub fn new(wiring: &str, notch: (usize,usize)) -> Rotor {
         let mut wiring_rtl: [usize; 26] = [0; 26];
         let mut wiring_ltr: [usize; 26] = [0; 26];
@@ -36,7 +36,7 @@ impl Rotor {
             wiring_rtl[w.0] = w.1;
             wiring_ltr[w.1] = w.0;
         }
-        Rotor{ wiring_rtl, wiring_ltr, notch, position: 0, ring: 0, wiring_display: wiring.to_string() }
+        Rotor{ wiring_rtl, wiring_ltr, notch, position: 0, ring: 0, wiring_display: wiring }
     }
 
     pub fn step(&mut self) {
@@ -76,7 +76,7 @@ impl Rotor {
 
 }
 
-impl fmt::Display for Rotor {
+impl fmt::Display for Rotor<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",self.wiring_display)
     }
@@ -141,16 +141,16 @@ impl fmt::Display for Plugboard {
 
 
 #[derive(Clone,Debug)]
-pub struct EnigmaM3 {
+pub struct EnigmaM3<'a> {
     plugboard: Plugboard,
-    rotors: (Rotor,Rotor,Rotor),
-    reflector: Rotor,
+    rotors: (Rotor<'a>,Rotor<'a>,Rotor<'a>),
+    reflector: Rotor<'a>,
     ring_positions: (usize,usize,usize),
 }
 
-impl EnigmaM3 {
+impl<'a> EnigmaM3<'a> {
     // Note that rotor positions are not provided here. Only the key settings are.
-    pub fn new(plugs: &str, rotors: (Rotor,Rotor,Rotor), reflector: Rotor, ring_positions: (usize,usize,usize)) -> EnigmaM3 {
+    pub fn new(plugs: &str, rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>), reflector: Rotor<'a>, ring_positions: (usize,usize,usize)) -> EnigmaM3<'a> {
         let plugboard = Plugboard::new(plugs);
         EnigmaM3{ plugboard, rotors, reflector, ring_positions }
     }
@@ -240,9 +240,9 @@ impl EnigmaM3 {
     }
 }
 
-impl fmt::Display for EnigmaM3 {
+impl fmt::Display for EnigmaM3<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "EnigmaM3 Machine\n{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
+        write!(f, "Enigma M3\n{}\nRotor 1: {} ({})\nRotor 2: {} ({})\nRotor 2: {} ({})",
             self.plugboard,
             self.rotors.0,
             self.ring_positions.0,
