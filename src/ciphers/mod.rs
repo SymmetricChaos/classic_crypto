@@ -28,6 +28,9 @@ pub use self::checkerboard::StraddlingCheckerboard;
 mod polybius;
 pub use self::polybius::Polybius;
 
+mod alberti;
+pub use self::alberti::Alberti;
+
 
 
 
