@@ -1,7 +1,6 @@
 use std::fmt;
 use std::{ fs::File, io::{Write,Error, Read}};
 use std::collections::HashMap;
-use lazy_static::lazy_static;
 //use rand::Rng;
 
 // References
@@ -23,14 +22,14 @@ fn usize_to_char(n: usize) -> char {
 pub struct Rotor {
     wiring_rtl: [usize; 26],
     wiring_ltr: [usize; 26],
-    notch: usize,
+    notch: (usize,usize),
     position: usize,
     ring: usize,
     wiring_display: String,
 }
 
 impl Rotor {
-    pub fn new(wiring: &str, notch: usize) -> Rotor {
+    pub fn new(wiring: &str, notch: (usize,usize)) -> Rotor {
         let mut wiring_rtl: [usize; 26] = [0; 26];
         let mut wiring_ltr: [usize; 26] = [0; 26];
         for w in wiring.chars().map(|x| ((x as u8) - 65) as usize ).enumerate() {
@@ -77,18 +76,6 @@ impl Rotor {
 
 }
 
-lazy_static! {
-    pub static ref ROTOR_I: Rotor =   Rotor::new("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 16);
-    pub static ref ROTOR_II: Rotor =  Rotor::new("AJDKSIRUXBLHWTMCQGZNPYFVOE", 4);
-    pub static ref ROTOR_III: Rotor = Rotor::new("BDFHJLCPRTXVZNYEIWGAKMUSQO", 21);
-    pub static ref ROTOR_IV: Rotor =  Rotor::new("ESOVPZJAYQUIRHXLNFTGKDCMWB", 9);
-    pub static ref ROTOR_V: Rotor =   Rotor::new("VZBRGITYUPSDNHLXAWMJQOFECK", 25); 
-    pub static ref REFLECTOR_A: Rotor = Rotor::new("EJMZALYXVBWFCRQUONTSPIKHGD", 26);
-    pub static ref REFLECTOR_B: Rotor = Rotor::new("YRUHQSLDPXNGOKMIEBFZCWVJAT", 26);
-    pub static ref REFLECTOR_C: Rotor = Rotor::new("FVPJIAOYEDRZXWGCTKUQSBNMHL", 26);
-}
-
-
 impl fmt::Display for Rotor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",self.wiring_display)
@@ -98,7 +85,7 @@ impl fmt::Display for Rotor {
 
 
 
-// TODO: Introduce function to parse an &str to create the pairs
+
 #[derive(Clone,Debug)]
 pub struct Plugboard {
     wiring: HashMap<char,char>,
@@ -138,7 +125,7 @@ impl Plugboard {
         }
     }
 
-    /* pub fn random(&self) -> Plugboard {
+    /* pub fn random(&self, n: u32) -> Plugboard {
 
     } */
 }
@@ -190,10 +177,10 @@ impl EnigmaM3 {
 
     // Need to validate double-stepping
     fn advance_rotors(&mut self) {
-        let mut on_notch = self.rotors.2.position == self.rotors.2.notch;
+        let mut on_notch = self.rotors.2.position == self.rotors.2.notch.0 || self.rotors.2.position == self.rotors.2.notch.1;
         self.rotors.2.step();
         if on_notch {
-            on_notch = self.rotors.1.position == self.rotors.1.notch;
+            on_notch = self.rotors.1.position == self.rotors.1.notch.0 || self.rotors.1.position == self.rotors.1.notch.1;
             self.rotors.1.step();
             if on_notch {
                 self.rotors.0.step();
@@ -264,110 +251,4 @@ impl fmt::Display for EnigmaM3 {
             self.rotors.2,
             self.ring_positions.2)
     }
-} 
-
-
-
-
-#[test]
-fn plugboard() {
-    let board = Plugboard::new("AB XY");
-
-    println!("{} -> {}",'A',board.swap('A'));
-    println!("{} -> {}",'B',board.swap('B'));
-    println!("{} -> {}",'C',board.swap('C'));
-}
-
-#[test]
-fn single_rotor() {
-    let rotor = ROTOR_III.clone();
-    println!("{}",rotor);
-    let c = char_to_usize('A');
-    println!("{} -> {}", 'A', usize_to_char(rotor.encrypt_rtl(c)));
-    println!("should get: A -> B")
-}
-
-#[test]
-fn single_rotor_stepping() {
-    let mut rotor = ROTOR_III.clone();
-    println!("{}",rotor);
-    rotor.set_ring(1);
-    rotor.set_position(0);
-
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-    
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-    
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-
-    println!("right column: BCDE\nleft column: BCDE")
-}
-
-#[test]
-fn single_rotor_stepping_2() {
-    let mut rotor = ROTOR_II.clone();
-    println!("{}",rotor);
-    rotor.set_ring(25);
-    rotor.set_position(25);
-
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-    
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-    
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-
-    rotor.step();
-    println!("{}  {}",
-        usize_to_char(rotor.get_position()),
-        usize_to_char(rotor.encrypt_rtl(0)));
-
-    println!("right column: ABCD\nleft column: IBHO")
-}
-
-#[test]
-fn enigma() {
-    let rotor1 = ROTOR_IV.clone();
-    let rotor2 = ROTOR_II.clone();
-    let rotor3 = ROTOR_V.clone();
-    let rotors = (rotor1, rotor2, rotor3);
-    let reflector = REFLECTOR_B.clone();
-    let ring_positions = (14,22,25);
-
-    let mut s = EnigmaM3::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );
-
-    println!("\n{}\n",s);
-
-    s.set_rotors((0,0,0));
-    let text = "AAAAAAAAAAAAAAAAAAAAAAAAAA";
-    let out = s.encrypt(text);
-    println!("{}\n{}",text,out);
-    assert_eq!(&out,"VDDXSYJOVCQYJSDJMLONNSSJQI");
-
-    // Confirm involution property
-    let text = "VDDXSYJOVCQYJSDJMLONNSSJQI";
-    let out = s.encrypt(text);
-    assert_eq!(&out,"AAAAAAAAAAAAAAAAAAAAAAAAAA");
 }

@@ -1,5 +1,3 @@
-use std::fmt;
-
 use crate::Cipher;
 
 /// A composite cipher applies several ciphers in succession.
