@@ -6,12 +6,12 @@ use super::code_generators::FixedWidthInteger;
 
 // Map letters to codes, the # and % symbols were not used by ITA2, here they represents the control codes FIGS and LTRS
 // The symbols are dropped during decoding
-// The other control characters (NULL, LF, CR, ENC, BEL) are rendered as spaces
+// The other control characters (NUL, LF, CR, ENC, BEL) are rendered as their Unicode Control Pictures
 lazy_static! {
 
     pub static ref ITA2_MAP_LETTER: HashMap<char,String> = {
         let mut m = HashMap::new();
-        let letters = " E A SIU DRJNFCKTZLWHYPQOBG#MXV%";
+        let letters = "␀E␊A SIU␍DRJNFCKTZLWHYPQOBG#MXV%";
         let codes = FixedWidthInteger::new(5);
         for (l,c) in letters.chars().zip(codes) {
             m.insert(l,c);
@@ -22,7 +22,7 @@ lazy_static! {
     // Map figures to codes
     pub static ref ITA2_MAP_FIGURE: HashMap<char,String> = {
         let mut m = HashMap::new();
-        let figures = " 3 - '87  4 ,!:(5+)2$6019?&#./;%";
+        let figures = "␀3␊- '87␍␅4␇,!:(5+)2$6019?&#./;%";
         let codes = FixedWidthInteger::new(5);
         for (f,c) in figures.chars().zip(codes) {
             m.insert(f,c);
@@ -33,8 +33,8 @@ lazy_static! {
     // Map codes to figures or letters
     pub static ref ITA2_MAP_INV: HashMap<String,(char,char)> = {
         let mut m = HashMap::new();
-        let letters = " E A SIU DRJNFCKTZLWHYPQOBG#MXV%";
-        let figures = " 3 - '87  4 ,!:(5+)2$6019?&#./;%";
+        let letters = "␀E␊A SIU␍DRJNFCKTZLWHYPQOBG#MXV%";
+        let figures = "␀3␊- '87␍␅4␇,!:(5+)2$6019?&#./;%";
         let pairs: Vec<(char,char)> = letters.chars().zip(figures.chars()).map(|(a,b)| (a,b)).collect();
         let codes = FixedWidthInteger::new(5);
         for (p,c) in pairs.iter().zip(codes) {
