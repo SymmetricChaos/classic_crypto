@@ -63,26 +63,31 @@ mod enigma_tests {
         let mut rotor = ROTORS["II"];
         rotor.set_ring(25);
         rotor.set_position(25);
-
-        rotor.step();
-        assert_eq!(
-            'I',
-            usize_to_char(rotor.encrypt_rtl(0)));
         
         rotor.step();
-        assert_eq!(
-            'B',
-            usize_to_char(rotor.encrypt_rtl(0)));
+        assert_eq!('I',usize_to_char(rotor.encrypt_rtl(0)));
         
         rotor.step();
-        assert_eq!(
-            'H',
-            usize_to_char(rotor.encrypt_rtl(0)));
+        assert_eq!('B',usize_to_char(rotor.encrypt_rtl(0)));
+        
+        rotor.step();
+        assert_eq!('H', usize_to_char(rotor.encrypt_rtl(0)));
 
         rotor.step();
-        assert_eq!(
-            'O',
-            usize_to_char(rotor.encrypt_rtl(0)));
+        assert_eq!('O',usize_to_char(rotor.encrypt_rtl(0)));
+    }
+
+    #[test]
+    fn single_rotor_indexer() {
+        let mut rotor = ROTORS["II"];
+        rotor.set_position(24);
+        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFVO͓E",format!("{}",rotor));
+        rotor.step();
+        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFVOE͓",format!("{}",rotor));
+        rotor.step();
+        assert_eq!("A͓JDKSIRUXBLHWTMCQGZNPYFVOE",format!("{}",rotor));
+        rotor.step();
+        assert_eq!("AJ͓DKSIRUXBLHWTMCQGZNPYFVOE",format!("{}",rotor));
     }
 
     #[test]
@@ -94,13 +99,20 @@ mod enigma_tests {
 
         let mut s = EnigmaM3::new( "EJ OY IV AQ KW FX MT PS LU BD", rotors, reflector, ring_positions );
 
-        println!("\n{}\n",s);
+        //println!("{}",s);
+        /*
+        Enigma M3
+        Plugboard: EJ OY IV AQ KW FX MT PS LU BD
+        Rotor 1: E͓SOVPZJAYQUIRHXLNFTGKDCMWB (14)
+        Rotor 2: A͓JDKSIRUXBLHWTMCQGZNPYFVOE (22)
+        Rotor 3: V͓ZBRGITYUPSDNHLXAWMJQOFECK (25)
+        Reflector: YRUHQSLDPXNGOKMIEBFZCWVJAT
+        */
 
         s.set_rotors((0,0,0));
         let text = "AAAAAAAAAAAAAAAAAAAAAAAAAA";
         let out = s.encrypt(text);
         assert_eq!(&out,"VDDXSYJOVCQYJSDJMLONNSSJQI");
-
 
         s.set_rotors((0,0,0));
         // Confirm involution property

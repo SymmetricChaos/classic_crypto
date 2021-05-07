@@ -88,7 +88,13 @@ impl<'a> EnigmaM3<'a> {
     // Note that rotor positions are not provided here. Only the key settings are.
     pub fn new(plugs: &'a str, rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>), reflector: Reflector<'a>, ring_positions: (usize,usize,usize)) -> EnigmaM3<'a> {
         let plugboard = Plugboard::new(plugs);
-        EnigmaM3{ plugboard, rotors, reflector, ring_positions }
+        let mut a = rotors.0.clone();
+        a.set_ring(ring_positions.0);
+        let mut b = rotors.1.clone();
+        b.set_ring(ring_positions.1);
+        let mut c = rotors.2.clone();
+        c.set_ring(ring_positions.2);
+        EnigmaM3{ plugboard, rotors: (a,b,c), reflector, ring_positions }
     }
 
     pub fn set_rotors(&mut self, rotor_positions: (usize,usize,usize)) {
@@ -98,25 +104,15 @@ impl<'a> EnigmaM3<'a> {
     }
 
     pub fn show_rotors(&self) -> String {
-        format!("Rotor 1: {} ({})\nRotor 2: {} ({})\nRotor 3: {} ({})",
+        format!("Rotor 1: {}\nRotor 2: {}\nRotor 3: {}",
             self.rotors.0,
-            self.ring_positions.0,
             self.rotors.1,
-            self.ring_positions.1,
-            self.rotors.2,
-            self.ring_positions.2)
+            self.rotors.2,)
     }
 
     pub fn show_reflector(&self) -> String {
         format!("Reflector: {}",
             self.reflector)
-    }
-
-    pub fn print_ring_positions(&self) {
-        println!("{} {} {}",
-            self.ring_positions.0,
-            self.ring_positions.1,
-            self.ring_positions.2)
     }
 
     // Need to validate double-stepping
@@ -164,12 +160,7 @@ impl<'a> EnigmaM3<'a> {
     }
 
     // Rotor positions are meant to be different for each message so .set_rotors() should be called before use
-    pub fn encrypt(&mut self, text: &str) -> String {
-
-        self.rotors.0.set_ring(self.ring_positions.0);
-        self.rotors.1.set_ring(self.ring_positions.1);
-        self.rotors.2.set_ring(self.ring_positions.2);
-        
+    pub fn encrypt(&mut self, text: &str) -> String {      
         let letters = text.chars();
         let mut out = String::new();
         for c in letters {

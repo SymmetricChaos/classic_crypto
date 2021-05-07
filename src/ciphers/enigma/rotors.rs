@@ -62,15 +62,17 @@ impl Rotor<'_> {
 
 }
 
+// This could be simplified since all the real rotors used ASCII characters but this library tries to work with Unicode as much as possible
 impl fmt::Display for Rotor<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut s = String::new();
         for (pos,letter) in self.wiring_display.chars().enumerate() {
+            s.push(letter);
             if pos == self.position {
                 s.push_str("\u{0353}")
             }
-            s.push(letter)
         }
+        s.push_str(&format!(" ({})",self.ring));
         write!(f, "{}",s)
     }
 }
