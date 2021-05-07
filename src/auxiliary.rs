@@ -1,5 +1,4 @@
-use std::{cmp::min, ops::Shr};
-use std::collections::HashMap;
+use std::ops::Shr;
 
 pub fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()

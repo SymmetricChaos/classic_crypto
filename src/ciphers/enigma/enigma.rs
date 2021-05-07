@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{cell::Cell, fmt};
 use std::{ fs::File, io::{Write,Error, Read}};
 use std::collections::HashMap;
 //use rand::Rng;
@@ -152,7 +152,7 @@ impl<'a> EnigmaM3<'a> {
     // Note that rotor positions are not provided here. Only the key settings are.
     pub fn new(plugs: &str, rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>), reflector: Rotor<'a>, ring_positions: (usize,usize,usize)) -> EnigmaM3<'a> {
         let plugboard = Plugboard::new(plugs);
-        EnigmaM3{ plugboard, rotors, reflector, ring_positions }
+        EnigmaM3{ plugboard, rotors: rotors, reflector, ring_positions }
     }
 
     pub fn set_rotors(&mut self, rotor_positions: (usize,usize,usize)) {
@@ -204,6 +204,21 @@ impl<'a> EnigmaM3<'a> {
         self.plugboard.swap(usize_to_char(x))
     }
 
+    pub fn encrypt_file(&mut self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
+    }
+
     // Rotor positions are meant to be different for each message so .set_rotors() should be called before use
     pub fn encrypt(&mut self, text: &str) -> String {
 
@@ -223,22 +238,9 @@ impl<'a> EnigmaM3<'a> {
     pub fn decrypt(&mut self, text: &str) -> String {
         self.encrypt(text)
     }
-
-    pub fn encrypt_file(&mut self, source: &str, target: &str) -> Result<(),Error> {
-
-        let mut target_file = File::create(target.to_string())?;
-    
-        let mut source_file = File::open(source)?;
-        let mut source_text = String::new();
-        source_file.read_to_string(&mut source_text)?;
-    
-        let ciphertext = self.encrypt(&source_text);
-    
-        target_file.write(ciphertext.as_bytes())?;
-
-        Ok(())
-    }
 }
+
+//impl crate::auxiliary::Cipher for EnigmaM3<'_> {}
 
 impl fmt::Display for EnigmaM3<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

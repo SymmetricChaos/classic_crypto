@@ -20,8 +20,9 @@ impl Caesar {
 
     pub fn random(alphabet: &str) -> Caesar {
         let mut rng = rand::thread_rng();
-        let key = rng.gen_range(0..10);
-        Caesar{ key, alphabet: alphabet.to_string(), length: alphabet.chars().count() }
+        let length = alphabet.chars().count();
+        let key = rng.gen_range(0..length);
+        Caesar{ key, alphabet: alphabet.to_string(), length }
     }
 
     fn char_to_val(&self, c: char) -> usize {

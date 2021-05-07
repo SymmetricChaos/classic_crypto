@@ -1,4 +1,4 @@
-use crate::ciphers::enigma::{ROTOR,REFLECTOR,Plugboard,EnigmaM3};
+use crate::{ciphers::enigma::{ROTOR,REFLECTOR,Plugboard,EnigmaM3}};
 
 fn char_to_usize(c: char) -> usize {
     (c as u8 as usize) - 65
@@ -102,9 +102,10 @@ fn enigma() {
     s.set_rotors((0,0,0));
     let text = "AAAAAAAAAAAAAAAAAAAAAAAAAA";
     let out = s.encrypt(text);
-    println!("{}\n{}",text,out);
     assert_eq!(&out,"VDDXSYJOVCQYJSDJMLONNSSJQI");
 
+
+    s.set_rotors((0,0,0));
     // Confirm involution property
     let text = "VDDXSYJOVCQYJSDJMLONNSSJQI";
     let out = s.encrypt(text);
