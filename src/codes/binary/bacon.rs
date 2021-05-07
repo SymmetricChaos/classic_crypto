@@ -2,13 +2,13 @@ use lazy_static::lazy_static;
 use std::{collections::HashMap, fmt};
 
 use crate::auxiliary::log2;
-use crate::codes::binary::code_generators::BaconCode;
+use crate::codes::binary::code_generators::FixedWidthInteger;
 
 lazy_static! {
     pub static ref BACON_MAP: HashMap<char, String> = {
         let mut m = HashMap::new();
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let codes = BaconCode::new(5);
+        let codes = FixedWidthInteger::new(5);
         for (l,c) in letters.chars().zip(codes) {
             m.insert(l, c);
         }
@@ -18,7 +18,7 @@ lazy_static! {
     pub static ref BACON_MAP_INV: HashMap<String, char> = {
         let mut m = HashMap::new();
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let codes = BaconCode::new(5);
+        let codes = FixedWidthInteger::new(5);
         for (l,c) in letters.chars().zip(codes) {
             m.insert(c,l);
         }
@@ -39,7 +39,7 @@ impl Bacon {
     pub fn new(alphabet: &str) -> Bacon {
         let length = alphabet.chars().count();
         let width = log2(length);
-        let codes = BaconCode::new(width);
+        let codes = FixedWidthInteger::new(width);
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
         for (l,c) in alphabet.chars().zip(codes) {

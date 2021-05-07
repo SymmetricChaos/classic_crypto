@@ -1,18 +1,17 @@
 
-// Effectively just fixed width integers in binary
-pub struct BaconCode {
+pub struct FixedWidthInteger {
     width: usize,
     arr: Vec<u8>,
 }
 
-impl BaconCode {
-    pub fn new(width: usize) -> BaconCode  {
+impl FixedWidthInteger {
+    pub fn new(width: usize) -> FixedWidthInteger  {
         let arr = vec![0;width];
-        BaconCode{ width, arr }
+        FixedWidthInteger{ width, arr }
     }
 }
 
-impl Iterator for BaconCode {
+impl Iterator for FixedWidthInteger {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
@@ -43,7 +42,6 @@ impl Fib {
         Fib{ a: 2, b: 3 }
     }
 }
-
 
 impl Iterator for Fib {
     type Item = usize;
@@ -112,7 +110,7 @@ impl Iterator for FibonacciCode {
 
 #[test]
 fn bacon_code_gen() {
-    let mut code = BaconCode::new(3);
+    let mut code = FixedWidthInteger::new(3);
     for _ in 0..10 {
         println!("{}",code.next().unwrap())
     }
