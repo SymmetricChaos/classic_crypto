@@ -79,7 +79,7 @@ impl fmt::Display for Bacon {
         for c in self.alphabet.chars() {
             s.push_str(&format!("{}: {}\n",c,self.map[&c]))
         }
-        write!(f, "Bacon Cipher\n{}",s)
+        write!(f, "Bacon Code\n{}",s)
     }
 }
 

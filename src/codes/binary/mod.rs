@@ -4,6 +4,7 @@ pub mod bacon;
 pub mod fibonacci;
 pub mod morse;
 pub mod baudot;
+pub mod unicode;
 mod code_generators;
 
 pub use self::bacon::Bacon;
