@@ -4,14 +4,15 @@ use crate::auxiliary::keyed_alphabet;
 
 
 // Less memory intensive method?
-pub struct Polybius {
+pub struct Polybius<'a> {
     map: HashMap<char,(char,char)>,
     map_inv: HashMap<(char,char),char>,
-    square: String,
+    alphabet: &'a str,
+    labels: &'a str,
 }
 
-impl Polybius {
-    pub fn new(keyword: &str, alphabet: &str, labels: &str) -> Polybius {
+impl Polybius<'_> {
+    pub fn new<'a>(keyword: &'a str, alphabet: &'a str, labels: &'a str) -> Polybius<'a> {
 
         let alpha = keyed_alphabet(keyword,alphabet);
 
@@ -35,23 +36,7 @@ impl Polybius {
             }
         }
 
-        let mut square = " ".to_string();
-        for c in labels.chars() {
-            square.push(' ');
-            square.push(c)
-        }
-        square.push_str("\n");
-        let mut symbols = alpha.chars();
-        for l in labels.chars() {
-            square.push(l);
-            for _ in 0..llen {
-                square.push(' ');
-                square.push(symbols.next().unwrap_or(' '))
-            }
-            square.push_str("\n");
-        }
-
-        Polybius{ map, map_inv, square }
+        Polybius{ map, map_inv, alphabet, labels }
     }
 
 
@@ -82,7 +67,7 @@ impl Polybius {
     }
 }
 
-impl crate::auxiliary::Cipher for Polybius {
+impl crate::auxiliary::Cipher for Polybius<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -112,9 +97,24 @@ impl crate::auxiliary::Cipher for Polybius {
 
 }
 
-impl fmt::Display for Polybius {
+impl fmt::Display for Polybius<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Polybius Square\n{}",self.square)
+        let mut square = " ".to_string();
+        for c in self.labels.chars() {
+            square.push(' ');
+            square.push(c)
+        }
+        square.push_str("\n");
+        let mut symbols = self.alphabet.chars();
+        for l in self.labels.chars() {
+            square.push(l);
+            for _ in 0..self.labels.chars().count() {
+                square.push(' ');
+                square.push(symbols.next().unwrap_or(' '))
+            }
+            square.push_str("\n");
+        }
+        write!(f, "Polybius Square\n{}",square)
     }
 }
 

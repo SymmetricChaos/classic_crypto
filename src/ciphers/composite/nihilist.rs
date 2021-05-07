@@ -3,20 +3,20 @@ use std::fmt;
 use crate::ciphers::polybius::polybius::Polybius;
 
 /// The Nihilist ciphers is a combination of the Polybius Square and a variation on the Vigenere Cipher. It proceeds by first using a 5x5 Polybius Square to convert each letter to a two digit number then adds the values of a keyword to each value, repeating as necessary.
-pub struct Nihilist {
-    polybius: Polybius,
+pub struct Nihilist<'a> {
+    polybius: Polybius<'a>,
     vigenere: Vec<usize>,
 }
 
-impl Nihilist {
-    pub fn new(polybius_key: &str, alphabet: &str, labels: &str, vigenere_key: Vec<usize>) -> Nihilist {
+impl Nihilist<'_> {
+    pub fn new<'a>(polybius_key: &'a str, alphabet: &'a str, labels: &'a str, vigenere_key: Vec<usize>) -> Nihilist<'a> {
         let polybius = Polybius::new(polybius_key, alphabet, labels);
         Nihilist{ polybius, vigenere: vigenere_key }
     }
 
 }
 
-impl crate::auxiliary::Cipher for Nihilist {
+impl crate::auxiliary::Cipher for Nihilist<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let poly_pairs = self.polybius.encrypt(text).chars().collect::<Vec<char>>();
@@ -50,7 +50,7 @@ impl crate::auxiliary::Cipher for Nihilist {
 
 }
 
-impl fmt::Display for Nihilist {
+impl fmt::Display for Nihilist<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Nihilist Composite Cipher\n{}\nAdditive Key:\n{:?}",self.polybius,self.vigenere)
     }

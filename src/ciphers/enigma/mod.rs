@@ -1,8 +1,8 @@
 //! The Engima Machine
 
-pub mod enigma;
-pub mod auxiliary;
-pub mod real_rotors;
+mod enigma;
+mod auxiliary;
+mod real_rotors;
 mod enigma_tests;
 
 pub use self::enigma::{Rotor,Plugboard,EnigmaM3};

@@ -61,7 +61,6 @@ impl Rotor<'_> {
 
     // Signal starts on the right amd goes through the rotor then back
     // We will use and return usize instead of char to avoid constantly converting types
-    // There MUST be an easier way to do this.
     pub fn encrypt_rtl(&self, entry: usize) -> usize {
         let inner_position = (26+entry+self.position-self.ring)%26;
         let inner = self.wiring_rtl[inner_position];
@@ -87,9 +86,9 @@ impl fmt::Display for Rotor<'_> {
 
 
 #[derive(Clone,Debug)]
-pub struct Plugboard {
+pub struct Plugboard<'a> {
     wiring: HashMap<char,char>,
-    pairs: String
+    pairs: &'a str,
 }
 
 fn parse_plugboard(pairs: &str) -> HashMap<char,char> {
@@ -108,13 +107,13 @@ fn parse_plugboard(pairs: &str) -> HashMap<char,char> {
     wiring
 }
 
-impl Plugboard {
+impl Plugboard<'_> {
     pub fn new(pairs: &str) -> Plugboard {
         let wiring = match pairs.len() == 0 {
             true =>  HashMap::<char,char>::new(),
             false => parse_plugboard(pairs),
         };
-        Plugboard{ wiring, pairs: pairs.to_string() }
+        Plugboard{ wiring, pairs }
     }
 
     pub fn swap(&self, character: char) -> char {
@@ -130,7 +129,7 @@ impl Plugboard {
     } */
 }
 
-impl fmt::Display for Plugboard {
+impl fmt::Display for Plugboard<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Plugboard: {}",self.pairs)
     }
@@ -142,7 +141,7 @@ impl fmt::Display for Plugboard {
 
 #[derive(Clone,Debug)]
 pub struct EnigmaM3<'a> {
-    plugboard: Plugboard,
+    plugboard: Plugboard<'a>,
     rotors: (Rotor<'a>,Rotor<'a>,Rotor<'a>),
     reflector: Rotor<'a>,
     ring_positions: (usize,usize,usize),
@@ -150,7 +149,7 @@ pub struct EnigmaM3<'a> {
 
 impl<'a> EnigmaM3<'a> {
     // Note that rotor positions are not provided here. Only the key settings are.
-    pub fn new(plugs: &str, rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>), reflector: Rotor<'a>, ring_positions: (usize,usize,usize)) -> EnigmaM3<'a> {
+    pub fn new(plugs: &'a str, rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>), reflector: Rotor<'a>, ring_positions: (usize,usize,usize)) -> EnigmaM3<'a> {
         let plugboard = Plugboard::new(plugs);
         EnigmaM3{ plugboard, rotors: rotors, reflector, ring_positions }
     }

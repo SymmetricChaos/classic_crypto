@@ -3,14 +3,14 @@ use std::fmt;
 use crate::ciphers::polybius::polybius::Polybius;
 
 /// The Bifid Cipher combines a Polybius Square with a simple transposition
-pub struct Bifid {
-    polybius: Polybius,
+pub struct Bifid<'a> {
+    polybius: Polybius<'a>,
     block_size: usize,
 }
 
 
-impl Bifid {
-    pub fn new(keyword: &str, alphabet: &str, labels: &str, block_size: usize) -> Bifid {
+impl Bifid<'_> {
+    pub fn new<'a>(keyword: &'a str, alphabet: &'a str, labels: &'a str, block_size: usize) -> Bifid<'a> {
         let polybius = Polybius::new(keyword, alphabet, labels);
         Bifid{ polybius, block_size }
     }
@@ -18,7 +18,7 @@ impl Bifid {
 
 }
 
-impl crate::auxiliary::Cipher for Bifid {
+impl crate::auxiliary::Cipher for Bifid<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let len = text.chars().count();
@@ -72,7 +72,7 @@ impl crate::auxiliary::Cipher for Bifid {
 
 }
 
-impl fmt::Display for Bifid {
+impl fmt::Display for Bifid<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Bifid Composite Cipher\nBlock Size:\n{}\nPolybius Square:\n{}",self.block_size,self.polybius)
     }

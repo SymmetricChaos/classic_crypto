@@ -12,6 +12,7 @@ mod monoalphabetic;
 pub use self::monoalphabetic::Affine;
 pub use self::monoalphabetic::Caesar;
 pub use self::monoalphabetic::Substitution;
+pub use self::monoalphabetic::DecoderRing;
 
 mod vigenere;
 pub use self::vigenere::Vigenere;
