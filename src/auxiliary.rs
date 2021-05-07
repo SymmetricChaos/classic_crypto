@@ -92,6 +92,19 @@ pub trait Cipher {
 
 
 
+// Drop any symbols not used in the alphabet
+pub fn strip_unused(text: &str, alphabet: &str) -> String {
+    let mut out = String::new();
+    for s in text.chars() {
+        if alphabet.contains(s) {
+            out.push(s)
+        }
+    }
+    out
+}
+
+
+
 #[test]
 fn check_ranker() {
 
