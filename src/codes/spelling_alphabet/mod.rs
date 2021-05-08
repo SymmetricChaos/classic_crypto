@@ -2,4 +2,3 @@
 
 pub mod alphabets;
 
-pub use self::alphabets::Spelling;

@@ -6,3 +6,4 @@ pub mod codes;
 pub mod alphabets;
 
 pub use self::auxiliary::Cipher;
+pub use self::auxiliary::Code;

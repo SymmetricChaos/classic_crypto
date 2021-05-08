@@ -90,6 +90,12 @@ pub trait Cipher {
     fn decrypt(&self, text: &str) -> String;
 }
 
+pub trait Code { 
+    fn encode(&self, text: &str) -> String;
+    fn decode(&self, text: &str) -> String;
+    fn char_map(&self) -> String;
+}
+
 
 
 // Drop any symbols not used in the alphabet

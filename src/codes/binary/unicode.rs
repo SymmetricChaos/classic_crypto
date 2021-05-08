@@ -3,7 +3,7 @@ pub struct UTF32 {}
 
 impl UTF32 {
 
-    pub fn new() -> UTF32 { UTF32{} }
+    pub fn default() -> UTF32 { UTF32{} }
 
     pub fn encode_bits(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -22,28 +22,13 @@ impl UTF32 {
         }
         out
     }
+    
 }
-
-/* #[derive(Debug)]
-pub struct UTF8 {}
-
-impl UTF8 {
-
-    pub fn new() -> UTF8 { UTF8{} }
-
-    pub fn encode_bits(&self, text: &str) -> String {
-
-    }
-
-    pub fn decode_bits(&self, text: &str) -> String {
-
-    }
-} */
 
 
 #[test]
 fn unicode_utf32() {
-    let utf32 = UTF32::new();
+    let utf32 = UTF32::default();
     let plaintext = "A";
     let coded = utf32.encode_bits(plaintext);
     //let decoded = Unicode.decode_bits(&coded);
