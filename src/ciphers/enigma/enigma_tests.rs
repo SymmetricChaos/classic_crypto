@@ -81,13 +81,13 @@ mod enigma_tests {
     fn single_rotor_indexer() {
         let mut rotor = ROTORS["II"];
         rotor.set_position(24);
-        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFVO͓E",format!("{}",rotor));
+        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFV[O]E (0)",format!("{}",rotor));
         rotor.step();
-        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFVOE͓",format!("{}",rotor));
+        assert_eq!("AJDKSIRUXBLHWTMCQGZNPYFVO[E] (0)",format!("{}",rotor));
         rotor.step();
-        assert_eq!("A͓JDKSIRUXBLHWTMCQGZNPYFVOE",format!("{}",rotor));
+        assert_eq!("[A]JDKSIRUXBLHWTMCQGZNPYFVOE (0)",format!("{}",rotor));
         rotor.step();
-        assert_eq!("AJ͓DKSIRUXBLHWTMCQGZNPYFVOE",format!("{}",rotor));
+        assert_eq!("A[J]DKSIRUXBLHWTMCQGZNPYFVOE (0)",format!("{}",rotor));
     }
 
     #[test]
@@ -103,9 +103,9 @@ mod enigma_tests {
         /*
         Enigma M3
         Plugboard: EJ OY IV AQ KW FX MT PS LU BD
-        Rotor 1: E͓SOVPZJAYQUIRHXLNFTGKDCMWB (14)
-        Rotor 2: A͓JDKSIRUXBLHWTMCQGZNPYFVOE (22)
-        Rotor 3: V͓ZBRGITYUPSDNHLXAWMJQOFECK (25)
+        Rotor 1: [E]SOVPZJAYQUIRHXLNFTGKDCMWB (14)
+        Rotor 2: [A]JDKSIRUXBLHWTMCQGZNPYFVOE (22)
+        Rotor 3: [V]ZBRGITYUPSDNHLXAWMJQOFECK (25)
         Reflector: YRUHQSLDPXNGOKMIEBFZCWVJAT
         */
 
