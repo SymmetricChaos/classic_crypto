@@ -1,9 +1,10 @@
 use classic_crypto::codes::SpellingAlphabet;
+use classic_crypto::Code;
 
 //
 fn main()  {
 
-    println!("The NATO Spelling Alphabet");
+    println!("Example Spelling Alphabets");
     let plaintext = "ABC123";
     let nato = SpellingAlphabet::nato();
     let ccb = SpellingAlphabet::ccb();

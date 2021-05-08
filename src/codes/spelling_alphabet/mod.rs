@@ -1,4 +1,5 @@
 /// Spelling Alphabets
 
-pub mod alphabets;
+mod alphabets;
 
+pub use self::alphabets::SpellingAlphabet;

@@ -45,7 +45,7 @@ impl Bacon<'_> {
             map.insert(l,c.clone() );
             map_inv.insert(c, l);
         }
-        Bacon{ map, map_inv, width, alphabet: alphabet }
+        Bacon{ map, map_inv, width, alphabet }
         
     }
 

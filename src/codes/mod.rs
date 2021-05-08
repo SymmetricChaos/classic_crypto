@@ -1,6 +1,7 @@
 /// Various Codes
 
-pub mod binary;
-pub mod spelling_alphabet;
+mod binary;
+mod spelling_alphabet;
 
-pub use self::spelling_alphabet::alphabets::SpellingAlphabet;
+pub use self::spelling_alphabet::SpellingAlphabet;
+pub use self::binary::{Bacon,BaudotITA2,Fibonacci,MorseITU,UTF32};

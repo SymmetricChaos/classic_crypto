@@ -1,5 +1,7 @@
 use std::ops::Shr;
 
+
+
 pub fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()
 }
@@ -30,6 +32,8 @@ pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     keyed_alpha
 }
 
+
+
 fn egcd(a: i64, b: i64) -> (i64,i64,i64) {
     if a == 0 {
         (b,0,1)
@@ -38,6 +42,8 @@ fn egcd(a: i64, b: i64) -> (i64,i64,i64) {
         (g,x-(b/a)*y,y)
     }
 }
+
+
 
 pub fn mul_inv(num: usize, modulus: usize) -> Option<usize> {
     let (g, x, _) = egcd(num  as i64, modulus as i64);
@@ -48,6 +54,8 @@ pub fn mul_inv(num: usize, modulus: usize) -> Option<usize> {
         Some( t.rem_euclid(modulus) )
     }
 }
+
+
 
 pub fn log2(n: usize) -> usize {
     let mut ctr = 0;
@@ -108,7 +116,6 @@ pub fn strip_unused(text: &str, alphabet: &str) -> String {
     }
     out
 }
-
 
 
 #[test]
