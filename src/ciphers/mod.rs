@@ -7,7 +7,7 @@ pub mod enigma;
 pub mod composite;
 
 
-// Easy access certain ciphers use just types "use classic_crypto::ciphers::" followed by the cipher they want
+// Easy access to certain ciphers. User just types "use classic_crypto::ciphers::" followed by the cipher they want
 mod monoalphabetic;
 pub use self::monoalphabetic::Affine;
 pub use self::monoalphabetic::Caesar;
@@ -15,8 +15,8 @@ pub use self::monoalphabetic::Substitution;
 pub use self::monoalphabetic::DecoderRing;
 
 mod vigenere;
-pub use self::vigenere::Vigenere;
-pub use self::vigenere::Autokey;
+pub use self::vigenere::{Vigenere,VigenereAutokey,VigenereRunningKey};
+pub use self::vigenere::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
 
 mod playfair;
 pub use self::playfair::Playfair;

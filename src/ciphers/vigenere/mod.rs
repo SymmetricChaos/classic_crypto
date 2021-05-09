@@ -1,7 +1,7 @@
 //! Vigenere based ciphers
 
 pub mod vigenere;
-pub mod autokey;
+pub mod beaufort;
 
-pub use self::vigenere::Vigenere;
-pub use self::autokey::Autokey;
+pub use self::vigenere::{Vigenere,VigenereAutokey,VigenereRunningKey};
+pub use self::beaufort::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
