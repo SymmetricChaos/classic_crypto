@@ -5,6 +5,8 @@
 pub mod transposition;
 pub mod enigma;
 pub mod composite;
+pub mod vigenere;
+pub mod beaufort;
 
 
 // Easy access to certain ciphers. User just types "use classic_crypto::ciphers::" followed by the cipher they want
@@ -14,10 +16,7 @@ pub use self::monoalphabetic::Caesar;
 pub use self::monoalphabetic::Substitution;
 pub use self::monoalphabetic::DecoderRing;
 
-pub mod vigenere;
 
-mod beaufort;
-pub use self::beaufort::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
 
 
 mod playfair;

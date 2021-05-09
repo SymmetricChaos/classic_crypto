@@ -6,15 +6,17 @@ mod vigenere_tests {
 
     use crate::alphabets::LATIN26;
 
+    const PLAINTEXT: &'static str = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
+
     #[test]
     fn vigenere() {
         use crate::Cipher;
         let vig = Vigenere::new("SECRET", LATIN26);
-        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-        let ciphertext = vig.encrypt(plaintext);
+        let ciphertext = vig.encrypt(PLAINTEXT);
         let decrypted = vig.decrypt(&ciphertext);
     
-        println!("{}\n{}\n{}",plaintext,ciphertext,decrypted);
+        assert_eq!(ciphertext,"LLGHYBUODISPFJQONNETUFZXJXJVPTRCFFK");
+        assert_eq!(decrypted,PLAINTEXT)
         
     }
 
@@ -22,23 +24,22 @@ mod vigenere_tests {
     fn vigenere_autokey() {
         use crate::Cipher;
         let auto = Autokey::new("SECRET", LATIN26);
-        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-        let ciphertext = auto.encrypt(plaintext);
+        let ciphertext = auto.encrypt(PLAINTEXT);
         let decrypted = auto.decrypt(&ciphertext);
 
-        println!("{}\n{}\n{}",plaintext,ciphertext,decrypted);
+        assert_eq!(ciphertext,"LLGHYBVRFHIEPPPOXQZUGLEYDIZSGEQRKSR");
+        assert_eq!(decrypted,PLAINTEXT)
         
     }
 
     #[test]
     fn vigenere_running_key() -> Result<(),Error> {
         let auto = RunningKey::new("dickens.txt", LATIN26);
-        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-        let ciphertext = auto.encrypt(plaintext)?;
+        let ciphertext = auto.encrypt(PLAINTEXT)?;
         let decrypted = auto.decrypt(&ciphertext)?;
     
-    
-        println!("{}\n{}\n{}",plaintext,ciphertext,decrypted);
+        assert_eq!(ciphertext,"BAAQMBJOCVGPBKHFVYEXLKVWKALAZRRRRTZ");
+        assert_eq!(decrypted,PLAINTEXT);
         
         Ok(())
     }
@@ -47,11 +48,11 @@ mod vigenere_tests {
     fn vigenere_prog_key() {
         use crate::Cipher;
         let auto = ProgressiveKey::new("SECRET", 1,LATIN26);
-        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-        let ciphertext = auto.encrypt(plaintext);
+        let ciphertext = auto.encrypt(PLAINTEXT);
         let decrypted = auto.decrypt(&ciphertext);
 
-        println!("{}\n{}\n{}",plaintext,ciphertext,decrypted);
+        assert_eq!(ciphertext,"LLGHYBVPEJTQHLSQPPHWXICANBNZTXWHKKP");
+        assert_eq!(decrypted,PLAINTEXT)
         
     }
 
