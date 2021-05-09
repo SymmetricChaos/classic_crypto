@@ -2,40 +2,25 @@ use std::fmt;
 use std::collections::HashMap;
 
 
-/// The most general substitution cipher operates by replacing each symbol in the first alphabet with a corresponding symbol in another alphabet
-pub struct Substitution {
-    alphabet1: String,
-    alphabet2: String,
+
+
+
+pub struct Substitution<'a> {
+    /// The most general substitution cipher operates by replacing each symbol in the first alphabet with a corresponding symbol in another alphabet
+    alphabet1: &'a str,
+    alphabet2: &'a str,
     map: HashMap<char,char>,
     map_inv: HashMap<char,char>,
 }
 
-impl Substitution {
-    pub fn new(alphabet1: &str, alphabet2: &str) -> Substitution {
+impl Substitution<'_> {
+    pub fn new<'a>(alphabet1: &'a str, alphabet2: &'a str) -> Substitution<'a> {
         if alphabet1.chars().count() != alphabet2.chars().count() {
-            panic!("alphabet1 is of length {} but alphabet2 is of length {}",alphabet1.chars().count(),alphabet2.chars().count())
+            panic!("alphabet1 is of length {} but alphabet2 is of length {}, they must be the same length",alphabet1.chars().count(),alphabet2.chars().count())
         }
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
         for (a, b) in alphabet1.chars().zip(alphabet2.chars()) {
-            if a.is_whitespace() || b.is_whitespace() {
-                panic!("whitespace is not allowed as a substitution symbol")
-            }
-            map.insert(a, b);
-            map_inv.insert(b, a);
-        }
-        Substitution{ alphabet1: alphabet1.to_string(), alphabet2: alphabet2.to_string(), map, map_inv }
-    }
-
-    pub fn atbash(alphabet: &str) -> Substitution {
-        let alphabet1 = alphabet.to_string();
-        let alphabet2: String = alphabet.chars().rev().collect();
-        let mut map = HashMap::new();
-        let mut map_inv = HashMap::new();
-        for (a, b) in alphabet1.chars().zip(alphabet2.chars()) {
-            if a.is_whitespace() || b.is_whitespace() {
-                panic!("whitespace is not allowed as a substitution symbol")
-            }
             map.insert(a, b);
             map_inv.insert(b, a);
         }
@@ -44,7 +29,7 @@ impl Substitution {
 
 }
 
-impl crate::auxiliary::Cipher for Substitution {
+impl crate::auxiliary::Cipher for Substitution<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -55,7 +40,7 @@ impl crate::auxiliary::Cipher for Substitution {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = "".to_string();
+        let mut out = String::new();
         for c in text.chars() {
             out.push(self.map_inv[&c])
         }
@@ -64,38 +49,51 @@ impl crate::auxiliary::Cipher for Substitution {
 
 }
 
-impl fmt::Display for Substitution {
+impl fmt::Display for Substitution<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Simple Substitution\n{}\n{}",self.alphabet1,self.alphabet2)
     }
 }
 
-#[test]
-fn substitution() {
-    use crate::Cipher;
-    let substitution = Substitution::new("abcdefghijklmnopqrstuvwxyz","QWERTYUIOPASDFGHJKLZXCVBNM");
-    
-    println!("{}\n",substitution);
 
-    let plaintext = "thequickbrownfoxjumpsoverthelazydog";
-    let ciphertext = substitution.encrypt(plaintext);
-    let decrypt = substitution.decrypt(&ciphertext);
 
-    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypt)
+
+
+pub struct Atbash<'a> {
+    /// The Atbash Cipher is a special case of the general Substitution Cipher in which a single alphabet is used and characters are tranformed into their opposite. This is a reciprocal cipher.
+    alphabet: &'a str,
+    map: HashMap<char,char>,
+}
+
+impl Atbash<'_> {
+    pub fn new<'a>(alphabet: &'a str) -> Atbash<'a> {
+        let mut map = HashMap::new();
+        for (a, b) in alphabet.chars().zip(alphabet.chars().rev()) {
+            map.insert(a, b);
+        }
+        Atbash{ alphabet, map }
+    }
 
 }
 
-#[test]
-fn substitution_unicode() {
-    use crate::Cipher;
-    use crate::alphabets::LATIN26;
-    let substitution = Substitution::new(LATIN26,"🌰🌱🌲🌳🌴🌵🌶️🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈");
-    
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = substitution.encrypt(plaintext);
-    let decrypted = substitution.decrypt(&ciphertext);
+impl crate::auxiliary::Cipher for Atbash<'_> {
 
-    println!("{}\n{}\n{}\n",plaintext,ciphertext,decrypted)
+    fn encrypt(&self, text: &str) -> String {
+        let mut out = "".to_string();
+        for c in text.chars() {
+            out.push(self.map[&c])
+        }
+        out
+    }
 
-    
+    fn decrypt(&self, text: &str) -> String {
+        self.encrypt(text)
+    }
+
+}
+
+impl fmt::Display for Atbash<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Atbash\n{}\n{}",self.alphabet,self.alphabet.chars().rev().collect::<String>())
+    }
 }

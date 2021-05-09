@@ -65,17 +65,3 @@ impl fmt::Display for Affine {
         write!(f, "Affine Cipher\nkey: ({},{})",self.key1,self.key2)
     }
 }
-
-#[test]
-fn affine() {
-    use crate::alphabets::LATIN26;
-    use crate::Cipher;
-    let aff = Affine::new((1,3), LATIN26);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = aff.encrypt(plaintext);
-    let decrypted = aff.decrypt(&ciphertext);
-
-    assert_eq!(&ciphertext,"GWNXJZHFEARPOQRSCJLUDRMNAGWNIBYVKRT");
-    assert_eq!(&decrypted,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG");
-    
-}

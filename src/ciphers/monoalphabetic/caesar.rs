@@ -65,19 +65,3 @@ impl fmt::Display for Caesar {
         write!(f, "Caesar Cipher\nkey: {}",self.key)
     }
 }
-
-
-
-
-#[test]
-fn caesar() {
-    use crate::alphabets::LATIN26;
-    use crate::Cipher;
-    let caesar  = Caesar::new(1, LATIN26);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = caesar.encrypt(plaintext);
-    let decrypted = caesar.decrypt(&ciphertext);
-    assert_eq!(&ciphertext,"UIFRVJDLCSPXOGPYKVNQTPWFSUIFMBAZEPH");
-    assert_eq!(&decrypted,"THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG");
-    
-}
