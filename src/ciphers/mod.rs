@@ -14,9 +14,11 @@ pub use self::monoalphabetic::Caesar;
 pub use self::monoalphabetic::Substitution;
 pub use self::monoalphabetic::DecoderRing;
 
-mod vigenere;
-pub use self::vigenere::{Vigenere,VigenereAutokey,VigenereRunningKey};
-pub use self::vigenere::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
+pub mod vigenere;
+
+mod beaufort;
+pub use self::beaufort::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
+
 
 mod playfair;
 pub use self::playfair::Playfair;

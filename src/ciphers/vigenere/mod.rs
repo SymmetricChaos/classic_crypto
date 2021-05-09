@@ -1,7 +1,11 @@
 //! Vigenere based ciphers
 
-pub mod vigenere;
-pub mod beaufort;
-
-pub use self::vigenere::{Vigenere,VigenereAutokey,VigenereRunningKey};
-pub use self::beaufort::{Beaufort,BeaufortAutokey,BeaufortRunningKey};
+mod vigenere;
+mod autokey;
+mod running_key;
+mod progressive_key;
+mod vigenere_tests;
+pub use self::vigenere::Vigenere;
+pub use self::autokey::Autokey;
+pub use self::running_key::RunningKey;
+pub use self::progressive_key::ProgressiveKey;

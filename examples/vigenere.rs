@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::{Vigenere,VigenereAutokey,VigenereRunningKey};
+use classic_crypto::ciphers::vigenere::{Vigenere,Autokey,RunningKey,ProgressiveKey};
 use classic_crypto::alphabets::LATIN26;
 use classic_crypto::Cipher;
 
@@ -16,7 +16,7 @@ fn main()  {
     println!("{}",ciphertext);
     assert_eq!(decrypted,plaintext);
 
-    let autokey = VigenereAutokey::new("SECRET", LATIN26);
+    let autokey = Autokey::new("SECRET", LATIN26);
     println!("\n\n{}",autokey);
     let ciphertext = autokey.encrypt(plaintext);
     let decrypted = autokey.decrypt(&ciphertext);
