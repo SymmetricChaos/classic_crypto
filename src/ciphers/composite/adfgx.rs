@@ -42,18 +42,3 @@ impl fmt::Display for ADFGX<'_> {
         write!(f, "ADFGX Composite Cipher\n{}\n{}",self.columnar,self.polybius)
     }
 }
-
-#[test]
-fn adfgx() {
-    use crate::Cipher;
-
-    let adfgx = ADFGX::new("ELPEHANTS", "ZEBRAS");
-
-    println!("{}",adfgx);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";
-    let ciphertext = adfgx.encrypt(plaintext);
-    let cleartext = adfgx.decrypt(&ciphertext);
-
-    assert_eq!(ciphertext,"PCRNEKHIGANXSYPLMWUWBDTQHOCDUPBBCRMY");
-    assert_eq!(cleartext, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
-}

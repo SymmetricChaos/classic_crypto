@@ -6,6 +6,7 @@ mod nihilist;
 mod vic;
 mod bifid;
 mod composite;
+mod composite_tests;
 
 pub use self::adfgx::ADFGX;
 pub use self::adfgvx::ADFGVX;

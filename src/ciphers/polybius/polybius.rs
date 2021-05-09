@@ -39,7 +39,6 @@ impl Polybius<'_> {
         Polybius{ map, map_inv, alphabet, labels }
     }
 
-
     pub fn encrypt_to_vec(&self, text: &str) -> Vec<char> {
         let mut out = Vec::new();
         for c in text.chars() {
@@ -49,8 +48,6 @@ impl Polybius<'_> {
         }
         out
     }
-
-
 
     pub fn decrypt_from_vec(&self, text: &Vec<char>) -> String {
         let mut out = "".to_string();
@@ -78,7 +75,6 @@ impl crate::auxiliary::Cipher for Polybius<'_> {
         }
         out
     }
-
 
     fn decrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -117,6 +113,9 @@ impl fmt::Display for Polybius<'_> {
         write!(f, "Polybius Square\n{}",square)
     }
 }
+
+
+
 
 
 #[test]

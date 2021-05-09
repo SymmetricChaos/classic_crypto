@@ -19,7 +19,7 @@ impl Playfair {
         if alen != size*size {
             panic!("an alphabet with {} characters does exactly fit in a {}x{} square.",alen,size,size)
         }
-        if alphabet.contains(filler) {
+        if !alphabet.contains(filler) {
             panic!("filler character {} is not in alphabet",filler)
         }
         
@@ -146,21 +146,4 @@ impl fmt::Display for Playfair {
         };
         write!(f, "{}", square)
     }
-}
-
-#[test]
-fn playfair() {
-    use crate::Cipher;
-    use crate::alphabets::LATIN25_J;
-    let playfair = Playfair::new("PLAYFAIREXAMPLE", LATIN25_J,5,'X');
-    println!("{}",playfair);
-
-    let plaintext = "HIDETHEGOLDINTHETREESTUMP";
-    let ciphertext = playfair.encrypt(plaintext);
-    let decryptd = playfair.decrypt(&ciphertext);
-
-    println!("{}",plaintext);
-    println!("{}",ciphertext);
-    println!("{}",decryptd);
-    
 }

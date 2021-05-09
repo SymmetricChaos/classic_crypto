@@ -10,7 +10,7 @@ pub struct Bifid<'a> {
 
 
 impl Bifid<'_> {
-    pub fn new<'a>(keyword: &'a str, alphabet: &'a str, labels: &'a str, block_size: usize) -> Bifid<'a> {
+    pub fn new<'a>(keyword: &'a str, labels: &'a str, block_size: usize, alphabet: &'a str,) -> Bifid<'a> {
         let polybius = Polybius::new(keyword, alphabet, labels);
         Bifid{ polybius, block_size }
     }
@@ -76,20 +76,4 @@ impl fmt::Display for Bifid<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Bifid Composite Cipher\nBlock Size:\n{}\nPolybius Square:\n{}",self.block_size,self.polybius)
     }
-}
-
-#[test]
-fn bifid() {
-    use crate::alphabets::LATIN25_J;
-    use crate::Cipher;
-
-    let bifid = Bifid::new("ZEBRAS", LATIN25_J, "12345", 7);
-
-    let plaintext = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
-
-    let ciphertext = bifid.encrypt(plaintext);
-    assert_eq!(ciphertext,"PRWGENCHRXDLDRTMLCOAHTZPECTEHAFFUWG");
-
-    let decrypted = bifid.decrypt(&ciphertext);
-    assert_eq!(decrypted,"THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
 }

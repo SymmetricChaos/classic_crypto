@@ -33,11 +33,11 @@ impl FourSquare {
 
     fn symbol_to_pair(&self, symbol: char, alphabet: &str) -> (usize,usize) {
         let num = alphabet.chars().position(|x| x == symbol).unwrap();
-        (num / self.size, num % self.size)
+        (num % self.size, num / self.size)
     }
 
     fn pair_to_symbol(&self, pair: (usize,usize), alphabet: &str) -> char {
-        let num = pair.0*self.size + pair.1;
+        let num = pair.1*self.size + pair.0;
         alphabet.chars().nth(num).unwrap()
     }
 
@@ -61,11 +61,11 @@ impl crate::auxiliary::Cipher for FourSquare {
                 None => break,
             };
 
-            let a_pair = self.symbol_to_pair(a, &self.alphabet1);
-            let b_pair = self.symbol_to_pair(b, &self.alphabet2);
+            let a_pair = self.symbol_to_pair(a, &self.alphabet);
+            let b_pair = self.symbol_to_pair(b, &self.alphabet);
 
-            out.push(self.pair_to_symbol((b_pair.0, b_pair.1), &self.alphabet ));
-            out.push(self.pair_to_symbol((a_pair.0, a_pair.1), &self.alphabet ));
+            out.push(self.pair_to_symbol((b_pair.0, a_pair.1), &self.alphabet1 ));
+            out.push(self.pair_to_symbol((a_pair.0, b_pair.1), &self.alphabet2 ));
         }
         out
     }
@@ -85,11 +85,11 @@ impl crate::auxiliary::Cipher for FourSquare {
                 None => break,
             };
 
-            let a_pair = self.symbol_to_pair(a, &self.alphabet);
-            let b_pair = self.symbol_to_pair(b, &self.alphabet);
+            let a_pair = self.symbol_to_pair(a, &self.alphabet1);
+            let b_pair = self.symbol_to_pair(b, &self.alphabet2);
 
-            out.push(self.pair_to_symbol((b_pair.0, b_pair.1), &self.alphabet1 ));
-            out.push(self.pair_to_symbol((a_pair.0, a_pair.1), &self.alphabet2 ));
+            out.push(self.pair_to_symbol((b_pair.0, a_pair.1), &self.alphabet ));
+            out.push(self.pair_to_symbol((a_pair.0, b_pair.1), &self.alphabet ));
         }
         out
     }
@@ -123,18 +123,3 @@ impl fmt::Display for FourSquare {
 } */
 
 
-#[test]
-fn four_square() {
-    use crate::alphabets::LATIN25_Q;
-    use crate::Cipher;
-    let four_square = FourSquare::new("EXAMPLE", "KEYWORD", LATIN25_Q, 5);
-
-    //println!("{}",four_square);
-
-    let plaintext = "HELPMEOBIWANKENOBI";
-    let ciphertext = &four_square.encrypt(plaintext);
-    let decryptd = four_square.decrypt(ciphertext);
-    println!("\n\n{}",plaintext);
-    println!("{}",ciphertext);
-    println!("{}",decryptd);
-}

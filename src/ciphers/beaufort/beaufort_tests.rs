@@ -16,7 +16,6 @@ mod vigenere_tests {
     
         assert_eq!(ciphertext,"ZXYBKLQUBAQXFZOUVZGPKDJPBLVNTTTGZDY");
         assert_eq!(decrypted,PLAINTEXT)
-        
     }
 
     #[test]
@@ -27,7 +26,6 @@ mod vigenere_tests {
 
         assert_eq!(ciphertext,"ZXYBKLRXDZGMPFNUFCBQWJOQVWLKKESVEQF");
         assert_eq!(decrypted,PLAINTEXT)
-        
     }
 
     
@@ -51,7 +49,6 @@ mod vigenere_tests {
 
         assert_eq!(ciphertext,"ZXYBKLRVCBRYHBQWXBJSNGMSFPZRXXYLEID");
         assert_eq!(decrypted,PLAINTEXT)
-        
     }
 
 }
