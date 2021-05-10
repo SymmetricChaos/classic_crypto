@@ -1,5 +1,7 @@
 use std::fmt;
 
+use crate::auxiliary::string_to_nums;
+
 
 pub struct Vigenere<'a> {
     key_vals: Vec<usize>,
@@ -11,7 +13,7 @@ pub struct Vigenere<'a> {
 impl Vigenere<'_> {
     pub fn new<'a>(key: &'a str, alphabet: &'a str) -> Vigenere<'a> {
         let key_name = key;
-        let key_vals: Vec<usize> = key.chars().map(|x| alphabet.chars().position(|c| c == x).unwrap()).collect();
+        let key_vals: Vec<usize> = string_to_nums(key, alphabet);
         Vigenere{ key_vals, key_name, alphabet, length: alphabet.chars().count() }
     }
 }

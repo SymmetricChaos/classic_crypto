@@ -1,54 +1,19 @@
 #[cfg(test)]
-mod vigenere_tests {
-    use std::io::Error;
+mod porta_tests {
 
-    use crate::ciphers::beaufort::{Beaufort,Autokey,RunningKey,ProgressiveKey};
+    use crate::ciphers::porta::{Porta};
     use crate::Cipher;
-    use crate::alphabets::LATIN26;
 
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
 
     #[test]
-    fn beaufort() {
-        let beau = Beaufort::new("SECRET", LATIN26);
-        let ciphertext = beau.encrypt(PLAINTEXT);
-        let decrypted = beau.decrypt(&ciphertext);
+    fn porta() {
+        let porta = Porta::default("SECRET");
+        let ciphertext = porta.encrypt(PLAINTEXT);
+        let decrypted = porta.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"ZXYBKLQUBAQXFZOUVZGPKDJPBLVNTTTGZDY");
+        // getting SSQQZNXUOQWUPRVTTTPWXPZYRYRXUWVOPPS
+        assert_eq!(ciphertext,"KWSIFRYZPJMAEUACYLVAEGGNIEVZNWDJRGV");
         assert_eq!(decrypted,PLAINTEXT)
     }
-
-    #[test]
-    fn beaufort_autokey() {
-        let beau = Autokey::new("SECRET", LATIN26);
-        let ciphertext = beau.encrypt(PLAINTEXT);
-        let decrypted = beau.decrypt(&ciphertext);
-
-        assert_eq!(ciphertext,"ZXYBKLRXDZGMPFNUFCBQWJOQVWLKKESVEQF");
-        assert_eq!(decrypted,PLAINTEXT)
-    }
-
-    
-    #[test]
-    fn beaufort_running_key() -> Result<(),Error> {
-        let beau = RunningKey::new("dickens.txt", LATIN26);
-        let ciphertext = beau.encrypt(PLAINTEXT)?;
-        let decrypted = beau.decrypt(&ciphertext)?;
-
-        assert_eq!(ciphertext,"PMSKYLFUANEXBAFLDKGTBIFOCOXSDRTVLRN");
-        assert_eq!(decrypted,PLAINTEXT);
-
-        Ok(())
-    }
-
-    #[test]
-    fn beaufort_prog_key() {
-        let beau = ProgressiveKey::new("SECRET", 1,LATIN26);
-        let ciphertext = beau.encrypt(PLAINTEXT);
-        let decrypted = beau.decrypt(&ciphertext);
-
-        assert_eq!(ciphertext,"ZXYBKLRVCBRYHBQWXBJSNGMSFPZRXXYLEID");
-        assert_eq!(decrypted,PLAINTEXT)
-    }
-
 }

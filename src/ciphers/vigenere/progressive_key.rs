@@ -1,5 +1,7 @@
 use std::fmt;
 
+use crate::auxiliary::string_to_nums;
+
 
 
 pub struct ProgressiveKey<'a> {
@@ -14,7 +16,7 @@ pub struct ProgressiveKey<'a> {
 impl ProgressiveKey<'_> {
     pub fn new<'a>(key: &'a str, increment: usize, alphabet: &'a str) -> ProgressiveKey<'a> {
         let key_name = key;
-        let key_vals: Vec<usize> = key.chars().map(|x| alphabet.chars().position(|c| c == x).unwrap()).collect();
+        let key_vals: Vec<usize> = string_to_nums(key, alphabet);
         ProgressiveKey{ key_vals, increment, key_name, alphabet, length: alphabet.chars().count() }
     }
 }

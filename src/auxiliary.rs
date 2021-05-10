@@ -67,15 +67,8 @@ pub fn rank_str(text: &str, alphabet: &str) -> Vec<usize> {
 
 
 
-pub trait Cipher { 
-    fn encrypt(&self, text: &str) -> String;
-    fn decrypt(&self, text: &str) -> String;
-}
-
-pub trait Code { 
-    fn encode(&self, text: &str) -> String;
-    fn decode(&self, text: &str) -> String;
-    fn char_map(&self) -> String;
+pub fn string_to_nums(text: &str, alphabet: &str) -> Vec<usize> {
+    text.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() / 2 ).collect()
 }
 
 
@@ -90,6 +83,21 @@ pub fn strip_unused(text: &str, alphabet: &str) -> String {
     }
     out
 }
+
+
+
+pub trait Cipher { 
+    fn encrypt(&self, text: &str) -> String;
+    fn decrypt(&self, text: &str) -> String;
+}
+
+pub trait Code { 
+    fn encode(&self, text: &str) -> String;
+    fn decode(&self, text: &str) -> String;
+    fn char_map(&self) -> String;
+}
+
+
 
 
 #[test]

@@ -1,6 +1,8 @@
 use std::fmt;
 use std::collections::VecDeque;
 
+use crate::auxiliary::string_to_nums;
+
 
 
 
@@ -16,8 +18,8 @@ pub struct Autokey<'a> {
 impl Autokey<'_> {
     pub fn new<'a>(key: &'a str, alphabet: &'a str) -> Autokey<'a> {
         let key_name = key;
-        let key_vals: Vec<usize> = key.chars().map(|x| alphabet.chars().position(|c| c == x).unwrap()).collect();
-
+        let key_vals: Vec<usize> = string_to_nums(key, alphabet);
+        
         Autokey{ key_vals, key_name, alphabet, length: alphabet.chars().count() }
     }
 

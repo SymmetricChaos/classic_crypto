@@ -6,32 +6,32 @@ Implementations of well known classical ciphers and codes with the ability to ac
 
 ## All implemented ciphers
 
-## Beaufort Family
+### Beaufort Family
 * beaufort
 * progressive key
 * autokey
 * running key
 
-## Vigenere Family
+### Vigenere Family
 * vigenere
 * progressive key
 * autokey
 * running key
 
-## Monoalphabetic
+### Monoalphabetic
 * affine
 * atbash
 * caesar
 * decoder ring
 * substitution
 
-## Playfair Family
+### Playfair Family
 * playfair
 * two square
 * four square
 * slidefair
 
-## Transposition Ciphers
+### Transposition Ciphers
 * columnar
 * rail fence
 * scytale
