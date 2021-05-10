@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod playfair_tests {
 
-    use crate::{ciphers::{Playfair,TwoSquare,TwoSquareInverting,FourSquare}};
+    use crate::{ciphers::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair}};
     use crate::Cipher;
-    use crate::alphabets::LATIN25_J;
+    use crate::alphabets::{LATIN25_J,LATIN26};
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX";
 
     #[test]
@@ -13,7 +13,7 @@ mod playfair_tests {
         let ciphertext = playfair.encrypt(PLAINTEXT);
         let decrypted = playfair.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"NMBOVHDIABPVQSQVHVKTCNECAPIZMBAUCPFY");
+        assert_eq!(ciphertext,"NMROVHDIRAPVQSQVHVKTCNECAQIZMRAUCPFY");
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
     }
 
@@ -48,5 +48,16 @@ mod playfair_tests {
 
         assert_eq!(ciphertext,"RBESSCPAXNHXGAIXFQNGSHZKSNFYGKYZMICU");
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
+    }
+
+    #[test]
+    fn slidefair() {
+        let slide = Slidefair::new("ABCD", LATIN26);
+
+        let ciphertext = &slide.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
+        let decrypted = slide.decrypt(ciphertext);
+
+        assert_eq!(ciphertext,"HTPFGWHFRBVPDPURUJONMUBYTRDIYNVCODWH");
+        assert_eq!(decrypted, "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
     }
 }

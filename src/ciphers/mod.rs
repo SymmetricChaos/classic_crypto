@@ -15,7 +15,7 @@ mod monoalphabetic;
 pub use self::monoalphabetic::{Atbash,Affine,Caesar,Substitution,DecoderRing};
 
 mod playfair;
-pub use self::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare};
+pub use self::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair};
 
 mod checkerboard;
 pub use self::checkerboard::StraddlingCheckerboard;

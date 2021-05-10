@@ -50,4 +50,3 @@ impl fmt::Display for DecoderRing<'_> {
         write!(f, "Decoder Ring Cipher\nkey: {}\nAlphabet: {}",self.index,self.alphabet)
     }
 }
-

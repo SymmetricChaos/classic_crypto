@@ -54,7 +54,7 @@ impl crate::auxiliary::Cipher for Autokey<'_> {
 
 impl fmt::Display for Autokey<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vigenere Autokey Cipher\nkey: {:?}",self.key_name)
+        write!(f, "Vigenere Autokey Cipher\nkey: {}",self.key_name)
     }
 }
 

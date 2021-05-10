@@ -18,7 +18,7 @@ impl Playfair {
         let alen = alphabet.chars().count();
         
         if alen != size*size {
-            panic!("an alphabet with {} characters does exactly fit in a {}x{} square.",alen,size,size)
+            panic!("an alphabet with {} characters does not exactly fit in a {}x{} square.",alen,size,size)
         }
         
         Playfair{ alphabet: keyed_alphabet(key, alphabet), size }

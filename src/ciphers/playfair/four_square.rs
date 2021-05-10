@@ -12,7 +12,7 @@ pub struct FourSquare {
 impl FourSquare {
     pub fn new(key1: &str, key2: &str, alphabet: &str, size: usize) -> FourSquare {
         if alphabet.chars().count() > size*size {
-            panic!("alphabet does not work, it must have exactly {} charactersto fit in a {}x{} square.",size*size,size,size)
+            panic!("alphabet does not work, it must have exactly {} characters to fit in a {}x{} square.",size*size,size,size)
         }
         
         FourSquare{ alphabet1: keyed_alphabet(key1,alphabet), 

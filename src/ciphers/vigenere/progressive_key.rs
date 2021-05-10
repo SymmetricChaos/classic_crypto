@@ -2,9 +2,8 @@ use std::fmt;
 
 
 
-
-
 pub struct ProgressiveKey<'a> {
+    /// The Progressive Key version of the Vigenere stretches the key by changing it slightly each time it would repeat. 
     key_vals: Vec<usize>,
     increment: usize,
     key_name: &'a str,
@@ -60,6 +59,6 @@ impl crate::auxiliary::Cipher for ProgressiveKey<'_> {
 
 impl fmt::Display for ProgressiveKey<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vigenere Progressive Key Cipher\nkey: {:?}",self.key_name)
+        write!(f, "Vigenere Progressive Key Cipher\nkey: {}\nincrement: {}",self.key_name,self.increment)
     }
 }

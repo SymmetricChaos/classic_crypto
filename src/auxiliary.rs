@@ -7,24 +7,6 @@ pub fn remove_whitespace(s: &str) -> String {
 }
 
 
-pub fn chunk_str(text: &str, chunk_size: usize) -> Vec<String> {
-    let mut symbols = text.chars();
-    let mut out = Vec::new();
-    loop {
-        let mut buf = String::new();
-        for _ in 0..chunk_size {
-            match symbols.next() {
-                Some(c) => buf.push(c),
-                None => {
-                    out.push(buf);
-                    return out
-                }
-            }
-        }
-    }
-    unreachable!()
-}
-
 
 fn egcd(a: i64, b: i64) -> (i64,i64,i64) {
     if a == 0 {
