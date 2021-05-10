@@ -22,8 +22,7 @@ fn vic_block_generation(phrase: &str, date: Vec<usize>, pin: usize, keygroup: Ve
     println!("D: {:?}",line_d);
     let line_e1 = rank_str(&phrase[0..10],LATIN26);
     let line_e2 = rank_str(&phrase[10..20],LATIN26);
-    
-
+    println!("E: {:?}  {:?}",line_e1,line_e2);
 
 }
 
