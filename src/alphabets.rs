@@ -52,6 +52,30 @@ pub fn scramble_alphabet(alphabet: &str) -> String {
     v.iter().collect::<String>()
 }
 
+pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
+    let mut keyed_alpha = "".to_string();
+    for k in keyword.chars() {
+        let ks = &k.to_string();
+        if !alphabet.contains(ks) {
+            panic!("keyword must use symbols from the alphabet: {}",alphabet)
+        }
+        if keyed_alpha.contains(ks) {
+            continue
+        } else {
+            keyed_alpha.push(k)
+        }
+    }
+
+    for a in alphabet.chars() {
+        if keyed_alpha.contains(&a.to_string()) {
+            continue
+        } else {
+            keyed_alpha.push(a)
+        }
+    }
+    keyed_alpha
+}
+
 // confirm that they're not doing anything weird with unicode that could trip us up
 #[test]
 fn check_alphabets() {

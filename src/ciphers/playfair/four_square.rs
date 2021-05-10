@@ -47,19 +47,16 @@ impl FourSquare {
 impl crate::auxiliary::Cipher for FourSquare {
 
     fn encrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
+        if tlen % 2 != 0 {
+            panic!("The Two Square Cipher requires an even number of symbols in the text. Please adjust the input.")
+        }
         let mut symbols = text.chars();
-        let mut out = "".to_string();
-        loop {
+        let mut out = String::with_capacity(tlen);
 
-            let a = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
-            
-            let b = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
+        for _ in 0..tlen/2 {
+            let a = symbols.next().unwrap();
+            let b = symbols.next().unwrap();
 
             let a_pair = self.symbol_to_pair(a, &self.alphabet);
             let b_pair = self.symbol_to_pair(b, &self.alphabet);
@@ -71,19 +68,16 @@ impl crate::auxiliary::Cipher for FourSquare {
     }
 
     fn decrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
+        if tlen % 2 != 0 {
+            panic!("The Two Square Cipher requires an even number of symbols in the text. Please adjust the input.")
+        }
         let mut symbols = text.chars();
-        let mut out = "".to_string();
-        loop {
+        let mut out = String::with_capacity(tlen);
 
-            let a = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
-            
-            let b = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
+        for _ in 0..tlen/2 {
+            let a = symbols.next().unwrap();
+            let b = symbols.next().unwrap();
 
             let a_pair = self.symbol_to_pair(a, &self.alphabet1);
             let b_pair = self.symbol_to_pair(b, &self.alphabet2);

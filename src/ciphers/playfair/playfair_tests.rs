@@ -1,14 +1,14 @@
 #[cfg(test)]
 mod playfair_tests {
 
-    use crate::ciphers::{Playfair,TwoSquare,TwoSquareInverting,FourSquare};
+    use crate::{ciphers::{Playfair,TwoSquare,TwoSquareInverting,FourSquare}};
     use crate::Cipher;
     use crate::alphabets::LATIN25_J;
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX";
 
     #[test]
     fn playfair() {
-        let playfair = Playfair::new("ZERBRAS", LATIN25_J, 5, 'X');
+        let playfair = Playfair::new("ZEBRAS", LATIN25_J, 5);
     
         let ciphertext = playfair.encrypt(PLAINTEXT);
         let decrypted = playfair.decrypt(&ciphertext);

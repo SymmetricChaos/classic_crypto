@@ -12,7 +12,7 @@ pub struct TwoSquare {
 impl TwoSquare {
     pub fn new(key1: &str, key2: &str, alphabet: &str, size: usize) -> TwoSquare {
         if alphabet.chars().count() > size*size {
-            panic!("alphabet does not work, it must have exactly {} charactersto fit in a {}x{} square.",size*size,size,size)
+            panic!("alphabet does not work, it must have exactly {} characters to fit in a {}x{} square.",size*size,size,size)
         }
         
         TwoSquare{ alphabet1: keyed_alphabet(key1,alphabet), 
@@ -45,19 +45,16 @@ impl TwoSquare {
 impl crate::Cipher for TwoSquare {
 
     fn encrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
+        if tlen % 2 != 0 {
+            panic!("The Two Square Cipher requires an even number of symbols in the text. Please adjust the input.")
+        }
         let mut symbols = text.chars();
-        let mut out = "".to_string();
-        loop {
+        let mut out = String::with_capacity(tlen);
 
-            let a = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
-            
-            let b = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
+        for _ in 0..tlen/2 {
+            let a = symbols.next().unwrap();
+            let b = symbols.next().unwrap();
 
             let a_pair = self.symbol_to_pair_1(a);
             let b_pair = self.symbol_to_pair_2(b);
@@ -141,19 +138,16 @@ impl TwoSquareInverting {
 impl crate::Cipher for TwoSquareInverting {
 
     fn encrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
+        if tlen % 2 != 0 {
+            panic!("The Two Square Cipher requires an even number of symbols in the text. Please adjust the input.")
+        }
         let mut symbols = text.chars();
-        let mut out = "".to_string();
-        loop {
+        let mut out = String::with_capacity(tlen);
 
-            let a = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
-            
-            let b = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
+        for _ in 0..tlen/2 {
+            let a = symbols.next().unwrap();
+            let b = symbols.next().unwrap();
 
             let a_pair = self.symbol_to_pair_1(a);
             let b_pair = self.symbol_to_pair_2(b);
@@ -165,19 +159,16 @@ impl crate::Cipher for TwoSquareInverting {
     }
 
     fn decrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
+        if tlen % 2 != 0 {
+            panic!("The Two Square Cipher requires an even number of symbols in the text. Please adjust the input.")
+        }
         let mut symbols = text.chars();
-        let mut out = "".to_string();
-        loop {
+        let mut out = String::with_capacity(tlen);
 
-            let b = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
-            
-            let a = match symbols.next() {
-                Some(s) => s,
-                None => break,
-            };
+        for _ in 0..tlen/2 {
+            let b = symbols.next().unwrap();
+            let a = symbols.next().unwrap();
 
             let a_pair = self.symbol_to_pair_1(a);
             let b_pair = self.symbol_to_pair_2(b);
