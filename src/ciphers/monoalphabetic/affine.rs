@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::auxiliary::mul_inv;
 
+
 /// The Affine Cipher augments the Caesar Cipher by including a multiplicative aspect to the key.
 pub struct Affine {
     key1: usize,

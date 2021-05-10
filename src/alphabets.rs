@@ -1,3 +1,5 @@
+//! Common alphabets
+
 use rand::{seq::SliceRandom, thread_rng};
 
 /// The 26 letter Latin alphabet used in English
@@ -45,6 +47,7 @@ pub const GREEK24: &'static str = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧ�
 /// The Russian alphabet
 pub const CYRILLIC33: &'static str = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"; 
 
+// Randomized copy of an alphabet
 pub fn scramble_alphabet(alphabet: &str) -> String {
     let mut rng = thread_rng();
     let mut v: Vec<char> = alphabet.chars().collect();
@@ -52,6 +55,7 @@ pub fn scramble_alphabet(alphabet: &str) -> String {
     v.iter().collect::<String>()
 }
 
+// Copy of an alphabet rearranged to start with the key
 pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     let mut keyed_alpha = "".to_string();
     for k in keyword.chars() {

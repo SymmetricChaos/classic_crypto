@@ -1,4 +1,4 @@
-/// Various Codes
+//! Various Codes
 
 mod binary;
 mod spelling_alphabet;

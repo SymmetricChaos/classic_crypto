@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod monoalphabetic_tests {
 
-    use crate::ciphers::{Atbash,Affine,Caesar,DecoderRing,Substitution};
+    use crate::ciphers::monoalphabetic::{Atbash,Affine,Caesar,DecoderRing,Substitution};
     use crate::Cipher;
     use crate::alphabets::{LATIN26,LATIN26_QWERTY};
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
@@ -83,7 +83,7 @@ mod monoalphabetic_tests {
         let plaintext = "SECRETSQUADRON";
         let ciphertext = decoder.encrypt(plaintext);
         let decrypted = decoder.decrypt(&ciphertext);
-        
+
         assert_eq!(&ciphertext,"18 7 15 26 7 10 18 24 20 6 9 26 23 13");
         assert_eq!(&decrypted,"SECRETSQUADRON");
     }

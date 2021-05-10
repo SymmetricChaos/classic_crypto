@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod playfair_tests {
 
-    use crate::{ciphers::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair}};
+    use crate::{ciphers::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair}};
     use crate::Cipher;
     use crate::alphabets::{LATIN25_J,LATIN26};
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX";

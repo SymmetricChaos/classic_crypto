@@ -6,6 +6,7 @@ use std::{ fs::File, io::{Error, Read}};
 
 
 pub struct RunningKey<'a> {
+    /// The Running Key version uses a key that is the same length as the entire plaintext, never repeating. This can be done using the ordinary Vigenere implementation but this makes it easier by reading the key information from a file.
     key_file: &'a str,
     alphabet: &'a str,
     length: usize,

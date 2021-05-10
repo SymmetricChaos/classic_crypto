@@ -1,5 +1,4 @@
 use std::fmt;
-use crate::modulus::Modulo;
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN26;
 
@@ -7,11 +6,11 @@ use crate::alphabets::LATIN26;
 /// The VIC Cipher is probably the strongest and certainly the most complex cipher known to have been used entirely by hand.
 fn vic_block_generation(phrase: &str, date: Vec<usize>, pin: usize, keygroup: Vec<usize>) {
 
-    let line_a: Vec<Modulo> = keygroup.iter().map(|x| Modulo::new(*x as u32, 10)).collect();
+    let line_a: Vec<usize> = keygroup.clone();
     println!("A: {:?}",line_a);
-    let line_b: Vec<Modulo> = date[..5].iter().map(|x| Modulo::new(*x as u32, 10)).collect();
+    let line_b: Vec<usize> = date[..5].iter().map(|x| *x).collect();
     println!("B: {:?}",line_b);
-    let line_c: Vec<Modulo> = {
+    let line_c: Vec<usize> = {
         let mut v = Vec::new();
         for (a,b) in line_a.iter().zip(line_b) {
             v.push(b-*a);

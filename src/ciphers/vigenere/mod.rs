@@ -1,4 +1,4 @@
-//! Vigenere based ciphers
+//! Vigenere cipher family
 
 mod vigenere;
 mod autokey;

@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::{Caesar,Substitution,DecoderRing};
+use classic_crypto::ciphers::monoalphabetic::{Caesar,Substitution,DecoderRing};
 use classic_crypto::alphabets::LATIN26;
 use classic_crypto::Cipher;
 

@@ -46,7 +46,7 @@ impl CompositeCipher<'_> {
 #[test]
 fn composite_example() {
     use crate::alphabets::LATIN26;
-    use crate::ciphers::{Caesar,transposition::Scytale};
+    use crate::ciphers::{monoalphabetic::Caesar,transposition::Scytale};
 
     let c1 = Caesar::new(7, LATIN26);
     let c2 = Scytale::new(3);

@@ -2,7 +2,8 @@ use std::fmt;
 use rand::Rng;
 
 
-/// The Caesar Cipher substitutes symbols simply by shifting them some distance along the alphabet
+
+/// The Caesar Cipher is among the oldest of ciphers. It substitutes symbols simply by shifting them some distance along the alphabet
 pub struct Caesar {
     key: usize,
     alphabet: String,

@@ -1,4 +1,4 @@
-//! Vigenere based ciphers
+//! Beaufort cipher family
 
 mod beaufort;
 mod autokey;

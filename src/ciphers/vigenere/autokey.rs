@@ -6,6 +6,7 @@ use std::collections::VecDeque;
 
 
 pub struct Autokey<'a> {
+    /// The Autokey version of the Vigenere Cipher stretches the key by using the plaintext to encrypt itself once the key runs out. This has the advantage of never repeating.
     key_vals: Vec<usize>,
     key_name: &'a str,
     alphabet: &'a str,

@@ -8,14 +8,8 @@ pub mod enigma;
 pub mod composite;
 pub mod vigenere;
 pub mod beaufort;
-
-
-// Easy access to certain ciphers. User just types "use classic_crypto::ciphers::" followed by the cipher they want
-mod monoalphabetic;
-pub use self::monoalphabetic::{Atbash,Affine,Caesar,Substitution,DecoderRing};
-
-mod playfair;
-pub use self::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair};
+pub mod monoalphabetic;
+pub mod playfair;
 
 mod checkerboard;
 pub use self::checkerboard::StraddlingCheckerboard;

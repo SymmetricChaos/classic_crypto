@@ -3,7 +3,7 @@ use std::fmt;
 
 
 pub struct ProgressiveKey<'a> {
-    /// The Progressive Key version of the Vigenere stretches the key by changing it slightly each time it would repeat. 
+    /// The Progressive Key version of the Vigenere Cipher stretches the key by shifting it along the alphabet by some increment each time it would repeat. It is bet for the increment to be coprime to the length of the alphabet as this ensures the maximum period before repetition.
     key_vals: Vec<usize>,
     increment: usize,
     key_name: &'a str,

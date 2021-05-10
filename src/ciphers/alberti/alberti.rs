@@ -28,11 +28,11 @@ impl Alberti {
         self.index.set(self.fixed.chars().position(|x| x == symbol).unwrap())
     }
 
-    pub fn fixed_symbol_position(&self, symbol: char) -> usize {
+    fn fixed_symbol_position(&self, symbol: char) -> usize {
         self.fixed.chars().position(|x| x == symbol).unwrap()
     }
 
-    pub fn moving_symbol_position(&self, symbol: char) -> usize {
+    fn moving_symbol_position(&self, symbol: char) -> usize {
         self.moving.chars().position(|x| x == symbol).unwrap()
     }
 }

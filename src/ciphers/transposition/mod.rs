@@ -1,4 +1,4 @@
-//! Transposition Ciphers work by creating anagrams of their inputs.
+//! Transposition ciphers
 
 pub mod scytale;
 pub mod columnar;
