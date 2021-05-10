@@ -1,5 +1,4 @@
 use std::fmt;
-
 use num::integer::Roots;
 
 use crate::{Cipher, ciphers::polybius::polybius::Polybius};
@@ -72,7 +71,3 @@ impl fmt::Display for Nihilist<'_> {
         write!(f, "Nihilist Composite Cipher\n{}\nAdditive Key:\n{:?}",self.polybius,self.vigenere_key_name)
     }
 }
-
-
-
-

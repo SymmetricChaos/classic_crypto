@@ -1,5 +1,5 @@
 use std::fmt;
-use crate::auxiliary::keyed_alphabet;
+use crate::alphabets::keyed_alphabet;
 
 
 pub struct TwoSquare {

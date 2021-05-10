@@ -7,31 +7,23 @@ pub fn remove_whitespace(s: &str) -> String {
 }
 
 
-
-pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
-    let mut keyed_alpha = "".to_string();
-    for k in keyword.chars() {
-        let ks = &k.to_string();
-        if !alphabet.contains(ks) {
-            panic!("keyword must use symbols from the alphabet: {}",alphabet)
-        }
-        if keyed_alpha.contains(ks) {
-            continue
-        } else {
-            keyed_alpha.push(k)
-        }
-    }
-
-    for a in alphabet.chars() {
-        if keyed_alpha.contains(&a.to_string()) {
-            continue
-        } else {
-            keyed_alpha.push(a)
+pub fn chunk_str(text: &str, chunk_size: usize) -> Vec<String> {
+    let mut symbols = text.chars();
+    let mut out = Vec::new();
+    loop {
+        let mut buf = String::new();
+        for _ in 0..chunk_size {
+            match symbols.next() {
+                Some(c) => buf.push(c),
+                None => {
+                    out.push(buf);
+                    return out
+                }
+            }
         }
     }
-    keyed_alpha
+    unreachable!()
 }
-
 
 
 fn egcd(a: i64, b: i64) -> (i64,i64,i64) {

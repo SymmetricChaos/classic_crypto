@@ -1,6 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
-use crate::auxiliary::keyed_alphabet;
+use crate::alphabets::keyed_alphabet;
 
 
 // Less memory intensive method?
