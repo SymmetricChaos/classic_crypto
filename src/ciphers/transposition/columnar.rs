@@ -11,15 +11,6 @@ pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
     text
 }
 
-// sort then enumerate?
-pub fn word_to_ranks(text: &str, alphabet: &str) -> Vec<usize> {
-    let mut v = Vec::new();
-    for t in text.chars() {
-        v.push(alphabet.chars().position(|x| x == t).unwrap());
-    }
-    println!("{:?}",v);
-    v
-}
 
 
 // Given 5,2,1,3,0,4 we want to get 4,2,1,3,5,0
@@ -32,26 +23,30 @@ fn inverse_ranks(v: Vec<usize>) -> Vec<usize> {
 }
 
 
-pub struct Columnar {
+pub struct Columnar<'a> {
     key: Vec<usize>,
+    key_name: &'a str,
 }
 
-impl Columnar {
-    pub fn new(key: Vec<usize>) -> Columnar {
-        Columnar{ key }
-    }
+impl Columnar<'_> {
 
-    pub fn new_keyword(keyword: &str, alphabet: &str) -> Columnar {
-        let key = rank_str(keyword,alphabet);
-        Columnar{ key }
+    pub fn new<'a>(key: &'a str, alphabet: &'a str) -> Columnar<'a> {
+        let key_name = key;
+        let key = rank_str(key,alphabet);
+        Columnar{ key, key_name }
     }
-
 
 }
 
-impl crate::auxiliary::Cipher for Columnar {
+impl crate::Cipher for Columnar<'_> {
 
     fn encrypt(&self, text: &str) -> String {
+
+        let tlen = text.chars().count();
+        if tlen % self.key.len() != 0 {
+            panic!("plaintext length must be a multiple of {}, please add padding",self.key.len())
+        }
+
         let mut columns = Vec::new();
         for _ in 0..self.key.len() {
             columns.push(Vec::<char>::new());
@@ -87,8 +82,8 @@ impl crate::auxiliary::Cipher for Columnar {
 
 }
 
-impl fmt::Display for Columnar {
+impl fmt::Display for Columnar<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Columnar Cipher\nkey: {:?}",self.key)
+        write!(f, "Columnar Cipher\nkey: {:?}",self.key_name)
     }
 }

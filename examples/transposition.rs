@@ -1,4 +1,4 @@
-use classic_crypto::ciphers::transposition::{Columnar,Scytale};
+use classic_crypto::{alphabets::LATIN26, ciphers::transposition::{Columnar,Scytale}};
 use classic_crypto::Cipher;
 
 fn main() {
@@ -7,7 +7,7 @@ fn main() {
 
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
 
-    let columnar = Columnar::new(vec![1,5,0,2,4,3]);
+    let columnar = Columnar::new("ZEBRAS",LATIN26);
     println!("\n{}",columnar);
     let ciphertext = columnar.encrypt(plaintext);
     let cleartext = columnar.decrypt(&ciphertext);
