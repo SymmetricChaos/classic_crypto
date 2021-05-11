@@ -8,7 +8,7 @@ pub mod enigma;
 pub mod composite;
 pub mod vigenere;
 pub mod beaufort;
-pub mod porta;
+pub mod tableaux;
 pub mod monoalphabetic;
 pub mod playfair;
 

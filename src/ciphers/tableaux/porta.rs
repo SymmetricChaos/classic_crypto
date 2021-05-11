@@ -21,7 +21,7 @@ lazy_static! {
     
 }
 
-/// The original Porta Cipher used a set of 13 alphabets (called a tableaux) to encrypt characters. Porta's version is reciprocal.
+/// Porta Cipher uses a set of 13 alphabets (called a tableaux) to encrypt characters. The alphabets were chosen by Porta to make the cipher reciprocal.
 pub struct Porta<'a> {
     tableaux: Vec<&'a str>,
     key: &'a str,
@@ -30,12 +30,6 @@ pub struct Porta<'a> {
 }
 
 impl Porta<'_> {
-    // need a better version of this
-/*     pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Porta<'a> {
-        let key_vals = key.chars().map(|c| LATIN26.chars().position(|x| x == c).unwrap() / 2 ).collect();
-        Porta{ tableaux: tableaux.clone(), key, key_vals, alphabet }
-    } */
-
     pub fn default<'a>(key: &'a str) -> Porta<'a> {
         let key_vals = key.chars().map(|c| LATIN26.chars().position(|x| x == c).unwrap() / 2 ).collect();
         Porta{ tableaux: PORTA_TABLEAUX.clone(), key, key_vals, alphabet: LATIN26 }

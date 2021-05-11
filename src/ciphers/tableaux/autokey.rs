@@ -1,17 +1,15 @@
-use std::fmt;
+use std::{collections::VecDeque, fmt};
 
 
-/// Polyalphabetic substitution ciphers (like the Beaufort, Porta, and Vigenere) are all special cases of the Tableaux Cipher with vastly simpler keys.
-pub struct Tableaux<'a> {
+pub struct TableauxAutokey<'a> {
     tableaux: Vec<&'a str>,
     key: &'a str,
     key_vals: Vec<usize>,
     alphabet: &'a str,
 }
 
-impl Tableaux<'_> {
-    // It would be more efficient if this were only using the tableaux rows that are in the key
-    pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Tableaux<'a> {
+impl TableauxAutokey<'_> {
+    pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> TableauxAutokey<'a> {
         let alen = alphabet.chars().count();
         if tableaux.len() != alen {
             panic!("the tableaux must have exactly one row for each character in the alphabet")
@@ -27,7 +25,7 @@ impl Tableaux<'_> {
             }
         }
         let key_vals = key.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() ).collect();
-        Tableaux{ tableaux: tableaux.clone(), key, key_vals, alphabet }
+        TableauxAutokey{ tableaux: tableaux.clone(), key, key_vals, alphabet }
     }
 
     pub fn tableaux(&self) -> String {
@@ -61,30 +59,36 @@ impl Tableaux<'_> {
 
 }
 
-impl crate::Cipher for Tableaux<'_> {
+impl crate::Cipher for TableauxAutokey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
-        let ckey = self.key_vals.iter().cycle();
-        for (c, k) in text.chars().zip(ckey) {
-            out.push( self.encrypt_pair(c,*k) )
+        let mut akey: VecDeque<usize> = self.key_vals.clone().into_iter().collect();
+        for c in text.chars() {
+            let k = akey.pop_front().unwrap();
+            akey.push_back( self.alphabet.chars().position(|x| x == c).unwrap() );
+            out.push( self.encrypt_pair(c,k) )
         }
+
         out
     }
 
     fn decrypt(&self, text: &str) -> String {
         let mut out = String::new();
-        let ckey = self.key_vals.iter().cycle();
-        for (c, k) in text.chars().zip(ckey) {
-            out.push( self.decrypt_pair(c,*k) )
+        let mut akey: VecDeque<usize> = self.key_vals.clone().into_iter().collect();
+        for c in text.chars() {
+            let k = akey.pop_front().unwrap();
+            let d = self.decrypt_pair(c,k);
+            akey.push_back( self.alphabet.chars().position(|x| x == d).unwrap() );
+            out.push( d )
         }
         out
     }
 
 }
 
-impl fmt::Display for Tableaux<'_> {
+impl fmt::Display for TableauxAutokey<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Tableaux Cipher\nkey: {:?}",self.key)
+        write!(f, "Tableaux Autokey Cipher\nkey: {:?}",self.key)
     }
 }
