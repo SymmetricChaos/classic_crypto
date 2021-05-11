@@ -80,17 +80,3 @@ impl fmt::Display for Scytale {
         write!(f, "Scytale\nkey: {}",self.key)
     }
 }
-
-#[test]
-fn scytale() {
-    use crate::Cipher;
-    let scytale = Scytale::new(3);
-    println!("{}",scytale);
-    let plaintext = "WEAREDISCOVEREDFLEEATONCE";
-    let ciphertext = scytale.encrypt(plaintext);
-    let cleartext = scytale.decrypt(&ciphertext);
-
-    println!("{}",ciphertext);
-    println!("{}",cleartext);
-
-}

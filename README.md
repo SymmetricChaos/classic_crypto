@@ -64,7 +64,6 @@ Implementations of well known classical ciphers and codes with the ability to ac
 
 # Coming Soon!
 * VIC cipher
-* rail fence cipher
 * route ciphers
 * completion of porta and tableaux cipher families
 * UTF8 and UTF16 encodings
