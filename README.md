@@ -67,4 +67,6 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * rail fence cipher
 * route ciphers
 * porta cipher family
-* UTF8 and UTF16
+* tableaux cipher family
+* UTF8 and UTF16 encodings
+* Base64 encoding

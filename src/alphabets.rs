@@ -47,6 +47,10 @@ pub const GREEK24: &'static str = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧ�
 /// The Russian alphabet
 pub const CYRILLIC33: &'static str = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"; 
 
+/// The MIME Base64 characters
+pub const BASE64: &'static str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
+
+
 // Randomized copy of an alphabet
 pub fn scramble_alphabet(alphabet: &str) -> String {
     let mut rng = thread_rng();
