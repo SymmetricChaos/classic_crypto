@@ -21,7 +21,7 @@ lazy_static! {
     
 }
 
-
+/// The original Porta Cipher used a set of 13 alphabets (called a tableaux) to encrypt characters. Porta's version is reciprocal.
 pub struct Porta<'a> {
     tableaux: Vec<&'a str>,
     key: &'a str,
@@ -31,10 +31,10 @@ pub struct Porta<'a> {
 
 impl Porta<'_> {
     // need a better version of this
-    pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Porta<'a> {
+/*     pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Porta<'a> {
         let key_vals = key.chars().map(|c| LATIN26.chars().position(|x| x == c).unwrap() / 2 ).collect();
         Porta{ tableaux: tableaux.clone(), key, key_vals, alphabet }
-    }
+    } */
 
     pub fn default<'a>(key: &'a str) -> Porta<'a> {
         let key_vals = key.chars().map(|c| LATIN26.chars().position(|x| x == c).unwrap() / 2 ).collect();
@@ -47,9 +47,10 @@ impl crate::Cipher for Porta<'_> {
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let ckey = self.key_vals.iter().cycle();
-        let nums: Vec<usize> = text.chars().map(|c| self.alphabet.chars().position(|x| x == c).unwrap() / 2 ).collect();
-        for (n, k) in nums.iter().zip(ckey) {
-            out.push(self.tableaux[*k].chars().nth(*n).unwrap())
+        //let nums: Vec<usize> = text.chars().map(|c| self.alphabet.chars().position(|x| x == c).unwrap() / 2 ).collect();
+        for (c, k) in text.chars().zip(ckey) {
+            let p = self.tableaux[*k].chars().position(|x| x == c).unwrap();
+            out.push(self.alphabet.chars().nth(p).unwrap())
         }
         out
     }

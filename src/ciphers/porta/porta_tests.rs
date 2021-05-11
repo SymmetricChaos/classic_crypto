@@ -12,7 +12,6 @@ mod porta_tests {
         let ciphertext = porta.encrypt(PLAINTEXT);
         let decrypted = porta.decrypt(&ciphertext);
     
-        // getting SSQQZNXUOQWUPRVTTTPWXPZYRYRXUWVOPPS
         assert_eq!(ciphertext,"KWSIFRYZPJMAEUACYLVAEGGNIEVZNWDJRGV");
         assert_eq!(decrypted,PLAINTEXT)
     }
