@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod porta_tests {
 
-    use crate::ciphers::tableaux::{Porta,Tableaux,TableauxAutokey};
+    use crate::ciphers::tableaux::{Porta,PortaProgressiveKey,Tableaux,TableauxAutokey,TableauxProgressiveKey};
     use crate::Cipher;
     use crate::alphabets::LATIN26;
 
@@ -31,6 +31,16 @@ mod porta_tests {
     }
 
     #[test]
+    fn porta_prog_key() {
+        let porta = PortaProgressiveKey::default("SECRET",7);
+        let ciphertext = porta.encrypt(PLAINTEXT);
+        let decrypted = porta.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"KWSIFRSTWCFGDVMBZKQFJLLVGCXOPYHANKR");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
     fn tableaux_random() {
         let tab = Tableaux::new("SECRET", TABLEAUX.to_vec(), LATIN26);
         let ciphertext = tab.encrypt(PLAINTEXT);
@@ -47,6 +57,17 @@ mod porta_tests {
         let decrypted = tab.decrypt(&ciphertext);
     
         assert_eq!(ciphertext,"TBUHXVYTLIGKVKYVSWAGYELKAGFGCSBTAUC");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    
+    #[test]
+    fn tableaux_prog_key_random() {
+        let tab = TableauxProgressiveKey::new("SECRET", 7, TABLEAUX.to_vec(), LATIN26);
+        let ciphertext = tab.encrypt(PLAINTEXT);
+        let decrypted = tab.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"TBUHXVGXEDSTXVKBHQAKIMCGRMBHKDIKUDO");
         assert_eq!(decrypted,PLAINTEXT)
     }
 

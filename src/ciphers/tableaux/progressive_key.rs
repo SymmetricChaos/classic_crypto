@@ -4,17 +4,19 @@ use crate::alphabets::LATIN26;
 use super::auxilliary::PORTA_TABLEAUX;
 
 
-/// Polyalphabetic substitution ciphers (like the Beaufort, Porta, and Vigenere) are all special cases of the Tableaux Cipher with vastly simpler keys.
-pub struct Tableaux<'a> {
+
+
+pub struct TableauxProgressiveKey<'a> {
     tableaux: Vec<&'a str>,
     key: &'a str,
+    increment: usize,
     key_vals: Vec<usize>,
     alphabet: &'a str,
+    length: usize,
 }
 
-impl Tableaux<'_> {
-    // It would be more efficient if this were only using the tableaux rows that are in the key
-    pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Tableaux<'a> {
+impl TableauxProgressiveKey<'_> {
+    pub fn new<'a>(key: &'a str, increment: usize, tableaux: Vec<&'a str>, alphabet: &'a str) -> TableauxProgressiveKey<'a> {
         let alen = alphabet.chars().count();
         if tableaux.len() != alen {
             panic!("the tableaux must have exactly one row for each character in the alphabet")
@@ -30,7 +32,7 @@ impl Tableaux<'_> {
             }
         }
         let key_vals = key.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() ).collect();
-        Tableaux{ tableaux: tableaux.clone(), key, key_vals, alphabet }
+        TableauxProgressiveKey{ tableaux: tableaux.clone(), key, increment, key_vals, alphabet, length: alen }
     }
 
     pub fn tableaux(&self) -> String {
@@ -52,25 +54,31 @@ impl Tableaux<'_> {
         out
     }
 
-    fn encrypt_pair(&self, c: char, k: usize) -> char {
-        let n = self.tableaux[k].chars().position(|x| x == c).unwrap();
+    fn encrypt_pair(&self, c: char, k: usize, shift: usize) -> char {
+        let n = self.tableaux[(k+shift)%self.length].chars().position(|x| x == c).unwrap();
         self.alphabet.chars().nth(n).unwrap()
     }
 
-    fn decrypt_pair(&self, c: char, k: usize) -> char {
+    fn decrypt_pair(&self, c: char, k: usize, shift: usize) -> char {
         let n = self.alphabet.chars().position(|x| x == c).unwrap();
-        self.tableaux[k].chars().nth(n).unwrap()
+        self.tableaux[(k+shift)%self.length].chars().nth(n).unwrap()
     }
 
 }
 
-impl crate::Cipher for Tableaux<'_> {
+impl crate::Cipher for TableauxProgressiveKey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let ckey = self.key_vals.iter().cycle();
+        let mut ctr = 0;
+        let mut shift = 0;
         for (c, k) in text.chars().zip(ckey) {
-            out.push( self.encrypt_pair(c,*k) )
+            out.push( self.encrypt_pair(c,*k,shift) );
+            ctr = (ctr + 1) % self.key_vals.len();
+            if ctr == 0 {
+                shift = (shift + self.increment) % self.length
+            }
         }
         out
     }
@@ -78,17 +86,23 @@ impl crate::Cipher for Tableaux<'_> {
     fn decrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let ckey = self.key_vals.iter().cycle();
+        let mut ctr = 0;
+        let mut shift = 0;
         for (c, k) in text.chars().zip(ckey) {
-            out.push( self.decrypt_pair(c,*k) )
+            out.push( self.decrypt_pair(c,*k,shift) );
+            ctr = (ctr + 1) % self.key_vals.len();
+            if ctr == 0 {
+                shift = (shift + self.increment) % self.length
+            }
         }
         out
     }
 
 }
 
-impl fmt::Display for Tableaux<'_> {
+impl fmt::Display for TableauxProgressiveKey<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Tableaux Cipher\nkey: {:?}",self.key)
+        write!(f, "Tableaux Progressive Key Cipher\nkey: {:?}",self.key)
     }
 }
 
@@ -96,45 +110,49 @@ impl fmt::Display for Tableaux<'_> {
 
 
 
-
-
-
-/// Porta Cipher uses a set of 13 alphabets (called a tableaux) to encrypt characters. The alphabets were chosen by Porta to make the cipher reciprocal.
-pub struct Porta<'a> {
+pub struct PortaProgressiveKey<'a> {
     tableaux: Vec<&'a str>,
     key: &'a str,
     key_vals: Vec<usize>,
+    increment: usize,
     alphabet: &'a str,
 }
 
-impl Porta<'_> {
-    pub fn default<'a>(key: &'a str) -> Porta<'a> {
+impl PortaProgressiveKey<'_> {
+    pub fn default<'a>(key: &'a str, increment: usize) -> PortaProgressiveKey<'a> {
         let key_vals = key.chars().map(|c| LATIN26.chars().position(|x| x == c).unwrap() / 2 ).collect();
-        Porta{ tableaux: PORTA_TABLEAUX.clone(), key, key_vals, alphabet: LATIN26 }
+        PortaProgressiveKey{ tableaux: PORTA_TABLEAUX.clone(), key, key_vals, increment, alphabet: LATIN26 }
     }
 }
 
-impl crate::Cipher for Porta<'_> {
+impl crate::Cipher for PortaProgressiveKey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
         let ckey = self.key_vals.iter().cycle();
+        let mut ctr = 0;
+        let mut shift = 0;
+        let klen = self.key_vals.len();
         for (c, k) in text.chars().zip(ckey) {
-            let p = self.tableaux[*k].chars().position(|x| x == c).unwrap();
-            out.push(self.alphabet.chars().nth(p).unwrap())
+            let p = self.tableaux[(*k + shift) % 13].chars().position(|x| x == c).unwrap();
+            out.push(self.alphabet.chars().nth(p).unwrap());
+            ctr = (ctr + 1) % klen;
+            if ctr == 0 {
+                shift = (shift + self.increment) % 13
+            }
         }
         out
     }
 
-    // The Porta cipher is reciprocal
+    // The PortaProgressiveKey cipher is reciprocal
     fn decrypt(&self, text: &str) -> String {
         self.encrypt(text)
     }
 
 }
 
-impl fmt::Display for Porta<'_> {
+impl fmt::Display for PortaProgressiveKey<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Porta Cipher\nkey: {:?}",self.key)
+        write!(f, "Porta Progressive Key Cipher\nkey: {:?}",self.key)
     }
 }

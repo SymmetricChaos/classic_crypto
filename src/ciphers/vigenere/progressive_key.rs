@@ -29,12 +29,13 @@ impl crate::auxiliary::Cipher for ProgressiveKey<'_> {
         let ckey = self.key_vals.iter().cycle();
         let mut out = String::new();
         let mut ctr = 0;
-        let key_len = self.key_vals.len();
+        let klen = self.key_vals.len();
+        let alen = self.length;
         for (n,k) in nums.iter().zip(ckey) {
-            out.push(self.alphabet.chars().nth( (n+k+shift)%self.length ).unwrap() );
-            ctr = (ctr+1)%key_len;
+            out.push(self.alphabet.chars().nth( (n+k+shift)%alen ).unwrap() );
+            ctr = (ctr + 1) % klen;
             if ctr == 0 {
-                shift += self.increment
+                shift = (shift + self.increment) % alen
             }
         }
         out
@@ -46,12 +47,13 @@ impl crate::auxiliary::Cipher for ProgressiveKey<'_> {
         let ckey = self.key_vals.iter().cycle();
         let mut out = String::new();
         let mut ctr = 0;
-        let key_len = self.key_vals.len();
+        let klen = self.key_vals.len();
+        let alen = self.length;
         for (n,k) in nums.iter().zip(ckey) {
-            out.push(self.alphabet.chars().nth( (self.length+n-(k+shift))%self.length ).unwrap() );
-            ctr = (ctr+1)%key_len;
+            out.push(self.alphabet.chars().nth( (alen+n-(k+shift))%alen ).unwrap() );
+            ctr = (ctr + 1) % klen;
             if ctr == 0 {
-                shift += self.increment
+                shift = (shift + self.increment) % alen
             }
         }
         out

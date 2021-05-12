@@ -90,30 +90,3 @@ impl crate::Code for Bacon<'_> {
     }
 }
 
-
-#[test]
-fn bacon_default() {
-    use crate::auxiliary::Code;
-    let bacon = Bacon::default();
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let coded = bacon.encode(plaintext);
-    let decoded = bacon.decode(&coded);
-
-    println!("{}",plaintext);
-    println!("{}",coded);
-    println!("{}",decoded);
-}
-
-#[test]
-fn bacon_ascii() {
-    use crate::auxiliary::Code;
-    use crate::alphabets::ASCII95;
-    let bacon = Bacon::new(ASCII95);
-    let plaintext = "The quick (BROWN) fox jumps over the [LAZY] dog!";
-    let coded = bacon.encode(plaintext);
-    let decoded = bacon.decode(&coded);
-
-    println!("{}",plaintext);
-    println!("{}",coded);
-    println!("{}",decoded);
-}
