@@ -39,7 +39,6 @@ impl Base64<'_> {
         Base64{ map: B64_MAP.clone(), map_inv: B64_MAP_INV.clone(), alphabet: BASE64 }
     }
 
-
 }
 
 impl crate::Code for Base64<'_> {
