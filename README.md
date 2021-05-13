@@ -47,8 +47,8 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * rail fence
 * scytale
 * route
-* * stripe
-* * snake
+  * stripe
+  * snake
 
 ### Other
 * alberti cipher disk
