@@ -29,6 +29,18 @@ impl Route<'_> {
         grid
     }
 
+    fn create_empty_grid<'b>(&self) -> Vec<Vec<char>> {
+        let mut grid = Vec::new();
+        for _ in 0..self.dimensions.0 {
+            let mut v = Vec::with_capacity(self.dimensions.1);
+            for _ in 0..self.dimensions.1 {
+                v.push('\0')
+            }
+            grid.push(v)
+        }
+        grid
+    }
+
     fn encrypt_stripe(&self, text: &str) -> String {
         let tlen = text.chars().count();
         let mut out = String::with_capacity(tlen);
@@ -70,21 +82,28 @@ impl Route<'_> {
     fn decrypt_snake(&self, text: &str) -> String {
         let tlen = text.chars().count();
         let mut out = String::with_capacity(tlen);
-        let grid = self.create_grid(text);
+        let mut grid = self.create_empty_grid();
         let mut updown = 0;
-        for row in 0..self.dimensions.1 {
+        let mut symbols = text.chars();
+        for col in 0..self.dimensions.0 {
             if updown == 0 {
-                for col in 0..self.dimensions.0 {
-                    out.push(grid[row][col])
+                for row in 0..self.dimensions.1 {
+                    grid[row][col] = symbols.next().unwrap()
                 }
                 updown = 1
             } else {
-                for col in (0..self.dimensions.0).rev() {
-                    out.push(grid[row][col])
+                for row in (0..self.dimensions.1).rev() {
+                    grid[row][col] = symbols.next().unwrap()
                 }
                 updown = 0
             }
         }
+
+        for row in grid {
+            let r: String = row.iter().collect();
+            out.push_str(&r)
+        }
+
         out
     }
 
