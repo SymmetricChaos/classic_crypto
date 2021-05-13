@@ -46,6 +46,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * columnar
 * rail fence
 * scytale
+* route
 
 ### Other
 * alberti cipher disk
@@ -77,7 +78,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 # Coming Soon!
 * maybe optimize things? idk enough about Rust, really
 * VIC cipher
-* route ciphers
+* more route ciphers
 * beaufort variant cipher family
 * completion of porta cipher family
 * UTF8 and UTF16 encodings

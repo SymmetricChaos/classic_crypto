@@ -20,8 +20,7 @@ mod porta_tests {
     }
 
     #[test]
-    fn rail_fence() {
-    
+    fn rail_fence_stripe() {
         let railfence = RailFence::new(3);
         let ciphertext = railfence.encrypt(PLAINTEXT);
         let decrypted = railfence.decrypt(&ciphertext);
@@ -31,13 +30,23 @@ mod porta_tests {
     }
 
     #[test]
-    fn route() {
-        let route = Route::new((6,6),"");
+    fn route_stripe() {
+        let route = Route::new((6,6),"stripe");
         let ciphertext = route.encrypt(PLAINTEXT);
-        //let decrypted = route.decrypt(&ciphertext);
+        let decrypted = route.decrypt(&ciphertext);
     
-        //assert_eq!(ciphertext,"TUBNJSRLDHQIKRWFXUPOETEAYOXECOOMVHZG");
-        //assert_eq!(decrypted,PLAINTEXT)
+        assert_eq!(ciphertext,"TCNMRZHKFPTYEBOSHDQRXOEOUOJVLGIWUEAX");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn route_snake() {
+        let route = Route::new((6,6),"snake");
+        let ciphertext = route.encrypt(PLAINTEXT);
+        let decrypted = route.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"TCNMRZYTPFKHEBOSHDOEOXRQUOJVLGXAEUWI");
+        assert_eq!(decrypted,PLAINTEXT)
     }
 
     #[test]
