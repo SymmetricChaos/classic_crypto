@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod porta_tests {
 
-    use crate::ciphers::tableaux::{Porta,PortaProgressiveKey,Tableaux,TableauxAutokey,TableauxProgressiveKey};
+    use std::io::Error;
+
+    use crate::ciphers::tableaux::{Tableaux,Autokey,ProgressiveKey,RunningKey};
     use crate::Cipher;
     use crate::alphabets::LATIN26;
 
@@ -21,26 +23,6 @@ mod porta_tests {
     ];
 
     #[test]
-    fn porta() {
-        let porta = Porta::default("SECRET");
-        let ciphertext = porta.encrypt(PLAINTEXT);
-        let decrypted = porta.decrypt(&ciphertext);
-    
-        assert_eq!(ciphertext,"KWSIFRYZPJMAEUACYLVAEGGNIEVZNWDJRGV");
-        assert_eq!(decrypted,PLAINTEXT)
-    }
-
-    #[test]
-    fn porta_prog_key() {
-        let porta = PortaProgressiveKey::default("SECRET",7);
-        let ciphertext = porta.encrypt(PLAINTEXT);
-        let decrypted = porta.decrypt(&ciphertext);
-    
-        assert_eq!(ciphertext,"KWSIFRSTWCFGDVMBZKQFJLLVGCXOPYHANKR");
-        assert_eq!(decrypted,PLAINTEXT)
-    }
-
-    #[test]
     fn tableaux_random() {
         let tab = Tableaux::new("SECRET", TABLEAUX.to_vec(), LATIN26);
         let ciphertext = tab.encrypt(PLAINTEXT);
@@ -52,7 +34,7 @@ mod porta_tests {
 
     #[test]
     fn tableaux_autokey_random() {
-        let tab = TableauxAutokey::new("SECRET", TABLEAUX.to_vec(), LATIN26);
+        let tab = Autokey::new("SECRET", TABLEAUX.to_vec(), LATIN26);
         let ciphertext = tab.encrypt(PLAINTEXT);
         let decrypted = tab.decrypt(&ciphertext);
     
@@ -63,12 +45,24 @@ mod porta_tests {
     
     #[test]
     fn tableaux_prog_key_random() {
-        let tab = TableauxProgressiveKey::new("SECRET", 7, TABLEAUX.to_vec(), LATIN26);
+        let tab = ProgressiveKey::new("SECRET", 7, TABLEAUX.to_vec(), LATIN26);
         let ciphertext = tab.encrypt(PLAINTEXT);
         let decrypted = tab.decrypt(&ciphertext);
     
         assert_eq!(ciphertext,"TBUHXVGXEDSTXVKBHQAKIMCGRMBHKDIKUDO");
         assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn tableaux_running_key_random() -> Result<(),Error> {
+        let auto = RunningKey::new("dickens.txt", TABLEAUX.to_vec(), LATIN26);
+        let ciphertext = auto.encrypt(PLAINTEXT)?;
+        let decrypted = auto.decrypt(&ciphertext)?;
+    
+        assert_eq!(ciphertext,"AFDECVKDUIBJWPRWOXKLUKOINHBDMSQTAVC");
+        assert_eq!(decrypted,PLAINTEXT);
+        
+        Ok(())
     }
 
 }

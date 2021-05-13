@@ -3,6 +3,7 @@ mod vigenere_tests {
     use std::io::Error;
 
     use crate::ciphers::vigenere::{Autokey,Vigenere,RunningKey,ProgressiveKey};
+    use crate::Cipher;
 
     use crate::alphabets::LATIN26;
 
@@ -10,7 +11,6 @@ mod vigenere_tests {
 
     #[test]
     fn vigenere() {
-        use crate::Cipher;
         let vig = Vigenere::new("SECRET", LATIN26);
         let ciphertext = vig.encrypt(PLAINTEXT);
         let decrypted = vig.decrypt(&ciphertext);
@@ -21,7 +21,6 @@ mod vigenere_tests {
 
     #[test]
     fn vigenere_autokey() {
-        use crate::Cipher;
         let auto = Autokey::new("SECRET", LATIN26);
         let ciphertext = auto.encrypt(PLAINTEXT);
         let decrypted = auto.decrypt(&ciphertext);
@@ -44,7 +43,6 @@ mod vigenere_tests {
 
     #[test]
     fn vigenere_prog_key() {
-        use crate::Cipher;
         let auto = ProgressiveKey::new("SECRET", 1,LATIN26);
         let ciphertext = auto.encrypt(PLAINTEXT);
         let decrypted = auto.decrypt(&ciphertext);

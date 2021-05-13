@@ -18,6 +18,17 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * autokey
 * running key
 
+### Porta Family
+* porta
+* progressive key
+* running key
+
+### Tableaux Family
+* tableaux
+* progressive key
+* autokey
+* running key
+
 ### Monoalphabetic
 * affine
 * atbash
@@ -55,6 +66,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * fibonacci
 * morse
 * UTF32
+* Base64
 
 ### Spelling Alphabets
 * NATO
@@ -66,6 +78,6 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * maybe optimize things? idk enough about Rust, really
 * VIC cipher
 * route ciphers
-* completion of porta and tableaux cipher families
+* beaufort variant cipher family
+* completion of porta cipher family
 * UTF8 and UTF16 encodings
-* Base64 encoding

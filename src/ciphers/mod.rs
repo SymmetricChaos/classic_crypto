@@ -11,6 +11,7 @@ pub mod beaufort;
 pub mod tableaux;
 pub mod monoalphabetic;
 pub mod playfair;
+pub mod porta;
 
 mod checkerboard;
 pub use self::checkerboard::StraddlingCheckerboard;
