@@ -28,12 +28,13 @@ lazy_static! {
 pub struct MorseITU {
     map: HashMap<char, &'static str>,
     map_inv: HashMap<&'static str, char>,
+    alphabet: &'static str,
 }
 
 impl MorseITU {
 
     pub fn default() -> MorseITU {
-        MorseITU{ map: ITU_MAP.clone(), map_inv: ITU_MAP_INV.clone() }
+        MorseITU{ map: ITU_MAP.clone(), map_inv: ITU_MAP_INV.clone(), alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" }
     }
 
 }
@@ -53,26 +54,10 @@ impl crate::Code for MorseITU {
 
     fn char_map(&self) -> String {
         let mut out = String::new();
-        for (l,c) in LETTERS[1..].chars().zip(CODES[1..].iter()) {
-            out.push_str(&format!("{}  {}\n",l,c))
+        for l in self.alphabet.chars() {
+            out.push_str(&format!("{}  {}\n",l,self.map[&l]))
         }
         out.push_str("\n[symbol space]   00\n[word space]     00000\n");
         out
     }
-}
-
-
-#[test]
-fn morse_itu() {
-    use crate::Code;
-    let itu = MorseITU::default();
-    let plaintext = "THEQUICK";
-    let coded = itu.encode(plaintext);
-    let decoded = itu.decode(&coded);
-
-    println!("{}",itu.char_map());
-
-    println!("{}",plaintext);
-    println!("{}",coded);
-    println!("{}",decoded);
 }

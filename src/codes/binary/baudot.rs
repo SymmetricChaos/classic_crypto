@@ -4,7 +4,7 @@ use super::code_generators::FixedWidthInteger;
 
 // https://www.cryptomuseum.com/ref/ita2/index.htm
 
-// The Unicode Control Pictures: ␎ and ␏ are used to represent the Letter Shift and Figure Shift control characters of the ITA2
+// The Unicode Control Pictures ␎ and ␏ are used to represent the Letter Shift and Figure Shift control characters of the ITA2 as there is no control picture for those
 // The other control characters (NUL, LF, CR, ENC, BEL) are rendered as their equivalent Unicode Control Pictures except for SP which is the space character
 lazy_static! {
 
@@ -120,19 +120,4 @@ impl crate::Code for BaudotITA2 {
         }
         out
     }
-}
-
-
-#[test]
-fn baudot_ita2() {
-    use crate::auxiliary::Code;
-    let ita2 = BaudotITA2::default();
-    let plaintext = "THEQUICK␎12345␏BROWNFOX";
-    let coded = ita2.encode(plaintext);
-    let decoded = ita2.decode(&coded);
-
-    println!("{}",plaintext);
-    println!("{}",coded);
-    println!("{}",decoded);
-
 }

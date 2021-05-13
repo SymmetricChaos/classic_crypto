@@ -1,18 +1,18 @@
-use std::{collections::HashMap, fmt};
+use std::collections::HashMap;
 use crate::codes::binary::code_generators::FibonacciCode;
 
 // Prefix Code
 
 
-pub struct Fibonacci {
+pub struct Fibonacci<'a> {
     map: HashMap<char, String>,
     map_inv: HashMap<String, char>,
-    alphabet: String,
+    alphabet: &'a str,
 }
 
-impl Fibonacci {
+impl Fibonacci<'_> {
 
-    pub fn new(alphabet: &str) -> Fibonacci {
+    pub fn new<'a>(alphabet: &'a str) -> Fibonacci {
         let codes = FibonacciCode::new();
         let mut map = HashMap::new();
         let mut map_inv = HashMap::new();
@@ -20,11 +20,14 @@ impl Fibonacci {
             map.insert(l,c.clone() );
             map_inv.insert(c, l);
         }
-        Fibonacci{ map, map_inv, alphabet: alphabet.to_string() }
-        
+        Fibonacci{ map, map_inv, alphabet }
     }
 
-    pub fn encode(&self, text: &str) -> String {
+}
+
+impl crate::Code for Fibonacci<'_> {
+
+    fn encode(&self, text: &str) -> String {
         let mut out = "".to_string();
         for s in text.chars() {
             out.push_str(&self.map[&s])
@@ -32,7 +35,7 @@ impl Fibonacci {
         out
     }
 
-    pub fn decode(&self, text: &str) -> String {
+    fn decode(&self, text: &str) -> String {
         let mut output = "".to_string();
         let mut buffer = "".to_string();
         for b in text.chars() {
@@ -44,29 +47,12 @@ impl Fibonacci {
         }
         output
     }
-}
 
-impl fmt::Display for Fibonacci {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut s = "".to_string();
+    fn char_map(&self) -> String {
+        let mut out = String::new();
         for c in self.alphabet.chars() {
-            s.push_str(&format!("{}: {}\n",c,self.map[&c]))
+            out.push_str(&format!("{}  {}\n",c,self.map[&c]))
         }
-        write!(f, "Fibonacci Code\n{}",s)
+        out
     }
-}
-
-#[test]
-fn fibonacci_code() {
-    use crate::alphabets::LATIN26_FREQ;
-    let fib = Fibonacci::new(LATIN26_FREQ);
-    let plaintext = "THEQUICK";
-    let coded = fib.encode(plaintext);
-    let decoded = fib.decode(&coded);
-
-    println!("{}",fib);
-
-    println!("{}",plaintext);
-    println!("{}",coded);
-    println!("{}",decoded);
 }
