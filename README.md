@@ -81,7 +81,6 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * maybe optimize things? idk enough about Rust, really
 * VIC cipher
 * turning grille cipher
-* block composite cipher
 * more route ciphers
 * beaufort variant cipher family
 * completion of porta cipher family

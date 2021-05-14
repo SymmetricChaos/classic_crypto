@@ -15,22 +15,6 @@ impl CompositeCipher<'_> {
         CompositeCipher{ ciphers: cipher_vec }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
-        let mut out = text.to_string();
-        for cipher in self.ciphers.iter() {
-            out = cipher.encrypt(&out)
-        }
-        out
-    }
-
-    pub fn decrypt(&self, text: &str) -> String {
-        let mut out = text.to_string();
-        for cipher in self.ciphers.iter().rev() {
-            out = cipher.decrypt(&out)
-        }
-        out
-    }
-
     pub fn encrypt_steps(&self, text: &str) -> Vec<String> {
         let mut out = vec![text.to_string()];
         let mut partial = text.to_string();
@@ -42,21 +26,22 @@ impl CompositeCipher<'_> {
     }
 }
 
+impl crate::Cipher for CompositeCipher<'_> {
 
-#[test]
-fn composite_example() {
-    use crate::alphabets::LATIN26;
-    use crate::ciphers::{monoalphabetic::Caesar,transposition::Scytale};
+    fn encrypt(&self, text: &str) -> String {
+        let mut out = text.to_string();
+        for cipher in self.ciphers.iter() {
+            out = cipher.encrypt(&out)
+        }
+        out
+    }
 
-    let c1 = Caesar::new(7, LATIN26);
-    let c2 = Scytale::new(3);
-
-    let composite = CompositeCipher::new(vec![&c1,&c2]);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ";
-    let ciphertext = composite.encrypt(plaintext);
-    let decrypt =    composite.decrypt(&ciphertext);
-
-    assert_eq!(ciphertext,"AUYOMALVOXELBQSPBHJTGRWFIZKYVVVCNDLX");
-    assert_eq!(decrypt,   "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ");
+    fn decrypt(&self, text: &str) -> String {
+        let mut out = text.to_string();
+        for cipher in self.ciphers.iter().rev() {
+            out = cipher.decrypt(&out)
+        }
+        out
+    }
 
 }

@@ -32,7 +32,7 @@ impl Nihilist<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Nihilist<'_> {
+impl crate::Cipher for Nihilist<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let poly_pairs = self.polybius.encrypt(text).chars().collect::<Vec<char>>();

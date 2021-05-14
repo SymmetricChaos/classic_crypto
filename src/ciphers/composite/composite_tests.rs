@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod composite_tests {
 
-    use crate::ciphers::composite::{ADFGX,ADFGVX,Bifid,Nihilist};
+    use crate::ciphers::composite::{ADFGX, ADFGVX, Bifid, Nihilist, CompositeCipher};
     use crate::Cipher;
-    use crate::alphabets::LATIN25_J;
+    use crate::alphabets::{LATIN25_J,LATIN26};
 
     #[test]
     fn adfgx() {
@@ -40,7 +40,7 @@ mod composite_tests {
         let decrypted = bifid.decrypt(&ciphertext);
         
         assert_eq!(ciphertext,"PRWGENCHRXDLDRTMLCOAHTZPECTEHAFFUWG");
-        assert_eq!(decrypted,"THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
+        assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
     }
 
     
@@ -54,5 +54,22 @@ mod composite_tests {
 
         assert_eq!(ciphertext,"57 65 24 87 82 47 63 78 25 48 54 96 72 39 83 99 44 85 47 86 52 57 93 57 26 79 43 55 65 30 52 100 35 76 37");
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
+    }
+
+    
+    #[test]
+    fn composite_example() {
+        use crate::ciphers::{vigenere::Vigenere,transposition::Columnar};
+
+        let c1 = Vigenere::new("APPLE", LATIN26);
+        let c2 = Columnar::new("BANANA",LATIN26);
+
+        let composite = CompositeCipher::new(vec![&c1,&c2]);
+        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ";
+        let ciphertext = composite.encrypt(plaintext);
+        let decrypt =    composite.decrypt(&ciphertext);
+
+        assert_eq!(ciphertext,"ORKRTFVTXVLTIDBJCQTJURTZLGQSOKWOQCQI");
+        assert_eq!(decrypt,   "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ");
     }
 }
