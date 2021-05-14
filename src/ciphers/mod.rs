@@ -13,6 +13,9 @@ pub mod monoalphabetic;
 pub mod playfair;
 pub mod porta;
 
+mod grille;
+pub use self::grille::Grille;
+
 mod checkerboard;
 pub use self::checkerboard::StraddlingCheckerboard;
 
