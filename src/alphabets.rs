@@ -1,6 +1,7 @@
 //! Common alphabets
 
-use rand::{seq::SliceRandom, thread_rng};
+use rand::{seq::{SliceRandom,index::sample}, thread_rng};
+use itertools::Itertools;
 
 /// The 26 letter Latin alphabet used in English
 pub const LATIN26: &'static str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -63,6 +64,8 @@ pub fn scramble_alphabet(alphabet: &str) -> String {
     v.iter().collect::<String>()
 }
 
+
+
 // Copy of an alphabet rearranged to start with the key
 pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     let mut keyed_alpha = "".to_string();
@@ -87,6 +90,66 @@ pub fn keyed_alphabet(keyword: &str, alphabet: &str) -> String {
     }
     keyed_alpha
 }
+
+
+
+pub fn validate_alphabet(alphabet: &str) -> bool {
+    // No control characters, sorry
+    for s in alphabet.chars() {
+        if s.is_control() {
+            return false
+        }
+    }
+    // Check for combining characters maybe?
+    // Characters must be unique
+    alphabet.chars().count() == alphabet.chars().unique().count()
+}
+
+
+// Pad with random characters taken from the symbols provided
+pub fn pad_end_with(text: &str, symbols: &str, n: usize) -> String {
+    let mut out = text.to_string();
+    let mut rng = thread_rng();
+    let v = symbols.chars().collect_vec();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        out.push(v[i])
+    }
+    out
+}
+
+pub fn pad_start_with(text: &str, symbols: &str, n: usize) -> String {
+    let mut rng = thread_rng();
+    let v = symbols.chars().collect_vec();
+    let mut head = String::new();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        head.push(v[i])
+    }
+    head.push_str(text);
+    head
+}
+
+// Pad with symbols bootstrapped from the text itself. This padding doesn't stand out as much but could be confusing.
+pub fn pad_end_bootstrap(text: &str, n: usize) -> String {
+    let mut out = text.to_string();
+    let mut rng = thread_rng();
+    let v = text.chars().collect_vec();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        out.push(v[i])
+    }
+    out
+}
+
+pub fn pad_start_bootstrap(text: &str, n: usize) -> String {
+    let mut rng = thread_rng();
+    let v = text.chars().collect_vec();
+    let mut head = String::new();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        head.push(v[i])
+    }
+    head.push_str(text);
+    head
+}
+
 
 // confirm that they're not doing anything weird with unicode that could trip us up
 #[test]
