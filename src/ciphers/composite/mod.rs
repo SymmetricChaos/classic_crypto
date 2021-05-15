@@ -3,10 +3,12 @@
 mod adfgvx;
 mod adfgx;
 mod nihilist;
-mod vic;
 mod bifid;
 mod composite;
 mod block;
+
+mod vic;
+mod rs44;
 
 mod composite_tests;
 

@@ -4,7 +4,7 @@ use rand::thread_rng;
 use rand::distributions::{Distribution, Uniform};
 
 
-
+/// A Grille cipher is an effective way to add nulls to a text but provides little security on its own
 pub struct Grille<'a> {
     dimensions: (usize,usize),
     grille_length: usize,
