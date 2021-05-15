@@ -13,6 +13,9 @@ pub mod monoalphabetic;
 pub mod playfair;
 pub mod porta;
 
+mod bazeries;
+pub use self::bazeries::Bazeries;
+
 mod grille;
 pub use self::grille::Grille;
 
