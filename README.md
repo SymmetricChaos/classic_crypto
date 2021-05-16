@@ -79,8 +79,9 @@ Implementations of well known classical ciphers and codes with the ability to ac
 
 # Coming Soon!
 * maybe optimize things? idk enough about Rust, really
-* VIC cipher
-* RS44 cipher
+* M209 (in progress)
+* VIC cipher (in progress)
+* RS44 cipher (in progress)
 * turning grille cipher
 * more route ciphers
 * beaufort variant cipher family
