@@ -32,7 +32,7 @@ fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>)
     println!("G: {:?}",line_g);
     let line_h = vic_vec_encode(line_g, line_e2, line_f2);
     println!("H: {:?}",line_h);
-    let line_j = vic_rank(&vec_to_string(&line_h));
+    let line_j = vic_rank_nums(&line_h);
     println!("J: {:?}",line_j);
     let block = vic_chain_addition(line_h, 60);
     let line_k = block[10..20].to_vec();
@@ -68,8 +68,8 @@ fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>)
     let line_r = &columns[(key_len1 as usize)..((key_len1+key_len2) as usize)];
     println!("Q: {:?} (key 1)", line_q);
     println!("R: {:?} (key 2)", line_r);
-    let line_s = vic_rank(&vec_to_string(&line_p));
-    println!("S: {:?} <- this is wrong", line_s);
+    let line_s = vic_rank_nums(&line_p);
+    println!("S: {:?}", line_s);
 }
 
 fn vec_to_string(v: &Vec<u8>) -> String {
@@ -98,6 +98,29 @@ fn vic_vec_encode(v1: Vec<u8>, v2: Vec<u8>, f: Vec<u8>) -> Vec<u8> {
 // Rank and then shift by one to reflect that the VIC cipher treated 0 as the highest position
 fn vic_rank(text: &str) -> Vec<u8> {
     rank_str(text, LATIN36).iter().map(|x| (*x as u8 + 1) % 10).collect()
+}
+
+fn vic_rank_nums(v: &Vec<u8>) -> Vec<u8> {
+    let arr = [1u8,2,3,4,5,6,7,8,9,0];
+    let mut values = v.iter().map(|x| arr.iter().position(|c| x == c).unwrap() as u8).collect::<Vec<u8>>();
+
+    let len = values.len();
+    let biggest = 10;
+
+    let mut out = vec![0u8;len];
+
+    for i in 0..len {
+        let m = values.iter().min().unwrap();
+        for (pos,v) in values.iter().enumerate() {
+            if v == m {
+                out[pos] = ((i+1)%10) as u8;
+                values[pos] = biggest;
+                break
+            }
+        }
+    }
+
+    out
 }
 
 // final version should do this in place but for checking the method this is easier to see
