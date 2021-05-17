@@ -7,15 +7,17 @@ use crate::alphabets::LATIN36;
 
 
 /// The VIC Cipher is probably the strongest and certainly the most complex cipher known to have been used entirely by hand.
-fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>) -> (Vec<u8>,Vec<u8>,Vec<u8>) {
+fn vic_block_generation(keygroup: Vec<u8>, date: Vec<u8>, pin: u8, phrase: &str) -> (Vec<u8>,Vec<u8>,Vec<u8>,String) {
+
+    let mut derivation = String::new();
 
     // The keygroup
     let line_a: Vec<u8> = keygroup.clone();
-    println!("A: {}",vec_to_string(&line_a));
+    derivation.push_str(&format!("A: {}\n",vec_to_string(&line_a)));
     
     // First five digits of the date
     let line_b: Vec<u8> = date[..5].iter().map(|x| *x).collect();
-    println!("B: {}",vec_to_string(&line_b));
+    derivation.push_str(&format!("B: {}\n",vec_to_string(&line_b)));
 
     //Subtract B from A
     let line_c: Vec<u8> = {
@@ -25,47 +27,46 @@ fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>)
         }
         v
     };
-    println!("C: {}",vec_to_string(&line_c));
+    derivation.push_str(&format!("C: {}\n",vec_to_string(&line_c)));
 
     // write down the phrase
-    let line_d = &phrase[0..20];
-    println!("D: {}  {}",&line_d[0..10],&line_d[10..20]);
+    derivation.push_str(&format!("D: {}  {}\n",&phrase[0..10],&phrase[10..20]));
 
     // rank the letters of each part of D using the VIC method
     let line_e1 = vic_rank(&phrase[0..10]);
     let line_e2 = vic_rank(&phrase[10..20]);
-    println!("E: {}  {}",vec_to_string(&line_e1),vec_to_string(&line_e2));
+    derivation.push_str(&format!("E: {}  {}\n",vec_to_string(&line_e1),vec_to_string(&line_e2)));
     
     // Use chain addition to extend C out to ten terms, then the digits from 1 to 9, followed by 0
     let line_f = vic_chain_addition(line_c,10);
     let line_f1 = line_f[0..10].to_vec();
     let line_f2 = vec![1,2,3,4,5,6,7,8,9,0];
-    println!("F: {}  {}",vec_to_string(&line_f1), vec_to_string(&line_f2));
+    derivation.push_str(&format!("F: {}  {}\n",vec_to_string(&line_f1), vec_to_string(&line_f2)));
     
     // Add E1 to F1
     let line_g = vic_vec_add(line_e1, line_f1);
-    println!("G: {}",vec_to_string(&line_g));
+    derivation.push_str(&format!("G: {}\n",vec_to_string(&line_g)));
     
     // Use E2 to encode G
     let line_h = vic_vec_encode(line_g, line_e2, line_f2);
-    println!("H: {}",vec_to_string(&line_h));
+    derivation.push_str(&format!("H: {}\n",vec_to_string(&line_h)));
     
     // Rank the digits of H
     let line_j = vic_rank_nums(&line_h);
-    println!("J: {}",vec_to_string(&line_j));
+    derivation.push_str(&format!("J: {}\n",vec_to_string(&line_j)));
 
     // produce the BLOCK by chain addition of H out to 60 terms
     let block = vic_chain_addition(line_h, 60);
     let line_k = block[10..20].to_vec();
-    println!("K: {}",vec_to_string(&line_k));
+    derivation.push_str(&format!("K: {}\n",vec_to_string(&line_k)));
     let line_l = block[20..30].to_vec();
-    println!("L: {}",vec_to_string(&line_l));
+    derivation.push_str(&format!("L: {}\n",vec_to_string(&line_l)));
     let line_m = block[30..40].to_vec();
-    println!("M: {}",vec_to_string(&line_m));
+    derivation.push_str(&format!("M: {}\n",vec_to_string(&line_m)));
     let line_n = block[40..50].to_vec();
-    println!("N: {}",vec_to_string(&line_n));
+    derivation.push_str(&format!("N: {}\n",vec_to_string(&line_n)));
     let line_p = block[50..60].to_vec();
-    println!("P: {}",vec_to_string(&line_p));
+    derivation.push_str(&format!("P: {}\n",vec_to_string(&line_p)));
 
     // Get the last to unequal digit of P and add them to the pin to get the key lengths
     let last_pair = last_unequal(&line_p);
@@ -91,11 +92,11 @@ fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>)
     let line_q = columns[..key_len1 as usize].to_vec();
     let line_r = columns[(key_len1 as usize)..((key_len1+key_len2) as usize)].to_vec();
     let line_s = vic_rank_nums(&line_p);
-    println!("\nQ: {} (key 1)", vec_to_string(&line_q));
-    println!("R: {} (key 2)", vec_to_string(&line_r));
-    println!("S: {} (key 3)", vec_to_string(&line_s));
+    derivation.push_str(&format!("Q: {} (key 1)\n", vec_to_string(&line_q)));
+    derivation.push_str(&format!("R: {} (key 2)\n", vec_to_string(&line_r)));
+    derivation.push_str(&format!("S: {} (key 3)\n", vec_to_string(&line_s)));
 
-    (line_q, line_r, line_s)
+    (line_q, line_r, line_s, derivation)
 }
 
 fn vec_to_string(v: &Vec<u8>) -> String {
@@ -112,7 +113,6 @@ fn vic_vec_add(v1: Vec<u8>, v2: Vec<u8>) -> Vec<u8> {
 
 // this can be simplified since f is fixed in practice
 fn vic_vec_encode(v1: Vec<u8>, v2: Vec<u8>, f: Vec<u8>) -> Vec<u8> {
-
     let mut out = Vec::with_capacity(v1.len());
     for n in v1 {
         let x = f.iter().position(|a| *a == n).unwrap();
@@ -174,13 +174,28 @@ fn last_unequal(row: &Vec<u8>) -> (u8,u8) {
 
 
 pub struct VIC {
-    phrase: String,
-    date: Vec<u8>,
-    pin: u8,
-    keygroup: Vec<u8>,
+    key1: Vec<u8>,
+    key2: Vec<u8>,
+    key3: Vec<u8>,
+    derivation: String,
 }
+
+impl VIC {
+    pub fn new(keygroup: Vec<u8>, date: Vec<u8>, pin: u8, phrase: &str) -> VIC {
+        let (key1, key2, key3, derivation) = vic_block_generation(keygroup,date,pin,phrase);
+        VIC{ key1, key2, key3, derivation }
+    }
+
+    pub fn derivation(&self) -> String {
+        self.derivation
+    }
+
+}
+
+
 
 #[test]
 fn test_key_derivation() {
-    vic_block_generation("TWASTHENIGHTBEFORECH",vec![1,3,9,1,9], 6, vec![7,2,4,0,1]);
+    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9], 6, "TWASTHENIGHTBEFORECH" );
+    println!("{}",x.3)
 }
