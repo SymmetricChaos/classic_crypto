@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod porta_tests {
 
-    use crate::ciphers::bazeries::{Bazeries,BazeriesProgressive};
+    use crate::ciphers::bazeries::{Bazeries,BazeriesProgressive,M94};
     use crate::Cipher;
     use crate::alphabets::LATIN36;
 
@@ -39,5 +39,15 @@ mod porta_tests {
         assert_eq!(decrypted,PLAINTEXT)
     }
     
+    #[test]
+    fn m94() {
+
+        let m94 = M94::new(5, "JUMPING");
+        let ciphertext = m94.encrypt(PLAINTEXT);
+        let decrypted = m94.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"GGNZXMRTHORZDTEOZXACMENNAHXOWXREPAX");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
 
 }
