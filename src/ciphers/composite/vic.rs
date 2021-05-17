@@ -45,7 +45,31 @@ fn vic_block_generation(phrase: &str, date: Vec<u8>, pin: u8, keygroup: Vec<u8>)
     println!("N: {:?}",line_n);
     let line_p = block[50..60].to_vec();
     println!("P: {:?}",line_p);
+    let last_pair = last_unequal(&line_p);
+    let key_len1 = pin + last_pair.0;
+    let key_len2 = pin + last_pair.1;
+    println!("key lengths {}, {}", key_len1, key_len2);
 
+    let columns = {
+        let digits = [1,2,3,4,5,6,7,8,9,0];
+        let col_pos = digits.iter().map(|x| line_j.iter().position(|p| p == x).unwrap());
+        let mut out = Vec::with_capacity(50);
+        for c in col_pos {
+            out.push(line_k[c]);
+            out.push(line_l[c]);
+            out.push(line_m[c]);
+            out.push(line_n[c]);
+            out.push(line_p[c]);
+        }
+        out
+    };
+
+    let line_q = &columns[..key_len1 as usize];
+    let line_r = &columns[(key_len1 as usize)..((key_len1+key_len2) as usize)];
+    println!("Q: {:?} (key 1)", line_q);
+    println!("R: {:?} (key 2)", line_r);
+    let line_s = vic_rank(&vec_to_string(&line_p));
+    println!("S: {:?} <- this is wrong", line_s);
 }
 
 fn vec_to_string(v: &Vec<u8>) -> String {
@@ -88,6 +112,17 @@ fn vic_chain_addition(seed: Vec<u8>, n: u8) -> Vec<u8> {
     out
 }
 
+fn last_unequal(row: &Vec<u8>) -> (u8,u8) {
+    let mut nums = row.iter().rev();
+    let mut b = nums.next().unwrap();
+    let mut a = nums.next().unwrap();
+    while a == b {
+        b = a;
+        a = nums.next().unwrap();
+    }
+    return (*a,*b)
+}
+
 
 pub struct VIC {
     phrase: String,
@@ -98,5 +133,5 @@ pub struct VIC {
 
 #[test]
 fn test_key_derivation() {
-    vic_block_generation("TWASTHENIGHTBEFORECH",vec![1,3,9,1,9], 0, vec![7,2,4,0,1])
+    vic_block_generation("TWASTHENIGHTBEFORECH",vec![1,3,9,1,9], 6, vec![7,2,4,0,1])
 }
