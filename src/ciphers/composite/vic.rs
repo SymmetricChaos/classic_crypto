@@ -201,9 +201,14 @@ impl crate::Cipher for VIC {
         let checkerboard = VicCheckerboard::new(self.key3.clone());
         let mut ctext = checkerboard.encrypt(text);
 
-        let columnar_key = vec_to_string(&self.key1);
-        let columnar = Columnar::new(&columnar_key,"1234567890");
-        ctext = columnar.encrypt(&ctext);
+        let columnar_key1 = vec_to_string(&self.key1);
+        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
+        ctext = columnar1.encrypt(&ctext);
+
+        // Supposedly this is a "diagonal transposition" but I can't find what they means yet
+        let columnar_key2 = vec_to_string(&self.key2);
+        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
+        ctext = columnar2.encrypt(&ctext);
 
         ctext
     }
@@ -216,6 +221,12 @@ impl crate::Cipher for VIC {
 }
 
 
+
+#[test]
+fn test_key_derivation() {
+    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
+    println!("{}",x.3)
+}
 
 #[test]
 fn test_key_derivation() {
