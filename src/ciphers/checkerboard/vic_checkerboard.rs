@@ -46,7 +46,7 @@ impl crate::auxiliary::Cipher for VicCheckerboard {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = String::new();
+        let out = String::new();
 /*         let mut symbols = text.chars();
 
         while let Some(c) = symbols.next() {

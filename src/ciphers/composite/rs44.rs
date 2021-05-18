@@ -109,7 +109,7 @@ impl crate::auxiliary::Cipher for RS44 {
             panic!("The maximum text length for the RS44 cipher is 240 characters")
         }
         let symbols = text.chars();
-        let mut out = String::with_capacity(tlen);
+        let out = String::with_capacity(tlen);
         let mut v = create_grid_vector(self.spaces);
         let mut ctr = tuple_to_usize(self.start.get());
         for s in symbols {
@@ -124,7 +124,7 @@ impl crate::auxiliary::Cipher for RS44 {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = String::with_capacity(text.chars().count());
+        let out = String::with_capacity(text.chars().count());
 
         out
     }

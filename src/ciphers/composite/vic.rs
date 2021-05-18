@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN36;
-use crate::ciphers::VicCheckerboard;
+use crate::ciphers::{transposition::Columnar,VicCheckerboard};
 use crate::Cipher;
 
 
@@ -196,11 +196,16 @@ impl VIC {
 
 impl crate::Cipher for VIC {
     fn encrypt(&self, text: &str) -> String {
-        let checkerboard = VicCheckerboard::new(key3);
-        let ctext1 = checkerboard.encrypt(text);
-        let mut out = String::new();
 
-        out
+        // Encrypt the text with the Straddling Checkerboard
+        let checkerboard = VicCheckerboard::new(self.key3.clone());
+        let mut ctext = checkerboard.encrypt(text);
+
+        let columnar_key = vec_to_string(&self.key1);
+        let columnar = Columnar::new(&columnar_key,"1234567890");
+        ctext = columnar.encrypt(&ctext);
+
+        ctext
     }
 
     fn decrypt(&self, text: &str) -> String {
@@ -214,6 +219,6 @@ impl crate::Cipher for VIC {
 
 #[test]
 fn test_key_derivation() {
-    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9], 6, "TWASTHENIGHTBEFORECH" );
+    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
     println!("{}",x.3)
 }
