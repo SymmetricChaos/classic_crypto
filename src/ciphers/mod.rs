@@ -21,6 +21,7 @@ pub use self::grille::Grille;
 
 mod checkerboard;
 pub use self::checkerboard::StraddlingCheckerboard;
+pub use self::checkerboard::VicCheckerboard;
 
 mod polybius;
 pub use self::polybius::Polybius;

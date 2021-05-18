@@ -2,7 +2,8 @@ use std::fmt;
 
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN36;
-
+use crate::ciphers::VicCheckerboard;
+use crate::Cipher;
 
 
 
@@ -183,13 +184,30 @@ pub struct VIC {
 impl VIC {
     pub fn new(keygroup: Vec<u8>, date: Vec<u8>, pin: u8, phrase: &str) -> VIC {
         let (key1, key2, key3, derivation) = vic_block_generation(keygroup,date,pin,phrase);
+
         VIC{ key1, key2, key3, derivation }
     }
 
     pub fn derivation(&self) -> String {
-        self.derivation
+        self.derivation.clone()
     }
 
+}
+
+impl crate::Cipher for VIC {
+    fn encrypt(&self, text: &str) -> String {
+        let checkerboard = VicCheckerboard::new(key3);
+        let ctext1 = checkerboard.encrypt(text);
+        let mut out = String::new();
+
+        out
+    }
+
+    fn decrypt(&self, text: &str) -> String {
+        let mut out = String::new();
+
+        out
+    }
 }
 
 
