@@ -200,23 +200,33 @@ impl crate::Cipher for VIC {
         // Encrypt the text with the Straddling Checkerboard
         let checkerboard = VicCheckerboard::new(self.key3.clone());
         let mut ctext = checkerboard.encrypt(text);
-
+        println!("!");
         let columnar_key1 = vec_to_string(&self.key1);
         let columnar1 = Columnar::new(&columnar_key1,"1234567890");
         ctext = columnar1.encrypt(&ctext);
-
+        println!("!");
         // Supposedly this is a "diagonal transposition" but I can't find what they means yet
         let columnar_key2 = vec_to_string(&self.key2);
         let columnar2 = Columnar::new(&columnar_key2,"1234567890");
         ctext = columnar2.encrypt(&ctext);
-
+        println!("!");
         ctext
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = String::new();
 
-        out
+        let columnar_key2 = vec_to_string(&self.key2);
+        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
+        let mut ptext = columnar2.decrypt(text);
+
+        let columnar_key1 = vec_to_string(&self.key1);
+        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
+        ptext = columnar1.decrypt(&ptext);
+
+        let checkerboard = VicCheckerboard::new(self.key3.clone());
+        ptext = checkerboard.decrypt(&ptext);
+
+        ptext
     }
 }
 
@@ -226,4 +236,15 @@ impl crate::Cipher for VIC {
 fn test_key_derivation() {
     let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
     println!("{}",x.3)
+}
+
+#[test]
+fn test_VIC() {
+    let v = VIC::new(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
+    let plaintext = "ATTACKATDAWN";
+    let ciphertext = v.encrypt(plaintext);
+    //let decrypted = v.decrypt(&ciphertext);
+
+    println!("{}",ciphertext);
+    //println!("{}",decrypted)
 }

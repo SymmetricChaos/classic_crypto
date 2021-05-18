@@ -119,7 +119,6 @@ impl crate::Cipher for RS44 {
             v[ctr] = s;
             ctr += 1
         }
-
         out
     }
 
