@@ -86,15 +86,28 @@ pub fn strip_unused(text: &str, alphabet: &str) -> String {
 
 
 
+pub fn groups(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let ctr = [0,0,0,0,1].iter().cycle();
+    for (c, n) in text.chars().zip(ctr) {
+        out.push(c);
+        if *n == 1 {
+            out.push(' ')
+        }
+    }
+    out
+}
 
 
 
 
 #[test]
 fn check_ranker() {
-
     assert_eq!(rank_str("ACDC","ABCDEFGHIJKLMNOPQRSTUVWXYZ"),vec![0,1,3,2]);
-
 }
 
 
+#[test]
+fn test_groups() {
+    assert_eq!(groups("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),"ABCDE FGHIJ KLMNO PQRST UVWXY Z");
+}
