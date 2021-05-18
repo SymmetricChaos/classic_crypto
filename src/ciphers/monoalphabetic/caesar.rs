@@ -37,7 +37,7 @@ impl Caesar {
 
 }
 
-impl crate::auxiliary::Cipher for Caesar {
+impl crate::Cipher for Caesar {
 
     fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();

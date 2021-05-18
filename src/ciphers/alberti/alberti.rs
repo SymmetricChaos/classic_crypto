@@ -37,7 +37,7 @@ impl Alberti {
     }
 }
 
-impl crate::auxiliary::Cipher for Alberti {
+impl crate::Cipher for Alberti {
     
     // The starting index must be set with the .set_position() method or this is effectively just a really complex code
     // The starting index changes during computation but is then reset to whatever it started at

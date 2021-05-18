@@ -19,7 +19,7 @@ impl ADFGVX<'_> {
     }
 }
 
-impl crate::auxiliary::Cipher for ADFGVX<'_> {
+impl crate::Cipher for ADFGVX<'_> {
     
     fn encrypt(&self, text: &str) -> String {
         let mut intermediate = self.polybius.encrypt(text);

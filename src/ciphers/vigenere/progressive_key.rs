@@ -21,7 +21,7 @@ impl ProgressiveKey<'_> {
     }
 }
 
-impl crate::auxiliary::Cipher for ProgressiveKey<'_> {
+impl crate::Cipher for ProgressiveKey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut shift = 0;

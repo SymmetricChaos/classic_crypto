@@ -55,7 +55,7 @@ impl crate::Cipher for Columnar<'_> {
         let n_rows = text.len().div_ceil(&self.key.len());
         for _row in 0..n_rows {
             for col in columns.iter_mut() {
-                col.push(symbols.next().unwrap_or('X'))
+                col.push(symbols.next().unwrap())
             }
         }
         let mut out = "".to_string();

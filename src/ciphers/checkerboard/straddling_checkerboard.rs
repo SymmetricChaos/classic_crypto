@@ -45,7 +45,7 @@ impl StraddlingCheckerboard {
 
 }
 
-impl crate::auxiliary::Cipher for StraddlingCheckerboard {
+impl crate::Cipher for StraddlingCheckerboard {
     
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();

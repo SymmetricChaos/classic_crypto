@@ -227,9 +227,3 @@ fn test_key_derivation() {
     let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
     println!("{}",x.3)
 }
-
-#[test]
-fn test_key_derivation() {
-    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
-    println!("{}",x.3)
-}

@@ -101,7 +101,7 @@ impl RS44 {
 
 }
 
-impl crate::auxiliary::Cipher for RS44 {
+impl crate::Cipher for RS44 {
     
     fn encrypt(&self, text: &str) -> String {
         let tlen = text.chars().count();

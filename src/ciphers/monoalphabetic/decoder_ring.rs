@@ -22,7 +22,7 @@ impl DecoderRing<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for DecoderRing<'_> {
+impl crate::Cipher for DecoderRing<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();

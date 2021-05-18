@@ -25,7 +25,7 @@ impl Autokey<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Autokey<'_> {
+impl crate::Cipher for Autokey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();

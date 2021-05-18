@@ -18,7 +18,7 @@ impl Vigenere<'_> {
     }
 }
 
-impl crate::auxiliary::Cipher for Vigenere<'_> {
+impl crate::Cipher for Vigenere<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();

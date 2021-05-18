@@ -18,7 +18,7 @@ impl Bifid<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Bifid<'_> {
+impl crate::Cipher for Bifid<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let len = text.chars().count();

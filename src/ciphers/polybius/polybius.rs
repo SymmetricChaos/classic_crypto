@@ -64,7 +64,7 @@ impl Polybius<'_> {
     }
 }
 
-impl crate::auxiliary::Cipher for Polybius<'_> {
+impl crate::Cipher for Polybius<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();

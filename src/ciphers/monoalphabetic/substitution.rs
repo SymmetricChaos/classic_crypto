@@ -29,7 +29,7 @@ impl Substitution<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Substitution<'_> {
+impl crate::Cipher for Substitution<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -76,7 +76,7 @@ impl Atbash<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Atbash<'_> {
+impl crate::Cipher for Atbash<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();

@@ -22,7 +22,7 @@ impl Scytale {
 
 }
 
-impl crate::auxiliary::Cipher for Scytale {
+impl crate::Cipher for Scytale {
 
     fn encrypt(&self, text: &str) -> String {
         let n_cols = text.len().div_ceil(&self.key);

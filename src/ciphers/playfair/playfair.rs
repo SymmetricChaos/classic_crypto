@@ -36,7 +36,7 @@ impl Playfair {
 
 }
 
-impl crate::auxiliary::Cipher for Playfair {
+impl crate::Cipher for Playfair {
     
     fn encrypt(&self, text: &str) -> String {
         if text.chars().count() % 2 != 0 {

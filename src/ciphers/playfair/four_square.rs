@@ -34,7 +34,7 @@ impl FourSquare {
 
 }
 
-impl crate::auxiliary::Cipher for FourSquare {
+impl crate::Cipher for FourSquare {
 
     fn encrypt(&self, text: &str) -> String {
         let tlen = text.chars().count();

@@ -20,7 +20,7 @@ impl ADFGX<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for ADFGX<'_> {
+impl crate::Cipher for ADFGX<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let text = text.replace('J',"I");

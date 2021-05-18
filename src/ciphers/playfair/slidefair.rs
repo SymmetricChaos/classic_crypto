@@ -26,7 +26,7 @@ impl Slidefair<'_> {
 
 }
 
-impl crate::auxiliary::Cipher for Slidefair<'_> {
+impl crate::Cipher for Slidefair<'_> {
     
     fn encrypt(&self, text: &str) -> String {
         let tlen = text.chars().count();

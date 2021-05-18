@@ -22,7 +22,7 @@ impl Autokey<'_> {
     }
 }
 
-impl crate::auxiliary::Cipher for Autokey<'_> {
+impl crate::Cipher for Autokey<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let mut out = "".to_string();
@@ -58,6 +58,3 @@ impl fmt::Display for Autokey<'_> {
         write!(f, "Beaufort Autokey Cipher\nkey: {:?}",self.key)
     }
 }
-
-
-

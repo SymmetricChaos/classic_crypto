@@ -82,6 +82,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * M209 (in progress)
 * VIC cipher (in progress)
 * RS44 cipher (in progress)
+* incomplete columnar transposition (in progress)
 * disrupted columnar transposition
 * turning grille cipher
 * more route ciphers

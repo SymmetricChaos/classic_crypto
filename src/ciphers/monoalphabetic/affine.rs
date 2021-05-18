@@ -37,7 +37,7 @@ impl Affine {
 
 }
 
-impl crate::auxiliary::Cipher for Affine {
+impl crate::Cipher for Affine {
 
     fn encrypt(&self, text: &str) -> String {
         let symbols = text.chars();

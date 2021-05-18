@@ -35,7 +35,7 @@ impl VicCheckerboard {
 
 }
 
-impl crate::auxiliary::Cipher for VicCheckerboard {
+impl crate::Cipher for VicCheckerboard {
     
     fn encrypt(&self, text: &str) -> String {
         let mut out = String::new();
