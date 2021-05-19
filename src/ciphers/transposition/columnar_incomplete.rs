@@ -40,11 +40,11 @@ impl crate::Cipher for IncompleteColumnar<'_> {
 
         // Use ceiling division to calculate number of rows
         let tlen = text.chars().count();
-        let n_rows = tlen.div_ceil(&self.key.len());
+        let n_rows = tlen.div_ceil(&self.key_len);
 
         // Create columns
         let mut columns = Vec::new();
-        for _ in 0..self.key.len() {
+        for _ in 0..self.key_len {
             columns.push(Vec::<char>::new());
         }
 
@@ -73,13 +73,13 @@ impl crate::Cipher for IncompleteColumnar<'_> {
 
         // Calculate how many spaces in the final row are filled
         let tlen = text.chars().count();
-        let filled = tlen % self.key.len();
+        let filled = tlen % self.key_len;
 
         // Use ceiling division to calculate number of rows
-        let n_rows = tlen.div_ceil(&self.key.len());
+        let n_rows = tlen.div_ceil(&self.key_len);
 
         //println!("filled: {}",filled);
-;
+
         // Create columns
         let mut columns = Vec::new();
 
