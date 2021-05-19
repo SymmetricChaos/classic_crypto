@@ -1,5 +1,6 @@
 use std::ops::Shr;
-
+use itertools::Itertools;
+use rand::{seq::{SliceRandom,index::sample}, thread_rng};
 
 
 pub fn remove_whitespace(s: &str) -> String {
@@ -97,6 +98,53 @@ pub fn groups(text: &str) -> String {
     }
     out
 }
+
+
+
+// Pad with random characters taken from the symbols provided
+pub fn pad_end_with(text: &str, symbols: &str, n: usize) -> String {
+    let mut out = text.to_string();
+    let mut rng = thread_rng();
+    let v = symbols.chars().collect_vec();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        out.push(v[i])
+    }
+    out
+}
+
+pub fn pad_start_with(text: &str, symbols: &str, n: usize) -> String {
+    let mut rng = thread_rng();
+    let v = symbols.chars().collect_vec();
+    let mut head = String::new();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        head.push(v[i])
+    }
+    head.push_str(text);
+    head
+}
+
+// Pad with symbols bootstrapped from the text itself. This padding doesn't stand out as much but could be confusing.
+pub fn pad_end_bootstrap(text: &str, n: usize) -> String {
+    let mut out = text.to_string();
+    let mut rng = thread_rng();
+    let v = text.chars().collect_vec();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        out.push(v[i])
+    }
+    out
+}
+
+pub fn pad_start_bootstrap(text: &str, n: usize) -> String {
+    let mut rng = thread_rng();
+    let v = text.chars().collect_vec();
+    let mut head = String::new();
+    for i in sample(&mut rng, n, v.len()).iter() {
+        head.push(v[i])
+    }
+    head.push_str(text);
+    head
+}
+
 
 
 

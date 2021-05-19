@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN36;
-use crate::ciphers::{transposition::Columnar,VicCheckerboard};
+use crate::ciphers::{transposition::IncompleteColumnar,VicCheckerboard};
 use crate::Cipher;
 
 
@@ -89,7 +89,7 @@ fn vic_block_generation(keygroup: Vec<u8>, date: Vec<u8>, pin: u8, phrase: &str)
         out
     };
 
-    // The keys for Columnar Transposition, Diagonal Transposition, and Straddling Checkerboard
+    // The keys for IncompleteColumnar Transposition, Diagonal Transposition, and Straddling Checkerboard
     let line_q = columns[..key_len1 as usize].to_vec();
     let line_r = columns[(key_len1 as usize)..((key_len1+key_len2) as usize)].to_vec();
     let line_s = vic_rank_nums(&line_p);
@@ -202,12 +202,12 @@ impl crate::Cipher for VIC {
         let mut ctext = checkerboard.encrypt(text);
         println!("!");
         let columnar_key1 = vec_to_string(&self.key1);
-        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
+        let columnar1 = IncompleteColumnar::new(&columnar_key1,"1234567890");
         ctext = columnar1.encrypt(&ctext);
         println!("!");
         // Supposedly this is a "diagonal transposition" but I can't find what they means yet
         let columnar_key2 = vec_to_string(&self.key2);
-        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
+        let columnar2 = IncompleteColumnar::new(&columnar_key2,"1234567890");
         ctext = columnar2.encrypt(&ctext);
         println!("!");
         ctext
@@ -216,11 +216,11 @@ impl crate::Cipher for VIC {
     fn decrypt(&self, text: &str) -> String {
 
         let columnar_key2 = vec_to_string(&self.key2);
-        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
+        let columnar2 = IncompleteColumnar::new(&columnar_key2,"1234567890");
         let mut ptext = columnar2.decrypt(text);
 
         let columnar_key1 = vec_to_string(&self.key1);
-        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
+        let columnar1 = IncompleteColumnar::new(&columnar_key1,"1234567890");
         ptext = columnar1.decrypt(&ptext);
 
         let checkerboard = VicCheckerboard::new(self.key3.clone());
@@ -243,8 +243,8 @@ fn test_VIC() {
     let v = VIC::new(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
     let plaintext = "ATTACKATDAWN";
     let ciphertext = v.encrypt(plaintext);
-    //let decrypted = v.decrypt(&ciphertext);
+    let decrypted = v.decrypt(&ciphertext);
 
     println!("{}",ciphertext);
-    //println!("{}",decrypted)
+    println!("{}",decrypted)
 }
