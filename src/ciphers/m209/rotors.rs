@@ -1,25 +1,25 @@
 use lazy_static::lazy_static;
-use std::{collections::HashMap, fmt};
+use std::fmt;
 
-#[derive(Clone,Debug,Copy)]
+#[derive(Clone,Debug)]
 pub struct Rotor<'a> {
     alphabet: &'a str,
-    pins: &'a str,
+    pins: String,
     position: usize,
     alphabet_len: usize,
 }
 
 impl Rotor<'_> {
     pub fn new(alphabet: &str) -> Rotor {
-        Rotor{ alphabet, pins: "", position: 0, alphabet_len: alphabet.chars().count() }
+        Rotor{ alphabet, pins: "".to_string(), position: 0, alphabet_len: alphabet.chars().count() }
     }
 
     pub fn step(&mut self) {
         self.position = (self.position + 1) % self.alphabet_len
     }
 
-    pub fn set_pins(&mut self, pins: &str) {
-        self.pins = pins
+    pub fn set_pins<'a>(&mut self, pins: & str) {
+        self.pins = pins.to_string()
     }
 
     pub fn get_pins(&mut self, pins: &str) -> String {
