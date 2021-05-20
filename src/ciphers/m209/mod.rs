@@ -1,10 +1,9 @@
 //! The Engima Machine
 
-mod enigma;
-mod auxiliary;
-pub mod rotors;
-mod enigma_tests;
+mod m209;
+mod rotors;
+mod drum;
 
-pub use self::enigma::{Plugboard,EnigmaM3};
-pub use self::auxiliary::{prep_file,prep_text};
-pub use self::rotors::{Rotor,Reflector,ROTORS,REFLECTORS};
+pub use self::m209::{M209};
+pub use self::rotors::{Rotor,M209_ROTORS};
+pub use self::drum::Drum;

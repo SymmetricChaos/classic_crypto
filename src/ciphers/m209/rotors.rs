@@ -43,3 +43,17 @@ impl fmt::Display for Rotor<'_> {
         write!(f, "M209 Rotor")
     }
 }
+
+
+//The rotor alphabets all have coprime lengths
+lazy_static! {
+    pub static ref M209_ROTORS: [Rotor<'static>; 6] = {
+        [Rotor::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        Rotor::new("ABCDEFGHIJKLMNOPQRSTUVXYZ"),
+        Rotor::new("ABCDEFGHIJKLMNOPQRSTUVX"),
+        Rotor::new("ABCDEFGHIJKLMNOPQRSTU"),
+        Rotor::new("ABCDEFGHIJKLMNOPQRS"),
+        Rotor::new("ABCDEFGHIJKLMNOPQ"),
+        ]
+    };
+}

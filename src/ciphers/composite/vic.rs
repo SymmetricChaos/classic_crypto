@@ -192,9 +192,11 @@ impl VIC {
         self.derivation.clone()
     }
 
-}
 
-impl crate::Cipher for VIC {
+    // https://derekbruff.org/blogs/fywscrypto/historical-crypto/handwritten-russian-cipher-stumps-fbi/
+    // https://technears.wordpress.com/current-issue/technears-1-2/workflow-analysis/mr-gaskells-spy-vs-spy-workflow-analysis/
+    // Need to insert and extract the keygroup
+
     fn encrypt(&self, text: &str) -> String {
 
         // Encrypt the text with the Straddling Checkerboard
@@ -234,8 +236,8 @@ impl crate::Cipher for VIC {
 
 #[test]
 fn test_key_derivation() {
-    let x = vic_block_generation(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
-    println!("{}",x.3)
+    let v = VIC::new(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
+    println!("{}",v.derivation())
 }
 
 #[test]
@@ -246,5 +248,17 @@ fn test_vic() {
     let decrypted = v.decrypt(&ciphertext);
 
     println!("{}",ciphertext);
-    println!("{}",decrypted)
+    assert_eq!(decrypted,plaintext)
+}
+
+#[test]
+fn test_vic_long() {
+    let v = VIC::new(vec![7,2,4,0,1], vec![1,3,9,1,9,5,9], 6, "TWASTHENIGHTBEFORECH" );
+    let plaintext = "FORORGANIZATIONOFCOVERWEGAVEINSTRUCTIONSTOTRANSMITTOYOUTHREETHOUSANDINLOCALCURRENCY.CONSULTWITHUSPRIORTOINVESTINGITINANYKINDOFBUSINESSADVISINGTHECHARACTEROFTHISBUSINESS";
+    let ciphertext = v.encrypt(plaintext);
+    let decrypted = v.decrypt(&ciphertext);
+
+    println!("{}",ciphertext);
+
+    assert_eq!(decrypted,plaintext)
 }

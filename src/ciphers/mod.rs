@@ -12,6 +12,7 @@ pub mod tableaux;
 pub mod monoalphabetic;
 pub mod playfair;
 pub mod porta;
+pub mod m209;
 
 mod bazeries;
 pub use self::bazeries::Bazeries;
