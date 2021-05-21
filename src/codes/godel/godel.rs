@@ -1,6 +1,7 @@
 use crate::auxiliary::PrimeSieve;
 use num::{BigUint, Integer, Num, One};
 
+/// An encoding of arbitrary information to a subset of the integers similar to that used by Godel
 pub struct Godel<'a> {
     alphabet: &'a str,
 }
@@ -27,7 +28,6 @@ impl crate::Code for Godel<'_> {
             let p = pset.next().unwrap();
             let t = p.pow(n as u32);
             out *= BigUint::from(t);
-            
         }
 
         format!("{}",out)
@@ -38,6 +38,7 @@ impl crate::Code for Godel<'_> {
         let mut pset = PrimeSieve::new();
         let alpha_vec: Vec<char> = self.alphabet.chars().collect();
         let mut out = String::new();
+        
         while !num.is_one() {
             let p = BigUint::from(pset.next().unwrap());
             let mut ctr = 0;
@@ -46,7 +47,6 @@ impl crate::Code for Godel<'_> {
                 num = num.div_floor(&p)
             }
             out.push(alpha_vec[ctr-1])
-
         }
 
         out

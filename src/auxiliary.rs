@@ -1,6 +1,6 @@
 use std::{collections::HashMap, ops::Shr};
 use itertools::Itertools;
-use rand::{seq::{SliceRandom,index::sample}, thread_rng};
+use rand::{seq::index::sample, thread_rng};
 
 
 pub fn remove_whitespace(s: &str) -> String {
