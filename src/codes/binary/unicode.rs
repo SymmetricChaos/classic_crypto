@@ -44,3 +44,68 @@ impl UTF32 {
 }
 
 
+#[derive(Debug)]
+pub struct UTF8 {}
+
+impl UTF8 {
+
+    pub fn default() -> UTF8 { UTF8{} }
+
+    pub fn encode(&self, text: &str) -> String {
+        let mut out = String::new();
+        let mut b = text.bytes().peekable();
+
+        // We never need to read in more than 4 bytes to the buffer
+        let mut buf = Vec::with_capacity(4);
+
+        // headers are: 0, 110, 1110, 11110
+        loop {
+
+            // Stop if needed
+            if b.peek().is_none() {
+                break
+            }
+
+            buf.clear();
+            buf.push( b.next().unwrap() );
+
+            if buf[0] < 128 {
+
+            } else if buf[0] < 224 {
+                buf.push( b.next().unwrap() );
+
+            } else if buf[0] < 240 {
+                buf.push( b.next().unwrap() );
+                buf.push( b.next().unwrap() );
+
+            } else { // if n < 248
+                buf.push( b.next().unwrap() );
+                buf.push( b.next().unwrap() );
+                buf.push( b.next().unwrap() );
+
+            }
+
+            for byte in buf.iter() {
+                out.push_str( &format!("{:08b}",byte) )
+            }
+            
+        }
+        out
+    }
+
+    pub fn decode(&self, text: &str) -> String {
+        let mut out = String::new();
+
+        out
+    }
+
+}
+
+
+#[test]
+fn check_char() {
+    let utf8 = UTF8::default();
+    println!("{}", utf8.encode("a"));
+    println!("{}", utf8.encode("€"));
+    println!("{}", utf8.encode("€a"));
+}
