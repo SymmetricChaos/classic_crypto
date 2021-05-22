@@ -114,24 +114,28 @@ impl UTF8 {
 
             let mut bits = byte.chars();
             let s = bits.next().unwrap();
+
             // Single byte character
             if s == '0' {
                 let n = bits_to_u32(&byte);
                 out.push( char::from_u32(n).unwrap() )
+
             // Multi byte characters
             } else {
                 let mut buffer = String::with_capacity(22);
+
                 let width = {
-                    if &byte[0..3] == "111"{
+                    if &byte[0..4] == "1111"{
+                        4
+                    } else if &byte[0..3] == "111"{
                         3
                     } else if &byte[0..2] == "11"{
                         2
-                    } else if &byte[0..1] == "1"{
-                        1
                     } else {
                         panic!("INVALID CHARACTER")
                     }
                 };
+
                 buffer.push_str( &byte[width+1..] );
                 for _ in 0..width-1 {
                     let nbyte = &bytes_iter.next().unwrap()[2..];
@@ -142,25 +146,20 @@ impl UTF8 {
                 let n = bits_to_u32(&buffer);
                 out.push( char::from_u32(n).unwrap() )
             }
-            
         }
-
+        
         out
     }
-
 }
 
 
 #[test]
 fn check_utf8() {
     let utf8 = UTF8::default();
-    //println!("{}", utf8.encode("a")); // 1 bytes
-    //println!("{}", utf8.encode("€")); // 3 bytes
 
-    let encoded = utf8.encode("€a한");
-    println!("{}",encoded);
+    let encoded = utf8.encode("平仮名 -> ひらがな -> hiragana");
     let decoded = utf8.decode(&encoded);
+
+    println!("{}",encoded);
     println!("{}",decoded);
-
-
 }
