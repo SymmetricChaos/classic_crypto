@@ -3,7 +3,7 @@ use std::{char, convert::TryInto};
 use itertools::Itertools;
 
 
-pub fn bits_to_u32(text: &str) -> u32 {
+fn bits_to_u32(text: &str) -> u32 {
     let mut out = 0u32;
     for (e, s) in text.chars().rev().enumerate() {
         match s {
@@ -15,32 +15,86 @@ pub fn bits_to_u32(text: &str) -> u32 {
     out
 }
 
+fn utf32_bits_encode(text: &str) -> String {
+    let mut out = String::with_capacity(text.len()*32);
+    for s in text.chars() {
+        out.push_str(&format!("{:032b}", s as u32))
+    }
+    out
+}
+
+fn utf32_bits_decode(text: &str) -> String {
+    let mut out = String::new();
+    let w = 32;
+    for p in 0..(text.len()/w) {
+        let group = &text[(p*w)..(p*w)+w];
+        let n = bits_to_u32(group);
+        out.push( char::from_u32(n).unwrap() )
+    }
+    out
+}
+
+
+
+
+
+fn hex_to_u32(text: &str) -> u32 {
+    let mut out = 0u32;
+    for (e, s) in text.chars().rev().enumerate() {
+        let n = s.to_digit(16).unwrap() as usize;
+        out += (16usize.pow(e.try_into().unwrap()) * n) as u32
+    }
+    out
+}
+
+fn utf32_hex_encode(text: &str) -> String {
+    let mut out = String::with_capacity(text.len()*2);
+    for s in text.chars() {
+        out.push_str(&format!("{:08x}", s as u32))
+    }
+    out
+}
+
+fn utf32_hex_decode(text: &str) -> String {
+    let mut out = String::new();
+    let w = 8;
+    for p in 0..(text.len()/w) {
+        let group = &text[(p*w)..(p*w)+w];
+        let n = hex_to_u32(group);
+        out.push( char::from_u32(n).unwrap() )
+    }
+    out
+}
+
+
+
 
 
 #[derive(Debug)]
-pub struct UTF32 {}
+pub struct UTF32 {
+    mode: String,
+}
 
 impl UTF32 {
 
-    pub fn default() -> UTF32 { UTF32{} }
+    pub fn bits() -> UTF32 { UTF32{ mode: "bits".to_string() } }
+
+    pub fn hex() -> UTF32 { UTF32{ mode: "hex".to_string() } }
 
     pub fn encode(&self, text: &str) -> String {
-        let mut out = "".to_string();
-        for s in text.chars() {
-            out.push_str(&format!("{:032b}", s as u32))
+        match self.mode.as_str() {
+            "bits" => utf32_bits_encode(text),
+            "hex" => utf32_hex_encode(text),
+            _ => panic!("invlid mode")
         }
-        out
     }
 
     pub fn decode(&self, text: &str) -> String {
-        let mut out = String::new();
-        let w = 32;
-        for p in 0..(text.len()/w) {
-            let group = &text[(p*w)..(p*w)+w];
-            let n = bits_to_u32(group);
-            out.push( char::from_u32(n).unwrap() )
+        match self.mode.as_str() {
+            "bits" => utf32_bits_decode(text),
+            "hex" => utf32_hex_decode(text),
+            _ => panic!("invlid mode")
         }
-        out
     }
 
 }
@@ -147,19 +201,7 @@ impl UTF8 {
                 out.push( char::from_u32(n).unwrap() )
             }
         }
-        
+
         out
     }
-}
-
-
-#[test]
-fn check_utf8() {
-    let utf8 = UTF8::default();
-
-    let encoded = utf8.encode("平仮名 -> ひらがな -> hiragana");
-    let decoded = utf8.decode(&encoded);
-
-    println!("{}",encoded);
-    println!("{}",decoded);
 }
