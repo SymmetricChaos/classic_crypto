@@ -1,5 +1,7 @@
 use std::{char, convert::TryInto};
 
+use itertools::Itertools;
+
 
 pub fn bits_to_u32(text: &str) -> u32 {
     let mut out = 0u32;
@@ -94,7 +96,54 @@ impl UTF8 {
     }
 
     pub fn decode(&self, text: &str) -> String {
+        if text.len() % 8 != 0 {
+            panic!("text must have a multiple of 8 symbols")
+        }
         let mut out = String::new();
+
+        let bytes = text.chars().chunks(8).into_iter().map(|x| x.collect::<String>()).collect_vec();
+        let mut bytes_iter = bytes.iter();
+
+        loop{
+            let byte = {
+                match bytes_iter.next() {
+                    Some(s) => s,
+                    None => break
+                }
+            };
+
+            let mut bits = byte.chars();
+            let s = bits.next().unwrap();
+            // Single byte character
+            if s == '0' {
+                let n = bits_to_u32(&byte);
+                out.push( char::from_u32(n).unwrap() )
+            // Multi byte characters
+            } else {
+                let mut buffer = String::with_capacity(22);
+                let width = {
+                    if &byte[0..3] == "111"{
+                        3
+                    } else if &byte[0..2] == "11"{
+                        2
+                    } else if &byte[0..1] == "1"{
+                        1
+                    } else {
+                        panic!("INVALID CHARACTER")
+                    }
+                };
+                buffer.push_str( &byte[width+1..] );
+                for _ in 0..width-1 {
+                    let nbyte = &bytes_iter.next().unwrap()[2..];
+                    buffer.push_str( nbyte )
+
+                }
+
+                let n = bits_to_u32(&buffer);
+                out.push( char::from_u32(n).unwrap() )
+            }
+            
+        }
 
         out
     }
@@ -103,9 +152,15 @@ impl UTF8 {
 
 
 #[test]
-fn check_char() {
+fn check_utf8() {
     let utf8 = UTF8::default();
-    println!("{}", utf8.encode("a"));
-    println!("{}", utf8.encode("€"));
-    println!("{}", utf8.encode("€a"));
+    //println!("{}", utf8.encode("a")); // 1 bytes
+    //println!("{}", utf8.encode("€")); // 3 bytes
+
+    let encoded = utf8.encode("€a한");
+    println!("{}",encoded);
+    let decoded = utf8.decode(&encoded);
+    println!("{}",decoded);
+
+
 }
