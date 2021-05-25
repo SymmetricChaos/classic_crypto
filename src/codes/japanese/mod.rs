@@ -2,4 +2,4 @@
 
 mod romanizations;
 
-pub use self::romanizations::Hepburn;
+pub use self::romanizations::NihonShiki;

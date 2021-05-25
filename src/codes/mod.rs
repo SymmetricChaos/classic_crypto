@@ -8,4 +8,4 @@ mod japanese;
 pub use self::spelling_alphabet::SpellingAlphabet;
 pub use self::binary::{Bacon,BaudotITA2,Fibonacci,MorseITU,UTF32,UTF8};
 pub use self::godel::Godel;
-pub use self::japanese::Hepburn;
+pub use self::japanese::NihonShiki;
