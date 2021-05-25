@@ -4,9 +4,9 @@ use std::{collections::HashMap, fmt};
 lazy_static! {
 
     // Ignoring yoon for now
-    pub static ref HIRAGANA: &'static str = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
+    pub static ref HIRAGANA: &'static str = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゃゅょ";
 
-    pub static ref ROMAN: [&'static str; 71] = [ "a",  "i",  "u",  "e",  "o", 
+    pub static ref ROMAN: [&'static str; 74] = [ "a",  "i",  "u",  "e",  "o", 
                                                 "ka", "ki", "ku", "ke", "ko", 
                                                 "sa", "si", "su", "se", "so", 
                                                 "ta", "ti", "tu", "te", "to", 
@@ -21,9 +21,9 @@ lazy_static! {
                                                 "za", "zi", "zu", "ze", "zo",
                                                 "da", "di", "du", "de", "do",
                                                 "ba", "bi", "bu", "be", "bo",
-                                                "pa", "pi", "pu", "pe", "po"];
+                                                "pa", "pi", "pu", "pe", "po",
+                                                "ya",       "yu",       "yo"];
 
-    
 
     pub static ref ROMAN_H_MAP: HashMap<char, &'static str> = {
         let mut m = HashMap::new();
@@ -53,10 +53,12 @@ impl NihonShiki<'_> {
 
     pub fn encode(&self, text: &str) -> String {
         let mut symbols = text.chars().peekable();
-        let mut out = format!("{}",self.map[&symbols.next().unwrap()]);
+        let mut out = String::new();
         // Japanese doesn't have vowels but these characters begin with a vowel when romanized
         let vowels = ['あ','い','う','え','お','や','ゆ','よ'];
 
+        // The small y-kana
+        let small_y = ['ゃ', 'ゅ', 'ょ'];
 
         loop {
             let s = match symbols.next() {
@@ -75,6 +77,14 @@ impl NihonShiki<'_> {
                 let next_kana = symbols.peek().unwrap();
                 let romaji = self.map[next_kana].chars().nth(0).unwrap();
                 out.push(romaji);
+            } else if small_y.contains(&s) {
+                let prev_char = out.pop().unwrap();
+                if prev_char == 'i' {
+                    out.push_str(&self.map[&s])
+                } else {
+                    panic!("small y kana must be preceeded by a i-column kana")
+                }
+
             } else {
                 out.push_str(&self.map[&s])
             }
@@ -97,7 +107,7 @@ impl fmt::Display for NihonShiki<'_> {
 #[test]
 fn hepburn_hiragana() {
     let hep = NihonShiki::new();
-    let plaintext = "ひらがな かたかな しんよう きっぷ";
+    let plaintext = "ひらがな かたかな しんよう きっぷ きよう きょう";
     let coded = hep.encode(plaintext);
 
     println!("{}",coded);
