@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 #[derive(Debug,Clone)]
 pub struct Grid {
     rows: usize,
@@ -32,42 +34,53 @@ impl Grid {
     pub fn display(&self) {
         for r in self.grid.iter() {
             for e in r {
-                print!("{} ",e);
+                if e == &'\0' {
+                    print!("  ");
+                } else {
+                    print!("{} ",e);
+                }
             }
             println!("");
         }
     }
 
-    pub fn transpose(&mut self) {
-
-    }
-
     pub fn turn_clockwise(&mut self) {
+
+        let mut new_grid = Vec::<Vec<char>>::with_capacity(self.cols);
+
+        for n in (0..self.cols) {
+            let mut cells = self.read_col_n(n);
+            cells.reverse();
+            new_grid.push(cells.clone());
+        }
+
+        let r = self.rows;
+        self.rows = self.cols;
+        self.cols = r;
+        self.grid = new_grid;
 
     }
 
     pub fn turn_counterclockwise(&mut self) {
-        
-    }
+        let mut new_grid = Vec::<Vec<char>>::with_capacity(self.cols);
 
-    pub fn read_by_rows(&self) -> String {
-        let mut out = String::new();
-        for row in self.grid.iter() {
-            let mut s: String = row.iter().collect();
-            s = s.replace('\0', "");
-            out.push_str(&s)
+        for n in (0..self.cols).rev() {
+            let cells = self.read_col_n(n);
+            new_grid.push(cells.clone());
         }
-        out
+
+        let r = self.rows;
+        self.rows = self.cols;
+        self.cols = r;
+        self.grid = new_grid;
     }
 
-    pub fn read_row_n(&self, n: usize) -> String {
-        let mut out: String = self.grid[n].iter().collect();
-        out = out.replace('\0', "");
-        out
+    pub fn read_row_n(&self, n: usize) -> Vec<char> {
+        self.grid[n].clone()
     }
 
-    pub fn read_col_n(&self, n: usize) -> String {
-        let mut out = String::new();
+    pub fn read_col_n(&self, n: usize) -> Vec<char> {
+        let mut out = Vec::new();
         for row in self.grid.iter() {
             let c = row[n];
             if c != '\0' {
@@ -77,23 +90,23 @@ impl Grid {
         out
     }
 
-    pub fn read_by_cols(&self) -> String {
-        let mut out = String::new();
-        for c in 0..self.cols {
-            out.push_str(&self.read_col_n(c))
-        }
-        out
-    }
-
 }
 
 #[test]
 fn test_grid() {
-    let g = Grid::new("thequickbrownfox", 4, 5);
+    let mut g = Grid::new("thequickbrownfox", 4, 5);
     println!("{:?}",g.grid);
     g.display();
-    println!("{}",g.read_by_rows());
-    println!("{}",g.read_row_n(1));
-    println!("{}",g.read_by_cols());
-    println!("{}",g.read_col_n(1));
+    println!("");
+    g.turn_clockwise();
+    g.display();
+    println!("");
+    g.turn_clockwise();
+    g.display();
+    println!("");
+    g.turn_clockwise();
+    g.display();
+    println!("");
+    g.turn_clockwise();
+    g.display();
 }
