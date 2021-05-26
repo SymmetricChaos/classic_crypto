@@ -1,6 +1,6 @@
 //! Common alphabets
 
-use rand::{prelude::SliceRandom, seq::index::sample, thread_rng};
+use rand::{prelude::SliceRandom, thread_rng};
 use itertools::Itertools;
 
 /// The 26 letter Latin alphabet used in English

@@ -2,4 +2,4 @@
 
 mod romanizations;
 
-pub use self::romanizations::NihonShiki;
+pub use self::romanizations::{NihonShikiHiragana,NihonShikiKatakana};

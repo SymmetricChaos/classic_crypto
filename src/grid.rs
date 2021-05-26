@@ -52,7 +52,7 @@ impl Grid {
 
         let mut new_grid = Vec::<Vec<char>>::with_capacity(self.cols);
 
-        for n in (0..self.cols) {
+        for n in 0..self.cols {
             let mut cells = self.read_col_n(n);
             cells.reverse();
             new_grid.push(cells.clone());
@@ -82,7 +82,7 @@ impl Grid {
     pub fn flip_diag(&mut self) {
         let mut new_grid = Vec::<Vec<char>>::with_capacity(self.cols);
 
-        for n in (0..self.cols) {
+        for n in 0..self.cols {
             let cells = self.read_col_n(n);
             new_grid.push(cells.clone());
         }
