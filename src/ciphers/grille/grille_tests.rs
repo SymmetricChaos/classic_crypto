@@ -16,11 +16,11 @@ mod grille_tests {
         let ciphertext = gr.encrypt(PLAINTEXT);
         let decrypted = gr.decrypt(&ciphertext);
 
-        println!("{}",gr.display_grille_blank());
+        //println!("{}",gr.display_grille_blank());
         
-        println!("{}",gr.display_grille_encrypted(PLAINTEXT));
+        //println!("{}",gr.display_grille_encrypted(PLAINTEXT));
 
-        //assert_eq!(ciphertext,"");
+        //println!("{}", ciphertext);
         assert_eq!(decrypted,PLAINTEXT)
     }
 

@@ -184,6 +184,9 @@ impl Iterator for PrimeSieve {
 }
 
 
+
+
+
 #[test]
 fn check_ranker() {
     assert_eq!(rank_str("ACDC","ABCDEFGHIJKLMNOPQRSTUVWXYZ"),vec![0,1,3,2]);

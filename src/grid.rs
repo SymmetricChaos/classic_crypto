@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use std::fmt;
 
 #[derive(Debug,Clone)]
 pub struct Grid {
@@ -31,17 +31,21 @@ impl Grid {
         Grid{ rows, cols, grid }
     }
 
-    pub fn display(&self) {
+    pub fn display(&self) -> String {
+        let mut out = String::new();
+
         for r in self.grid.iter() {
             for e in r {
                 if e == &'\0' {
-                    print!("  ");
+                    out.push(' ');
                 } else {
-                    print!("{} ",e);
+                    out.push(*e);
                 }
+                out.push(' ')
             }
-            println!("");
+            out.push('\n')
         }
+        out
     }
 
     pub fn turn_clockwise(&mut self) {
@@ -75,6 +79,20 @@ impl Grid {
         self.grid = new_grid;
     }
 
+    pub fn flip_diag(&mut self) {
+        let mut new_grid = Vec::<Vec<char>>::with_capacity(self.cols);
+
+        for n in (0..self.cols) {
+            let cells = self.read_col_n(n);
+            new_grid.push(cells.clone());
+        }
+
+        let r = self.rows;
+        self.rows = self.cols;
+        self.cols = r;
+        self.grid = new_grid;
+    }
+
     pub fn read_row_n(&self, n: usize) -> Vec<char> {
         self.grid[n].clone()
     }
@@ -92,21 +110,29 @@ impl Grid {
 
 }
 
+impl fmt::Display for Grid {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.display())
+    }
+}
+
 #[test]
 fn test_grid() {
     let mut g = Grid::new("thequickbrownfox", 4, 5);
     println!("{:?}",g.grid);
-    g.display();
-    println!("");
+    println!("{}",g);
     g.turn_clockwise();
-    g.display();
-    println!("");
+    println!("{}",g);
     g.turn_clockwise();
-    g.display();
-    println!("");
+    println!("{}",g);
     g.turn_clockwise();
-    g.display();
-    println!("");
+    println!("{}",g);
     g.turn_clockwise();
-    g.display();
+    println!("{}",g);
+    g.flip_diag();
+    println!("{}",g);
+    g.flip_diag();
+    println!("{}",g);
+    g.turn_counterclockwise();
+    println!("{}",g);
 }
