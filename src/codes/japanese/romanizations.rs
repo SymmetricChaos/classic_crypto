@@ -67,16 +67,19 @@ impl NihonShiki<'_> {
             };
             if s.is_whitespace() {
                 out.push(s);
+            // handle apostophe after ん
             } else if s == 'ん' {
                 if vowels.contains(&symbols.peek().unwrap()) {
                     out.push_str("n'");
                 } else {
                     out.push('n');
                 }
+            // handle sokuon 
             } else if s == 'っ' {
                 let next_kana = symbols.peek().unwrap();
                 let romaji = self.map[next_kana].chars().nth(0).unwrap();
                 out.push(romaji);
+            // handle yoon
             } else if small_y.contains(&s) {
                 let prev_char = out.pop().unwrap();
                 if prev_char == 'i' {
@@ -84,7 +87,7 @@ impl NihonShiki<'_> {
                 } else {
                     panic!("small y kana must be preceeded by a i-column kana")
                 }
-
+            // everything else
             } else {
                 out.push_str(&self.map[&s])
             }

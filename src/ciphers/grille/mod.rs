@@ -1,6 +1,7 @@
 //! Transposition ciphers
 
 pub mod grille;
+pub mod grid;
 
 mod grille_tests;
 
