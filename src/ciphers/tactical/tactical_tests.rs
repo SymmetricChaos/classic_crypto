@@ -8,8 +8,9 @@ mod tactical_tests {
     #[test]
     fn test_batco() {
         let b = BATCO::random();
-        println!("{}",b.key_section());
-        //println!("{}",b.cipher_section())
-        println!("{}",b.key_to_row("2Z"))
+        b.set_key("2Z");
+
+        println!("{}",b.key_row());
+        println!("{}",b.encrypt("0123456789CH"))
     }
 }
