@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN36;
-use crate::ciphers::{transposition::IncompleteColumnar,VicCheckerboard};
+use crate::ciphers::{transposition::Columnar,VicCheckerboard};
 use crate::Cipher;
 
 
@@ -204,12 +204,12 @@ impl VIC {
         let mut ctext = checkerboard.encrypt(text);
 
         let columnar_key1 = vec_to_string(&self.key1);
-        let columnar1 = IncompleteColumnar::new(&columnar_key1,"1234567890");
+        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
         ctext = columnar1.encrypt(&ctext);
 
         // Supposedly this is a "diagonal transposition" but I can't find what they means yet
         let columnar_key2 = vec_to_string(&self.key2);
-        let columnar2 = IncompleteColumnar::new(&columnar_key2,"1234567890");
+        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
         ctext = columnar2.encrypt(&ctext);
         
         ctext
@@ -218,11 +218,11 @@ impl VIC {
     fn decrypt(&self, text: &str) -> String {
 
         let columnar_key2 = vec_to_string(&self.key2);
-        let columnar2 = IncompleteColumnar::new(&columnar_key2,"1234567890");
+        let columnar2 = Columnar::new(&columnar_key2,"1234567890");
         let mut ptext = columnar2.decrypt(text);
 
         let columnar_key1 = vec_to_string(&self.key1);
-        let columnar1 = IncompleteColumnar::new(&columnar_key1,"1234567890");
+        let columnar1 = Columnar::new(&columnar_key1,"1234567890");
         ptext = columnar1.decrypt(&ptext);
 
         let checkerboard = VicCheckerboard::new(self.key3.clone());

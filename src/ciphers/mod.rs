@@ -14,6 +14,9 @@ pub mod playfair;
 pub mod porta;
 pub mod m209;
 
+mod tactical;
+pub use self::tactical::BATCO;
+
 mod bazeries;
 pub use self::bazeries::Bazeries;
 

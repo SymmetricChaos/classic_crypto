@@ -176,8 +176,6 @@ impl<'a> EnigmaM3<'a> {
 
 }
 
-// For this to work we 
-//impl crate::auxiliary::Cipher for EnigmaM3<'_> {}
 
 impl fmt::Display for EnigmaM3<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
