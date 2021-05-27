@@ -1,5 +1,6 @@
 use std::fmt;
-//use num::Integer;
+
+//use crate::grid::Grid;
 
 
 // This will have to be a whole family of ciphers
@@ -119,7 +120,7 @@ impl crate::Cipher for Route<'_> {
         }
 
         match self.key {
-            "stripe" => self.encrypt_stripe(text),
+            //"stripe" => self.encrypt_stripe(text),
             "snake" => self.encrypt_snake(text),
             _ => panic!("invalid key"),
         }
@@ -133,7 +134,7 @@ impl crate::Cipher for Route<'_> {
         }
 
         match self.key {
-            "stripe" => self.decrypt_stripe(text),
+            //"stripe" => self.decrypt_stripe(text),
             "snake" => self.decrypt_snake(text),
             _ => panic!("invalid key"),
         }

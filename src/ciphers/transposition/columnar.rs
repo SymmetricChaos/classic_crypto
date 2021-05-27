@@ -1,27 +1,8 @@
 use std::fmt;
 use num::Integer;
 
+use crate::grid::Grid;
 use crate::auxiliary::rank_str;
-
-pub fn pad_with_char(text: &str, length: usize, symbol: char) -> String {
-    let mut text = text.to_string();
-    while text.chars().count() % length != 0 {
-        text.push(symbol)
-    }
-    text
-}
-
-
-
-// Given 5,2,1,3,0,4 we want to get 4,2,1,3,5,0
-fn inverse_ranks(v: Vec<usize>) -> Vec<usize> {
-    let mut out = v.clone();
-    for (pos,val) in v.iter().enumerate() {
-        out[*val] = pos
-    }
-    out
-}
-
 
 pub struct Columnar<'a> {
     key: Vec<usize>,
@@ -41,26 +22,14 @@ impl Columnar<'_> {
 impl crate::Cipher for Columnar<'_> {
 
     fn encrypt(&self, text: &str) -> String {
-
         let tlen = text.chars().count();
-        if tlen % self.key.len() != 0 {
-            panic!("plaintext length must be a multiple of {}, please add padding",self.key.len())
-        }
+        let n_rows = tlen.div_ceil(&self.key.len());
+        let g = Grid::new(text, n_rows, self.key.len());
 
-        let mut columns = Vec::new();
-        for _ in 0..self.key.len() {
-            columns.push(Vec::<char>::new());
-        }
-        let mut symbols = text.chars();
-        let n_rows = text.len().div_ceil(&self.key.len());
-        for _row in 0..n_rows {
-            for col in columns.iter_mut() {
-                col.push(symbols.next().unwrap())
-            }
-        }
-        let mut out = "".to_string();
-        for rank in inverse_ranks(self.key.clone()).iter() {
-            let s: String = columns[*rank].iter().collect();
+        let mut out = String::with_capacity(text.len());
+        for k in self.key.iter() {
+            let mut s: String = g.read_col_n(*k).iter().collect();
+            s = s.replace('\0', "");
             out.push_str(&s);
         }
         out
@@ -68,15 +37,37 @@ impl crate::Cipher for Columnar<'_> {
 
     // Decoding is very different
     fn decrypt(&self, text: &str) -> String {
-        let symbols: Vec<char> = text.chars().collect();
-        let n_rows = text.len().div_ceil(&self.key.len());
-        let rows: Vec<&[char]> = symbols.chunks(n_rows).collect();
-        let mut out = "".to_string();
-        for col in 0..n_rows {
-            for rank in self.key.iter() {
-                out.push(rows[*rank][col])
+        let tlen = text.chars().count();
+        let filled = match tlen % self.key.len() {
+            0 => self.key.len(),
+            a => a
+        };
+        let n_rows = tlen.div_ceil(&self.key.len());
+
+        let mut g = Grid::empty(n_rows, self.key.len());
+        let mut symbols = text.chars();
+
+        for k in self.key.iter() {
+            let mut s = String::new();
+            if *k < filled {
+                for _ in 0..self.key.len() {
+                    s.push(symbols.next().unwrap())
+                }
+            } else {
+                for _ in 0..self.key.len()-1 {
+                    s.push(symbols.next().unwrap())
+                }
             }
+            
+            g.write_col_n(*k,&s);
         }
+
+        let mut out = String::with_capacity(text.len());
+        for i in 0..n_rows {
+            let s: String = g.read_row_n(i).iter().collect();
+            out.push_str(&s)
+        }
+        out = out.replace('\0', "");
         out
     }
 
@@ -84,6 +75,6 @@ impl crate::Cipher for Columnar<'_> {
 
 impl fmt::Display for Columnar<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Columnar Cipher\nkey: {:?}",self.key_name)
+        write!(f, "Columnar Cipher\nkey: {}",self.key_name)
     }
 }

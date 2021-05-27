@@ -1,5 +1,7 @@
 use std::fmt;
 
+use itertools::Itertools;
+
 #[derive(Debug,Clone)]
 pub struct Grid {
     rows: usize,
@@ -97,6 +99,13 @@ impl Grid {
         self.grid[n].clone()
     }
 
+    pub fn write_row_n(&mut self, n: usize, text: &str) {
+        let r = text.chars().take(self.cols).collect_vec();
+        for (c, p) in r.iter().zip(0..self.cols) {
+            self.grid[n][p] = *c
+        }
+    }
+
     pub fn read_col_n(&self, n: usize) -> Vec<char> {
         let mut out = Vec::new();
         for row in self.grid.iter() {
@@ -106,6 +115,13 @@ impl Grid {
             out.push(c)
         }
         out
+    }
+
+    pub fn write_col_n(&mut self, n: usize, text: &str) {
+        let r = text.chars().take(self.rows).collect_vec();
+        for (c, p) in r.iter().zip(0..self.rows) {
+            self.grid[p][n] = *c
+        }
     }
 
 }
@@ -132,6 +148,13 @@ fn test_grid() {
     g.flip_diag();
     println!("{}",g);
     g.flip_diag();
+    println!("{}",g);
+    g.turn_counterclockwise();
+    println!("{}",g);
+    g.write_row_n(1, "AAA");
+    g.write_row_n(3, "BBBBBB");
+    g.write_col_n(1, "CCC");
+    g.write_col_n(3, "DDDDD");
     println!("{}",g);
     g.turn_counterclockwise();
     println!("{}",g);
