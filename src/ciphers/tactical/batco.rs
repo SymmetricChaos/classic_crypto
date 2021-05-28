@@ -1,4 +1,4 @@
-use std::{cell::Cell, collections::HashMap};
+use std::cell::Cell;
 use itertools::Itertools;
 use rand::{Rng, thread_rng};
 
@@ -20,7 +20,7 @@ enough for serious cryptanalysis to be applied.
 */
 
 
-//["2", "3", "4", "5", "6", "7", "0", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "CH", "."];
+//["0", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "CH", "."];
 impl BATCO {
     pub fn random() -> BATCO {
         let mut cipher_rows = Vec::with_capacity(26);
@@ -91,7 +91,8 @@ impl BATCO {
         let mut symbols = text.chars();
         let breaks = [0,4,6,8,10,12,14,16,18,20,22,24,26];
 
-        let mut out = String::new();
+        let mut out = String::with_capacity(text.len());
+        // loop while c is Some(char)
         while let Some(c) = symbols.next() {
             // H is ignored since it always follows C
             if c == 'H' { continue }
@@ -119,9 +120,17 @@ impl BATCO {
         out
     }
 
-/*     pub fn decrypt(&self, text: &str) -> String {
-        let alphabet = self.cipher_rows[self.key.get()];
-        let breaks = [0,4,6,8,10,12,14,16,18,20,22,24,26];
-        
-    } */
+    pub fn decrypt(&self, text: &str) -> String {
+        let alphabet = &self.cipher_rows[self.key.get()];
+        let digits = ["0", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "CH", "."];
+        let symbols = text.chars();
+
+        let mut out = String::with_capacity(text.len());
+        for c in symbols {
+            let pos = alphabet.chars().position(|x| x == c).unwrap()/2;
+            out.push_str(digits[pos])
+        }
+
+        out
+    }
 }
