@@ -2,6 +2,7 @@
 mod tactical_tests {
 
     use crate::ciphers::{BATCO,DRYAD};
+    use crate::Cipher;
 
     #[test]
     fn test_batco() {
@@ -21,13 +22,14 @@ mod tactical_tests {
     #[test]
     fn test_dryad() {
         let d = DRYAD::random();
-        println!("{}",d.code_page());
+        d.set_key('H');
+        //println!("{}",d.code_page());
 
-/*         let plaintext = "0123456789";
+        let plaintext = "012345678";
         let ciphertext = d.encrypt(plaintext);
         let decrypted = d.decrypt(&ciphertext);
 
         //println!("{}",ciphertext);
-        assert_eq!(plaintext,decrypted) */
+        assert_eq!(plaintext,decrypted)
     }
 }
