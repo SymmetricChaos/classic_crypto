@@ -16,6 +16,7 @@ pub mod m209;
 
 mod tactical;
 pub use self::tactical::BATCO;
+pub use self::tactical::DRYAD;
 
 mod bazeries;
 pub use self::bazeries::Bazeries;
