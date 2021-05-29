@@ -38,7 +38,7 @@ mod transposition_tests {
     }
     #[test]
     fn route_stripe() {
-        let route = Route::new((6,6),"stripe", vec![3,1,0,2,4,5]);
+        let route = Route::new((6,6), "stripe", vec![3,1,0,2,4,5]);
         let ciphertext = route.encrypt(PLAINTEXT);
         let decrypted = route.decrypt(&ciphertext);
     

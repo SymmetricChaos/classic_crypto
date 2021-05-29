@@ -1,7 +1,5 @@
 use std::fmt;
 
-use itertools::Itertools;
-
 const EMPTY_CELL: char = '\0';
 const BLOCKED_CELL: char = '\u{1f}';
 
@@ -107,6 +105,10 @@ impl Grid {
         self.rows = self.cols;
         self.cols = r;
         self.grid = new_grid;
+    }
+
+    pub fn transpose(&mut self) {
+        self.flip_diag();
     }
 
     // Flip across the anti-diagonal line from top right to bottom left, changes the dimensions
@@ -234,84 +236,94 @@ impl fmt::Display for Grid {
     }
 }
 
-#[test]
-fn test_grid_rotation() {
-    let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox\0", 5, 6);
-    println!("{:?}",g.grid);
-    println!("{}",g);
-    g.turn_clockwise();
-    println!("{}",g);
-    g.turn_clockwise();
-    println!("{}",g);
-    g.turn_clockwise();
-    println!("{}",g);
-    g.turn_clockwise();
-    println!("{}",g);
-    g.turn_counterclockwise();
-    println!("{}",g);
-    g.turn_counterclockwise();
-    println!("{}",g);
-    g.turn_counterclockwise();
-    println!("{}",g);
-    g.turn_counterclockwise();
-    println!("{}",g);
-}
 
 
-#[test]
-fn test_grid_mirror() {
-    let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
-    let normal_form = g.clone();
+#[cfg(test)]
+mod grid_tests {
 
-    println!("original grid");
-    println!("{}",g);
+    use crate::grid::Grid;
 
-    println!("diagonal flip");
-    g.flip_diag();
-    println!("{}",g);
-    g.flip_diag();
-    assert_eq!(g,normal_form);
+    #[test]
+    fn test_grid_rotation() {
+        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox\0", 5, 6);
+        println!("{}",g);
+        g.turn_clockwise();
+        println!("{}",g);
+        g.turn_clockwise();
+        println!("{}",g);
+        g.turn_clockwise();
+        println!("{}",g);
+        g.turn_clockwise();
+        println!("{}",g);
+        g.turn_counterclockwise();
+        println!("{}",g);
+        g.turn_counterclockwise();
+        println!("{}",g);
+        g.turn_counterclockwise();
+        println!("{}",g);
+        g.turn_counterclockwise();
+        println!("{}",g);
+    }
 
-    println!("anti-diagonal flip");
-    g.flip_antidiag();
-    println!("{}",g);
-    g.flip_antidiag();
-    assert_eq!(g,normal_form);
 
-    println!("horizontal flip");
-    g.flip_horizontal();
-    println!("{}",g);
-    g.flip_horizontal();
-    assert_eq!(g,normal_form);
+    #[test]
+    fn test_grid_mirror() {
+        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        let normal_form = g.clone();
 
-    println!("vertical flip");
-    g.flip_vertical();
-    println!("{}",g);
-    g.flip_vertical();
-    assert_eq!(g,normal_form);
-}
-    
-#[test]
-fn test_grid_write() {
-    let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
-    println!("{:?}",g.grid);
-    println!("{}",g);
-    g.write_row_n(1, "AA");
-    println!("{}",g);
-    g.write_row_n(3, "BBBBBB");
-    println!("{}",g);
-    g.write_col_n(1, "CCCCCC");
-    println!("{}",g);
-    g.write_col_n(3, "DDD");
-    println!("{}",g);
-    g.replace('B', '#');
-    println!("{}",g);
-}
+        println!("original grid\n{}",g);
 
-#[test]
-fn test_grid_empty() {
-    let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
-    println!("{:?}",g.grid);
-    g.empty();
-    println!("{:?}",g.grid);
+        g.flip_diag();
+        println!("diagonal flip\n{}",g);
+        g.flip_diag();
+        assert_eq!(g,normal_form);
+
+        g.flip_antidiag();
+        println!("anti-diagonal flip\n{}",g);
+        g.flip_antidiag();
+        assert_eq!(g,normal_form);
+
+        g.flip_horizontal();
+        println!("horizontal flip\n{}",g);
+        g.flip_horizontal();
+        assert_eq!(g,normal_form);
+
+        g.flip_vertical();
+        println!("vertical flip\n{}",g);
+        g.flip_vertical();
+        assert_eq!(g,normal_form);
+    }
+
+
+    #[test]
+    fn test_grid_write() {
+        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        
+        println!("original grip\n{}",g);
+
+        g.write_row_n(1, "AA");
+        println!("write two As to row 1\n{}",g);
+
+        g.write_row_n(2, "BBBB");
+        println!("write four Bs to row 2, note skipping of blocked cell\n{}",g);
+
+        g.write_col_n(1, "CCCCCC");
+        println!("write six Cs to column 1, not that only five Cs are used\n{}",g);
+
+        g.overwrite_col_n(4, "DDDD");
+        println!("overwrite four As to row 1, note overwriting of blocked cell\n{}",g);
+
+        g.replace('B', '#');
+        println!("replace every B with #\n{}",g);
+    }
+
+
+    #[test]
+    fn test_grid_empty() {
+        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        println!("{:?}",g.grid);
+        g.empty();
+        println!("{:?}",g.grid);
+    }
+
 }
