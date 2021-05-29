@@ -36,23 +36,23 @@ mod transposition_tests {
         assert_eq!(ciphertext,"TUBNJSRLDHQIKRWFXUPOETEAYOXECOOMVHZG");
         assert_eq!(decrypted,PLAINTEXT)
     }
-/*  #[test]
+    #[test]
     fn route_stripe() {
-        let route = Route::new((6,6),"stripe");
+        let route = Route::new((6,6),"stripe", vec![3,1,0,2,4,5]);
         let ciphertext = route.encrypt(PLAINTEXT);
         let decrypted = route.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"TCNMRZHKFPTYEBOSHDQRXOEOUOJVLGIWUEAX");
+        assert_eq!(ciphertext,"QRXOEOHKFPTYTCNMRZEBOSHDUOJVLGIWUEAX");
         assert_eq!(decrypted,PLAINTEXT)
-    } */
+    }
 
     #[test]
     fn route_snake() {
-        let route = Route::new((6,6),"snake");
+        let route = Route::new((6,6), "snake", vec![3,1,0,2,4,5]);
         let ciphertext = route.encrypt(PLAINTEXT);
         let decrypted = route.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"TCNMRZYTPFKHEBOSHDOEOXRQUOJVLGXAEUWI");
+        assert_eq!(ciphertext,"QBXSEDHOFVTGTWNERXEROOHOUKJPLYICUMAZ");
         assert_eq!(decrypted,PLAINTEXT)
     }
 

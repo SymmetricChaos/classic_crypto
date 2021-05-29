@@ -11,7 +11,7 @@ mod tactical_tests {
 
         //println!("{}",b.code_page());
 
-        let plaintext = "012345.6789CH";
+        let plaintext = "012CH345.6789CH";
         let ciphertext = b.encrypt(plaintext);
         let decrypted = b.decrypt(&ciphertext);
 

@@ -44,7 +44,7 @@ impl crate::Cipher for Columnar<'_> {
         };
         let n_rows = tlen.div_ceil(&self.key.len());
 
-        let mut g = Grid::empty(n_rows, self.key.len());
+        let mut g = Grid::new_empty(n_rows, self.key.len());
         let mut symbols = text.chars();
 
         for k in self.key.iter() {
