@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod grille_tests {
 
-    use crate::ciphers::grille::{Grille};
+    use crate::ciphers::grille::{Grille,TurningGrille};
     use crate::Cipher;
     use crate::alphabets::LATIN26;
 
@@ -24,5 +24,11 @@ mod grille_tests {
         assert_eq!(decrypted,PLAINTEXT)
     }
 
+    #[test]
+    fn turning_grille() {
+        let key = vec![0,5,10,15,1,14,8,11,2,4,7,12,3,6,9,13];
+        let gr = TurningGrille::new(4, key);
 
+        println!("{}",gr.display_grille_blank());
+    }
 }
