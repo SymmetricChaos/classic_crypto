@@ -1,8 +1,10 @@
 use std::cell::Cell;
 use itertools::Itertools;
 use rand::{Rng, thread_rng};
+use rand_xoshiro::rand_core::SeedableRng;
+use rand_xoshiro::Xoshiro256StarStar;
 
-use crate::alphabets::{LATIN26,scramble_alphabet};
+use crate::alphabets::{LATIN26,scramble_alphabet,scramble_alphabet_seeded};
 
 #[derive(Clone,Debug)]
 pub struct BATCO {
@@ -21,6 +23,23 @@ enough for serious cryptanalysis to be applied.
 
 
 impl BATCO {
+
+    pub fn random_seeded(seed: u64) -> BATCO {
+        let mut rng = Xoshiro256StarStar::seed_from_u64(seed);
+
+        let mut cipher_rows = Vec::with_capacity(26);
+        for _ in 0..26 {
+            cipher_rows.push( scramble_alphabet_seeded(LATIN26, &mut rng) )
+        }
+
+        let mut key_cols = Vec::with_capacity(6);
+        for _ in 0..6 {
+            key_cols.push( scramble_alphabet_seeded(LATIN26, &mut rng) )
+        }
+
+        BATCO{ cipher_rows, key_cols, message_key: Cell::new(0) }
+    }
+
     pub fn random() -> BATCO {
 
         let mut cipher_rows = Vec::with_capacity(26);

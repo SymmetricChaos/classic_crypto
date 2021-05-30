@@ -1,7 +1,8 @@
 //! Common alphabets
 
-use rand::{prelude::SliceRandom, thread_rng};
+use rand::{RngCore, SeedableRng, prelude::SliceRandom, thread_rng};
 use itertools::Itertools;
+use rand_xoshiro::Xoshiro256StarStar;
 
 /// The 26 letter Latin alphabet used in English
 pub const LATIN26: &'static str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -64,6 +65,13 @@ pub fn scramble_alphabet(alphabet: &str) -> String {
     v.iter().collect::<String>()
 }
 
+pub fn scramble_alphabet_seeded<R: SeedableRng + RngCore>(alphabet: &str, rng: &mut R) -> String {
+    let mut v: Vec<char> = alphabet.chars().collect();
+    v.shuffle(rng);
+    v.iter().collect::<String>()
+}
+
+
 
 
 // Copy of an alphabet rearranged to start with the key
@@ -119,4 +127,14 @@ fn check_alphabets() {
         print!("{} ",s)
     }
     println!();
+}
+
+
+
+#[test]
+fn test_scramble_seeded() {
+    let mut rng = Xoshiro256StarStar::seed_from_u64(237);
+    println!("{}",scramble_alphabet_seeded(LATIN26, &mut rng));
+    let mut rng = Xoshiro256StarStar::seed_from_u64(237);
+    println!("{}",scramble_alphabet_seeded(LATIN26, &mut rng));
 }

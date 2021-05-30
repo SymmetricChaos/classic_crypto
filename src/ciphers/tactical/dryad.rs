@@ -1,7 +1,10 @@
 use std::cell::Cell;
 use rand::{Rng, thread_rng};
+use rand_xoshiro::rand_core::SeedableRng;
+use rand_xoshiro::Xoshiro256StarStar;
 
 use crate::alphabets::scramble_alphabet;
+use crate::alphabets::scramble_alphabet_seeded;
 
 pub struct DRYAD {
     cipher_rows: Vec<String>,
@@ -9,6 +12,18 @@ pub struct DRYAD {
 }
 
 impl DRYAD {
+
+    pub fn random_seeded(seed: u64) -> DRYAD {
+        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
+        let mut rng = Xoshiro256StarStar::seed_from_u64(seed);
+
+        let mut cipher_rows = Vec::with_capacity(26);
+        for _ in 0..25 {
+            cipher_rows.push( scramble_alphabet_seeded(alphabet, &mut rng) )
+        }
+
+        DRYAD{ cipher_rows, message_key: Cell::new(0) }
+    }
 
     pub fn random() -> DRYAD {
         let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
