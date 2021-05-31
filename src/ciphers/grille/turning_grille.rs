@@ -55,7 +55,7 @@ impl crate::Cipher for TurningGrille {
         if text.chars().count() != self.text_length {
             panic!("Text must have exactly {} characters, please add padding", self.text_length)
         }
-        let g = self.grille.clone();
+        let mut g = self.grille.clone();
         let section = self.text_length/4;
         let out = String::with_capacity(text.len());
 
@@ -63,7 +63,9 @@ impl crate::Cipher for TurningGrille {
             let lo = i*section;
             let hi = lo+section;
             let snip = &text[lo..hi];
-
+            g.write_rows(snip);
+            println!("{}",g);
+            g.turn_clockwise();
         }
 
         out

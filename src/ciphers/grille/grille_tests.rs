@@ -30,5 +30,7 @@ mod grille_tests {
         let gr = TurningGrille::new(4, key);
 
         println!("{}",gr.display_grille_blank());
+
+        let ciphertext = gr.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
     }
 }
