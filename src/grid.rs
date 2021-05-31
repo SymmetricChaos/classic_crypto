@@ -1,5 +1,7 @@
 use std::fmt;
 
+use itertools::Itertools;
+
 const EMPTY_CELL: char = '\0';
 const BLOCKED_CELL: char = '\u{1f}';
 
@@ -156,16 +158,30 @@ impl Grid {
         out
     }
 
+    // Read in row-major order
     pub fn read_rows(&self) -> Vec<Vec<char>> {
         self.grid.clone()
     }
 
+    // Read in column-major order
     pub fn read_cols(&self) -> Vec<Vec<char>> {
         let mut out_grid = Vec::<Vec<char>>::with_capacity(self.cols);
         for n in 0..self.cols {
             out_grid.push( self.read_col_n(n) )
         }
         out_grid
+    }
+
+    // Write in row-major order skipping any BLOCKED_CELL
+    pub fn write_rows(&mut self, text: &str) {
+        let mut symbols = text.chars();
+        for row in self.grid.iter_mut() {
+            for cell in row.iter_mut() {
+                if cell != &BLOCKED_CELL {
+                    *cell = symbols.next().unwrap_or(*cell)
+                }
+            }
+        }
     }
 
     // Write as many characters as possible to row n from left to right, skipping any BLOCKED_CELL
@@ -226,6 +242,12 @@ impl Grid {
             }
 
         }
+    }
+
+    // Use another Grid of of EMPTY_CELL and BLOCKED_CELL to cover the Grid
+    // EMPTY_CELL is treated as transparent and BLOCKED_CELL as opaque
+    pub fn mask(&mut self, mask_grid: Grid) {
+
     }
 
 }
@@ -324,6 +346,14 @@ mod grid_tests {
         println!("{:?}",g.grid);
         g.empty();
         println!("{:?}",g.grid);
+    }
+
+    #[test]
+    fn test_grid_write_rows() {
+        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        println!("{}",g);
+        g.write_rows("ABCDEFGHIJKLMNOPQRSTUV");
+        println!("{}",g);
     }
 
 }

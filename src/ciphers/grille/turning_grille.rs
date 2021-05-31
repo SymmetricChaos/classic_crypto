@@ -49,19 +49,38 @@ impl TurningGrille {
     }
 }
 
-/* impl crate::Cipher for TurningGrille<'_> {
+impl crate::Cipher for TurningGrille {
 
     fn encrypt(&self, text: &str) -> String {
+        if text.chars().count() != self.text_length {
+            panic!("Text must have exactly {} characters, please add padding", self.text_length)
+        }
+        let g = self.grille.clone();
+        let section = self.text_length/4;
+        let out = String::with_capacity(text.len());
 
+        for i in 0..4 {
+            let lo = i*section;
+            let hi = lo+section;
+            let snip = &text[lo..hi];
+
+        }
+
+        out
     }
 
     fn decrypt(&self, text: &str) -> String {
+        let g = self.grille.clone();
+        let section = self.text_length/4;
 
+        let out = String::with_capacity(text.len());
+
+        out
     }
 }
- */
-/* impl fmt::Display for TurningGrille<'_> {
+ 
+impl fmt::Display for TurningGrille {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Turning Grille",self.key)
+        write!(f, "Turning Grille\n{}",self.display_grille_blank())
     }
-} */
+}
