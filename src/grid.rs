@@ -46,12 +46,20 @@ impl Grid {
         Grid{ rows, cols, grid }
     }
 
+
+
+
+
     pub fn empty(&mut self) {
         let row = vec![EMPTY_CELL; self.cols];
         for r in self.grid.iter_mut() {
             *r = row.clone()
         }
     }
+
+
+
+
 
     pub fn display(&self) -> String {
         let mut out = String::new();
@@ -69,6 +77,10 @@ impl Grid {
         }
         out
     }
+
+
+
+
 
     // Rotate 90 degree clockwise, changes the dimensions
     pub fn turn_clockwise(&mut self) {
@@ -154,6 +166,35 @@ impl Grid {
     }
 
 
+
+
+
+    // Set the provided cell to BLOCKED_CELL
+    pub fn block_cell(&mut self, row: usize, col: usize) {
+        self.grid[row][col] = BLOCKED_CELL;
+    }
+
+    // Set the provided cell to EMPTY_CELL
+    pub fn empty_cell(&mut self, row: usize, col: usize) {
+        self.grid[row][col] = EMPTY_CELL;
+    }
+
+    // Replace old_char with new_char across the entire grid
+    pub fn replace(&mut self, old_char: char, new_char: char) {
+        for row in self.grid.iter_mut() {
+            for cell in row.iter_mut() {
+                if cell == &old_char {
+                    *cell = new_char
+                }
+            }
+
+        }
+    }
+
+
+
+
+
     pub fn read_row_n(&self, n: usize) -> Vec<char> {
         self.grid[n].clone()
     }
@@ -181,6 +222,10 @@ impl Grid {
         out_grid
     }
 
+
+
+
+    
     // Write in row-major order skipping any BLOCKED_CELL
     pub fn write_rows(&mut self, text: &str) {
         let mut symbols = text.chars();
@@ -211,6 +256,22 @@ impl Grid {
         }
     }
 
+
+
+
+    // Write in row-major order skipping any BLOCKED_CELL
+    pub fn write_cols(&mut self, text: &str) {
+        let mut symbols = text.chars();
+        for col in 0..self.cols {
+            for row in 0..self.rows {
+                let cell = self.grid[row][col];
+                if cell != BLOCKED_CELL {
+                    self.grid[row][col] = symbols.next().unwrap_or(cell)
+                }
+            }
+        }
+    }
+
     // Write as many characters as possible to column n from top to bottom, skipping any BLOCKED_CELL
     pub fn write_col_n(&mut self, n: usize, text: &str) {
         let mut new_text = text.chars();
@@ -231,27 +292,7 @@ impl Grid {
         }
     }
 
-    // Set the provided cell to BLOCKED_CELL
-    pub fn block_cell(&mut self, row: usize, col: usize) {
-        self.grid[row][col] = BLOCKED_CELL;
-    }
 
-    // Set the provided cell to EMPTY_CELL
-    pub fn empty_cell(&mut self, row: usize, col: usize) {
-        self.grid[row][col] = EMPTY_CELL;
-    }
-
-    // Replace old_char with new_char across the entire grid
-    pub fn replace(&mut self, old_char: char, new_char: char) {
-        for row in self.grid.iter_mut() {
-            for cell in row.iter_mut() {
-                if cell == &old_char {
-                    *cell = new_char
-                }
-            }
-
-        }
-    }
 
 /*     // Use another Grid of of EMPTY_CELL and BLOCKED_CELL to cover the Grid
     // EMPTY_CELL is treated as transparent and BLOCKED_CELL as opaque
