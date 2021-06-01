@@ -2,27 +2,18 @@ use std::fmt;
 
 use itertools::Itertools;
 
-const EMPTY_CELL: char = '\0';
-const BLOCKED_CELL: char = '\u{1f}';
+pub const EMPTY_CELL: char = '\0';
+pub const BLOCKED_CELL: char = '\u{1f}';
 
 // Grid reserves 0x00 (Unicode null) to represent an unused space and 0x1F (Unicode unit seperator) to represent an unusable spaces
 #[derive(Debug,Clone,Hash,PartialEq)]
 pub struct Grid {
-    rows: usize,
-    cols: usize,
-    grid: Vec<Vec<char>>
+    pub rows: usize,
+    pub cols: usize,
+    pub grid: Vec<Vec<char>>
 }
 
 impl Grid {
-    pub fn new_empty(rows: usize, cols: usize) -> Grid {
-        let row = vec![EMPTY_CELL; cols];
-        let mut grid = Vec::<Vec<char>>::with_capacity(rows);
-        for _ in 0..rows {
-            grid.push(row.clone())
-        }
-        Grid{ rows, cols, grid }
-    }
-
     pub fn new(text: &str, rows: usize, cols: usize) -> Grid {
         let mut symbols = text.chars();
         let mut grid = Vec::<Vec<char>>::with_capacity(rows);
@@ -33,6 +24,24 @@ impl Grid {
                 row.push(symbols.next().unwrap_or(EMPTY_CELL));
             }
             grid.push(row)
+        }
+        Grid{ rows, cols, grid }
+    }
+
+    pub fn new_empty(rows: usize, cols: usize) -> Grid {
+        let row = vec![EMPTY_CELL; cols];
+        let mut grid = Vec::<Vec<char>>::with_capacity(rows);
+        for _ in 0..rows {
+            grid.push(row.clone())
+        }
+        Grid{ rows, cols, grid }
+    }
+
+    pub fn new_blocked(rows: usize, cols: usize) -> Grid {
+        let row = vec![BLOCKED_CELL; cols];
+        let mut grid = Vec::<Vec<char>>::with_capacity(rows);
+        for _ in 0..rows {
+            grid.push(row.clone())
         }
         Grid{ rows, cols, grid }
     }
@@ -244,11 +253,11 @@ impl Grid {
         }
     }
 
-    // Use another Grid of of EMPTY_CELL and BLOCKED_CELL to cover the Grid
+/*     // Use another Grid of of EMPTY_CELL and BLOCKED_CELL to cover the Grid
     // EMPTY_CELL is treated as transparent and BLOCKED_CELL as opaque
     pub fn mask(&mut self, mask_grid: Grid) {
 
-    }
+    } */
 
 }
 

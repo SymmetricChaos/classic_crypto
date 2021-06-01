@@ -1,6 +1,7 @@
 //! Transposition ciphers
 
 pub mod grille;
+pub mod grille_copy;
 pub mod turning_grille;
 
 mod grille_tests;
