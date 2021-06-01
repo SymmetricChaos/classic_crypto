@@ -37,6 +37,6 @@ mod grille_tests {
 
         println!("{}",gr.display_grille_blank());
 
-        let ciphertext = gr.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+        //let ciphertext = gr.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
     }
 }

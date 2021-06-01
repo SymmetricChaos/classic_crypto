@@ -63,6 +63,22 @@ impl Grille<'_> {
         Grille{ rows, cols, grille, text_length, null_alphabet }
     }
 
+    pub fn new<'a>(rows: usize, cols: usize, text_length: usize, null_alphabet: &'a str, key: Vec<usize>) -> Grille {
+
+        if text_length > (rows*cols) {
+            panic!("A {}x{} grille cannot contain {} symbols",rows,cols,text_length)
+        }
+
+        let mut grille = Grid::new_blocked(rows, cols);
+        for k in key {
+            let row = k / cols;
+            let col = k % cols;
+            grille.grid[row][col] = '\0';
+        }
+
+        Grille{ rows, cols, grille, text_length, null_alphabet }
+    }
+
     pub fn display_grille_blank(&self) -> String {
         let mut g = self.grille.clone();
         g.replace('\u{1f}', '■');
@@ -95,9 +111,9 @@ impl Grille<'_> {
         g
     }
 
-
-
 }
+
+
 
 impl crate::Cipher for Grille<'_> {
 
@@ -125,8 +141,6 @@ impl crate::Cipher for Grille<'_> {
             }
         }
 
-        //println!("{}",g);
-
         // Read out the columns (this avoids exposing too much text unaltered)
         g.read_cols().iter().flatten().collect::<String>()
 
@@ -144,14 +158,12 @@ impl crate::Cipher for Grille<'_> {
         // Write in by columns
         g.write_cols(text);
 
-        //println!("{}",g);
-
         // Read out the open spaces
         let mut out = String::with_capacity(self.text_length);
         for row in 0..self.rows {
             for col in 0..self.cols {
-                if self.grille.grid[row][col] != BLOCKED_CELL {
-                    out.push(g.grid[row][col])
+                if self.grille[row][col] != BLOCKED_CELL {
+                    out.push(g[row][col])
                 }
             }
         }
@@ -163,17 +175,4 @@ impl fmt::Display for Grille<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Grille Cipher\n{}", self.display_grille_blank())
     }
-}
-
-#[test]
-fn test_grille_new() {
-    use crate::Cipher;
-    let g = Grille::random(5, 7, 17, LATIN26);
-    println!("{}",g);
-    let plaintext = "abcdefghijklmnopq";
-    println!("{}",plaintext);
-    let ciphertext = g.encrypt(plaintext);
-    println!("{}",ciphertext);
-    let decrypted = g.decrypt(&ciphertext);
-    println!("{}",decrypted);
 }

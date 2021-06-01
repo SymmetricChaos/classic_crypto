@@ -308,6 +308,15 @@ impl fmt::Display for Grid {
     }
 }
 
+impl std::ops::Index<usize> for Grid {
+    type Output = Vec<char>;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.grid[index]
+    }
+}
+
+
 
 
 #[cfg(test)]
@@ -404,6 +413,14 @@ mod grid_tests {
         println!("{}",g);
         g.write_rows("ABCDEFGHIJKLMNOPQRSTUV");
         println!("{}",g);
+    }
+
+    #[test]
+    fn test_grid_indexing() {
+        let g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        println!("{}",g);
+        println!("{:?}",g[1]);
+        println!("{}",g[1][2])
     }
 
 }

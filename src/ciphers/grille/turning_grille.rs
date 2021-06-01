@@ -5,6 +5,7 @@ use crate::grid::Grid;
 pub struct TurningGrille {
     grille: Grid,
     text_length: usize,
+    width: usize,
 }
 
 impl TurningGrille {
@@ -37,7 +38,7 @@ impl TurningGrille {
         grille.turn_counterclockwise();
 
         let text_length = grille_width * grille_width;
-        TurningGrille{ grille, text_length }
+        TurningGrille{ grille, text_length, width: grille_width }
     }
 
 
@@ -72,11 +73,16 @@ impl crate::Cipher for TurningGrille {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let g = self.grille.clone();
+        let mut g = Grid::new_empty(self.grille.rows,self.grille.cols);
+        g.write_cols(text);
         let section = self.text_length/4;
 
         let out = String::with_capacity(text.len());
+        for i in 0..4 {
 
+
+            g.turn_clockwise();
+        }
         out
     }
 }
