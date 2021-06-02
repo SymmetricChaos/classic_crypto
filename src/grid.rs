@@ -316,6 +316,12 @@ impl std::ops::Index<usize> for Grid {
     }
 }
 
+impl std::ops::IndexMut<usize> for Grid {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.grid[index]
+    }
+}
+
 
 
 

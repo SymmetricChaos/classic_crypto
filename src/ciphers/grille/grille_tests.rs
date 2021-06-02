@@ -35,8 +35,11 @@ mod grille_tests {
         let key = vec![0,5,10,15,1,14,8,11,2,4,7,12,3,6,9,13];
         let gr = TurningGrille::new(4, key);
 
-        println!("{}",gr.display_grille_blank());
-
-        //let ciphertext = gr.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+        //println!("{}",gr.display_grille_blank());
+        let plaintext = "GETTINGEXACTLYSIXTYFOURLETTERSISAREALCHALLENGEWITHOUTSOMEPADDING";
+        let ciphertext = gr.encrypt(plaintext);
+        let decrypted = gr.encrypt(&ciphertext);
+        println!("{}",ciphertext);
+        println!("{}",decrypted)
     }
 }
