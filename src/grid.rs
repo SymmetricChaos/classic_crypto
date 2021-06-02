@@ -1,7 +1,5 @@
 use std::fmt;
 
-use itertools::Itertools;
-
 pub const EMPTY_CELL: char = '\0';
 pub const BLOCKED_CELL: char = '\u{1f}';
 
@@ -264,9 +262,9 @@ impl Grid {
         let mut symbols = text.chars();
         for col in 0..self.cols {
             for row in 0..self.rows {
-                let cell = self.grid[row][col];
+                let cell = self[row][col];
                 if cell != BLOCKED_CELL {
-                    self.grid[row][col] = symbols.next().unwrap_or(cell)
+                    self[row][col] = symbols.next().unwrap_or(cell)
                 }
             }
         }
@@ -276,9 +274,9 @@ impl Grid {
     pub fn write_col_n(&mut self, n: usize, text: &str) {
         let mut new_text = text.chars();
         for p in 0..self.rows {
-            let cur = self.grid[p][n];
+            let cur = self[p][n];
             if cur != BLOCKED_CELL {
-                self.grid[p][n] = new_text.next().unwrap_or(cur)
+                self[p][n] = new_text.next().unwrap_or(cur)
             }
         }
     }
@@ -415,9 +413,15 @@ mod grid_tests {
 
     #[test]
     fn test_grid_write_rows() {
-        let mut g = Grid::new("theq\u{1f}uick\u{1f}brow\u{1f}nfox", 5, 6);
+        let mut g = Grid::new_empty(5, 6);
+        g.write_rows("ABCDEFGHIJKLMN");
         println!("{}",g);
-        g.write_rows("ABCDEFGHIJKLMNOPQRSTUV");
+    }
+
+    #[test]
+    fn test_grid_write_cols() {
+        let mut g = Grid::new_empty(5, 6);
+        g.write_cols("ABCDEFGHIJKLMN");
         println!("{}",g);
     }
 

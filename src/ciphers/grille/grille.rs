@@ -7,7 +7,6 @@ use rand::thread_rng;
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 
-use crate::alphabets::LATIN26;
 use crate::grid::{Grid,BLOCKED_CELL};
 
 

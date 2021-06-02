@@ -22,7 +22,7 @@ mod grille_tests {
     #[test]
     fn grille_random_seeded() {
         let gr = Grille::random_seeded(8, 9, 35, LATIN26,10983426);
-        println!("{}",gr);
+        //println!("{}",gr);
         let ciphertext = gr.encrypt(PLAINTEXT);
         let decrypted = gr.decrypt(&ciphertext);
 
@@ -38,8 +38,9 @@ mod grille_tests {
         //println!("{}",gr.display_grille_blank());
         let plaintext = "GETTINGEXACTLYSIXTYFOURLETTERSISAREALCHALLENGEWITHOUTSOMEPADDING";
         let ciphertext = gr.encrypt(plaintext);
-        let decrypted = gr.encrypt(&ciphertext);
-        println!("{}",ciphertext);
-        println!("{}",decrypted)
+        let decrypted = gr.decrypt(&ciphertext);
+        //println!("{}",ciphertext);
+
+        assert_eq!(decrypted,plaintext)
     }
 }
