@@ -18,7 +18,6 @@ impl Grid {
         for _ in 0..rows {
             let mut row = <Vec<char>>::with_capacity(cols);
             for _ in 0..cols {
-                // filling with nulls here might cause issues but wanted to use symbol not reasonably found in written text
                 row.push(symbols.next().unwrap_or(EMPTY_CELL));
             }
             grid.push(row)
@@ -185,7 +184,6 @@ impl Grid {
                     *cell = new_char
                 }
             }
-
         }
     }
 
@@ -289,14 +287,6 @@ impl Grid {
             self.grid[p][n] = new_text.next().unwrap_or(cur)
         }
     }
-
-
-
-/*     // Use another Grid of of EMPTY_CELL and BLOCKED_CELL to cover the Grid
-    // EMPTY_CELL is treated as transparent and BLOCKED_CELL as opaque
-    pub fn mask(&mut self, mask_grid: Grid) {
-
-    } */
 
 }
 
