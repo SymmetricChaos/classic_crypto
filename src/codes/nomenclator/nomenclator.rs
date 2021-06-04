@@ -58,17 +58,37 @@ impl Iterator for CodeGroups {
 }
 
 pub struct Nomenclator<'a> {
-    map: HashMap<&'a str, &'a str>,
-    map_inv: HashMap<&'a str, &'a str>,
+    map: HashMap<String, Vec<String>>,
+    map_inv: HashMap<String, String>,
     alphabet: &'a str, // alphabet used to construct the code groups
     code_width: usize, // number of symbols in each code group
-    valid: Vec<&'a str>, // code groups that produce output
-    null: Vec<&'a str>, // code groups that give no output
-    super_null: Vec<&'a str> // code groups that give no output BUT also delete the next group
 }
 
 // Needs to include ordinary code groups, nulls, and super nulls that remove the next code group
 // use NUL for null and DEL for super null
+
+impl Nomenclator {
+    pub fn new(vocabulary: Vec<(&str, usize)>, code_alphabet: &str, code_wdith: &str, seed: u64) -> Nomenclator {
+
+        let mut codes = CodeGroups::new(code_alphabet, code_alphabet, seed);
+
+        let map = HashMap::with_capacity(vocabulary.len());
+        let map_inv = HashMap::new();
+        for (word, count) in vocabulary {
+            let mut v = Vec::with_capacity(count);
+            for _ in 0..count {
+                if let Some(code) = codes.next() {
+                    map_inv.insert(code.clone(),word.to_string());
+                    v.push(code)
+                } else {
+                    panic!("Ran out of codes")
+                }
+            }
+            map.insert(word.to_string(), v);
+        }
+        Nomenclator{ map, map_inv, alphabet: code_alphabet, code_width }
+    }
+}
 
 #[test]
 fn test_code_iter() {
