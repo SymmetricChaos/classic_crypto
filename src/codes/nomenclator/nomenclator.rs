@@ -65,13 +65,14 @@ pub struct Nomenclator {
     alphabet: String, // alphabet used to construct the code groups
     code_width: usize, // number of symbols in each code group
     vocabulary: Vec<String>,
+    null_rate: f64,
 }
 
 // Needs to include ordinary code groups, nulls, and super nulls that remove the next code group
 // use NUL for null and DEL for super null
 
 impl Nomenclator {
-    pub fn new(vocabulary: Vec<(&str, usize)>, code_alphabet: &str, code_width: usize, seed: u64) -> Nomenclator {
+    pub fn new(vocabulary: Vec<(String, usize)>, code_alphabet: &str, code_width: usize, seed: u64, null_rate: f64) -> Nomenclator {
 
         let mut codes = CodeGroups::new(code_alphabet, code_width, seed);
 
@@ -93,7 +94,26 @@ impl Nomenclator {
             map.insert(word.to_string(), v);
         }
 
-        Nomenclator{ map, map_inv, alphabet: code_alphabet.to_string(), code_width, vocabulary: vocab }
+        Nomenclator{ map, map_inv, alphabet: code_alphabet.to_string(), code_width, vocabulary: vocab, null_rate }
+    }
+
+    pub fn random_null(&self) -> String {
+        let mut rng = Xoshiro256StarStar::from_entropy();
+        let mut out_vec = Vec::with_capacity(self.code_width);
+
+        let mut s = String::with_capacity(self.code_width);
+        loop {
+            for _ in 0..self.code_width {
+                let x = rng.sample(Uniform::new(0,self.alphabet.len()));
+                out_vec.push(self.alphabet.chars().nth(x).unwrap())
+            }
+            s = out_vec.iter().collect::<String>();
+            if !self.map.contains_key(&s) {
+                return s
+            }
+        }
+
+
     }
 
 }
@@ -108,11 +128,16 @@ impl crate::Code for Nomenclator {
         for t in text.chars() {
             buffer.push(t);
             if let Some(code) = self.map.get(&buffer) {
-                //choose randomly
+                if rng.gen_bool(self.null_rate) {
+                    out.push_str(&self.random_null())
+                }
                 let r = rng.gen_range(0..code.len());
                 out.push_str(&code[r]);
                 buffer = String::new();
             }
+        }
+        if buffer != "".to_string() {
+            panic!("unknown string `{}` found",buffer)
         }
 
         out
@@ -122,7 +147,7 @@ impl crate::Code for Nomenclator {
         let mut out = String::new();
         let groups = text.chars().chunks(self.code_width).into_iter().map(|x| x.collect::<String>()).collect_vec();
         for g in groups {
-            out.push_str( &self.map_inv[&g] )
+            out.push_str( &self.map_inv.get(&g).unwrap_or(&"".to_string()) )
         }
         out
     }
@@ -146,17 +171,17 @@ fn test_code_iter() {
     }
 }
 
+// To allow vocabulary words that include prefixes of each other (ie "THE" and "THERE")  a trie data structure is needed and can be traversed until it is unable to continue
 #[test]
 fn test_nomenclator() {
-    let vocab = vec![
-        ("AA",3),("AB",3),("AC",3),("AD",3),
-        ("BA",3),("BB",3),("BC",3),("BD",3),
-        ("CA",3),("CB",3),("CC",3),("CD",3),
-        ("DA",3),("DB",3),("DC",3),("DD",3),
-    ];
-    let nom = Nomenclator::new(vocab, "0123456789", 3, 837);
+    use crate::alphabets::LATIN26;
+    use itertools::Itertools;
+    let di_map = LATIN26.chars().cartesian_product(LATIN26.chars());
+    let digraphs = di_map.map(|(a, b)| (format!("{}{}",a,b),3)).collect_vec();
 
-    let plaintext = "ABDCDD";
+    let nom = Nomenclator::new(digraphs, LATIN26, 3, 837, 0.2);
+
+    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";
     let encoded = nom.encode(plaintext);
     let decoded = nom.decode(&encoded);
 
