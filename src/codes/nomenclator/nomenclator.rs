@@ -188,4 +188,5 @@ fn test_nomenclator() {
     println!("{}",nom.char_map());
     println!("{}",encoded);
     println!("{}",decoded);
+    assert_eq!(decoded,plaintext)
 }
