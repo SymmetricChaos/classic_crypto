@@ -66,7 +66,7 @@ impl Iterator for CodeGroups {
 /// incorporated a variety of traps to confuse attackers. Some symbols stood for nothing, others indicated that the previous group was to be ignored, and the most 
 /// common sounds had multiple possible encodings.
 /// 
-/// This implementation of a Nomenclator allows arbitrary Strings to be encoded with nulls inserted
+/// This implementation of a Nomenclator allows arbitrary Strings to be encoded.
 pub struct Nomenclator {
     map: HashMap<String, Vec<String>>,
     map_inv: HashMap<String, String>,

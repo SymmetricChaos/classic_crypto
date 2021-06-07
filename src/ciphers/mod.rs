@@ -14,6 +14,9 @@ pub mod playfair;
 pub mod porta;
 pub mod m209;
 
+mod chaocipher;
+pub use self::chaocipher::Chaocipher;
+
 mod tactical;
 pub use self::tactical::BATCO;
 pub use self::tactical::DRYAD;
