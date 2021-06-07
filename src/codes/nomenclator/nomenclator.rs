@@ -6,7 +6,7 @@ use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 
 use crate::Code;
-
+use super::vocabtree::VocabNode;
 
 struct CodeGroups {
     alphabet: Vec<char>, // alphabet used to construct the code groups
@@ -66,6 +66,7 @@ pub struct Nomenclator {
     code_width: usize, // number of symbols in each code group
     vocabulary: Vec<String>,
     null_rate: f64,
+    vocab_tree: VocabNode,
 }
 
 // Needs to include ordinary code groups, nulls, and super nulls that remove the next code group
@@ -79,6 +80,7 @@ impl Nomenclator {
         let mut map = HashMap::with_capacity(vocabulary.len());
         let mut map_inv = HashMap::new();
         let mut vocab = Vec::with_capacity(vocabulary.len());
+        let mut vocab_tree = VocabNode::new('\0');
 
         for (word, count) in vocabulary {
             let mut v = Vec::with_capacity(count);
@@ -87,28 +89,28 @@ impl Nomenclator {
                     map_inv.insert(code.clone(),word.to_string());
                     v.push(code)
                 } else {
-                    panic!("Ran out of codes")
+                    panic!("Ran out of code groups")
                 }
             }
             vocab.push(word.to_string());
+            vocab_tree.insert_chars(&mut word.chars());
             map.insert(word.to_string(), v);
         }
 
-        Nomenclator{ map, map_inv, alphabet: code_alphabet.to_string(), code_width, vocabulary: vocab, null_rate }
+        Nomenclator{ map, map_inv, alphabet: code_alphabet.to_string(), code_width, vocabulary: vocab, null_rate, vocab_tree }
     }
 
     pub fn random_null(&self) -> String {
         let mut rng = Xoshiro256StarStar::from_entropy();
-        let mut out_vec = Vec::with_capacity(self.code_width);
 
-        let mut s = String::with_capacity(self.code_width);
         loop {
+            let mut out_vec = Vec::with_capacity(self.code_width);
             for _ in 0..self.code_width {
                 let x = rng.sample(Uniform::new(0,self.alphabet.len()));
                 out_vec.push(self.alphabet.chars().nth(x).unwrap())
             }
-            s = out_vec.iter().collect::<String>();
-            if !self.map.contains_key(&s) {
+            let s = out_vec.iter().collect::<String>();
+            if !self.map_inv.contains_key(&s) {
                 return s
             }
         }
@@ -185,7 +187,7 @@ fn test_nomenclator() {
     let encoded = nom.encode(plaintext);
     let decoded = nom.decode(&encoded);
 
-    println!("{}",nom.char_map());
+    //println!("{}",nom.char_map());
     println!("{}",encoded);
     println!("{}",decoded);
     assert_eq!(decoded,plaintext)

@@ -85,8 +85,10 @@ fn test_trie() {
 
 #[test]
 fn test_custom_tree() {
+    use std::mem;
+
     let mut t= VocabNode::new('\0');
-    let word_list = ["THE","THERE","THAT","THESE","TANK"];
+    let word_list = ["THE","THERE","THAT","THESE","TANK","OPAL"];//,"OPALESCENT"];
     for word in word_list {
         let mut symbols = word.chars();
         t.insert_chars(&mut symbols);
