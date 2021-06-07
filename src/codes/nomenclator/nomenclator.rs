@@ -8,6 +8,8 @@ use rand_xoshiro::Xoshiro256StarStar;
 use crate::Code;
 use super::vocabtree::VocabNode;
 
+
+// CodeGroups takes an alphabet, a width, and a seed then deterministically produces unique pseudorandom code groups
 struct CodeGroups {
     alphabet: Vec<char>, // alphabet used to construct the code groups
     code_width: usize, // number of symbols in each code group
@@ -59,6 +61,12 @@ impl Iterator for CodeGroups {
 
 }
 
+/// A Nomenclator straddles the line between a substitution cipher and a code. Rather than replacing symbols with other symbol it replaces some more complex part of
+/// language with a "code groups". The Grand Chiffre of 17th century France used symbols to replace syllables as well as individual letters and whole words, it also 
+/// incorporated a variety of traps to confuse attackers. Some symbols stood for nothing, others indicated that the previous group was to be ignored, and the most 
+/// common sounds had multiple possible encodings.
+/// 
+/// This implementation of a Nomenclator allows arbitrary Strings to be encoded with nulls inserted
 pub struct Nomenclator {
     map: HashMap<String, Vec<String>>,
     map_inv: HashMap<String, String>,
@@ -165,23 +173,16 @@ impl crate::Code for Nomenclator {
 
 }
 
-#[test]
-fn test_code_iter() {
-    let c = CodeGroups::new("ABCD",3, 0);
-    for i in c.into_iter() {
-        println!("{}",i)
-    }
-}
 
-// To allow vocabulary words that include prefixes of each other (ie "THE" and "THERE")  a trie data structure is needed and can be traversed until it is unable to continue
+// To allow vocabulary words that include prefixes of each other (ie "THE" and "THERE")  a trie data structure is needed and can be traversed until it is finds stopping point
 #[test]
 fn test_nomenclator() {
-    use crate::alphabets::LATIN26;
+    use crate::alphabets::{LATIN36,LATIN26};
     use itertools::Itertools;
     let di_map = LATIN26.chars().cartesian_product(LATIN26.chars());
     let digraphs = di_map.map(|(a, b)| (format!("{}{}",a,b),3)).collect_vec();
 
-    let nom = Nomenclator::new(digraphs, LATIN26, 3, 837, 0.2);
+    let nom = Nomenclator::new(digraphs, LATIN36, 3, 837, 0.2);
 
     let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX";
     let encoded = nom.encode(plaintext);
