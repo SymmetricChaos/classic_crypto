@@ -2,6 +2,8 @@ use std::fmt;
 use std::collections::VecDeque;
 use std::iter::FromIterator;
 
+use itertools::Itertools;
+
 
 pub struct Chaocipher {
     alpha_l: VecDeque<char>,
@@ -22,22 +24,33 @@ impl Chaocipher {
     }
 
     fn permute_r(&mut self, n: usize) {
-        self.alpha_r.rotate_left(n)
+        self.alpha_r.rotate_left(n+1);
+        let t = self.alpha_r.remove(2).unwrap();
+        self.alpha_r.insert(13, t);
     }
-}
 
-impl crate::Cipher for Chaocipher {
-
-    fn encrypt(&self, text: &str) -> String {
-
+    pub fn encrypt(&mut self, text: &str) -> String {
+        let symbols = text.chars();
         let mut out = String::new();
+        for c in symbols {
+            let n = self.alpha_l.iter().position(|x| x == &c).unwrap();
+            out.push(self.alpha_r[n]);
+            self.permute_l(n);
+            self.permute_r(n);
+        }
         out
 
     }
 
-    fn decrypt(&self, text: &str) -> String {
-
+    fn decrypt(&mut self, text: &str) -> String {
+        let symbols = text.chars();
         let mut out = String::new();
+        for c in symbols {
+            let n = self.alpha_r.iter().position(|x| x == &c).unwrap();
+            out.push(self.alpha_l[n]);
+            self.permute_l(n);
+            self.permute_r(n);
+        }
         out
         
     }
@@ -53,8 +66,6 @@ impl crate::Cipher for Chaocipher {
 #[test]
 fn test_chaociper() {
     let mut c = Chaocipher::new("HXUCZVAMDSLKPEFJRIGTWOBNYQ","PTLNBQDEOYSFAVZKGJRIHWXUMC");
-    c.permute_l(12);
-    let l: String = c.alpha_l.iter().collect();
-    println!("{}",l);
-    println!("{}","PFJRIGTWOBNYQEHXUCZVAMDSLK");
+
+    println!("{}",c.decrypt("WELLDONEISBETTERTHANWELLSAID"));
 }
