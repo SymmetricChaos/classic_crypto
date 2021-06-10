@@ -30,19 +30,9 @@ impl Chaocipher {
     }
 
     pub fn encrypt(&mut self, text: &str) -> String {
-        let symbols = text.chars();
-        let mut out = String::new();
-        for c in symbols {
-            let n = self.alpha_l.iter().position(|x| x == &c).unwrap();
-            out.push(self.alpha_r[n]);
-            self.permute_l(n);
-            self.permute_r(n);
-        }
-        out
+        let orig_l = self.alpha_l.clone();
+        let orig_r = self.alpha_r.clone();
 
-    }
-
-    fn decrypt(&mut self, text: &str) -> String {
         let symbols = text.chars();
         let mut out = String::new();
         for c in symbols {
@@ -51,8 +41,31 @@ impl Chaocipher {
             self.permute_l(n);
             self.permute_r(n);
         }
-        out
+
+        self.alpha_l = orig_l;
+        self.alpha_r = orig_r;
         
+        out
+    }
+
+    pub fn decrypt(&mut self, text: &str) -> String {
+        let orig_l = self.alpha_l.clone();
+        let orig_r = self.alpha_r.clone();
+
+        let symbols = text.chars();
+        let mut out = String::new();
+        for c in symbols {
+            let n = self.alpha_l.iter().position(|x| x == &c).unwrap();
+            out.push(self.alpha_r[n]);
+            self.permute_l(n);
+            self.permute_r(n);
+        }
+
+        self.alpha_l = orig_l;
+        self.alpha_r = orig_r;
+        
+        out
+
     }
 
 }
@@ -63,9 +76,3 @@ impl Chaocipher {
     }
 } */
 
-#[test]
-fn test_chaociper() {
-    let mut c = Chaocipher::new("HXUCZVAMDSLKPEFJRIGTWOBNYQ","PTLNBQDEOYSFAVZKGJRIHWXUMC");
-
-    println!("{}",c.decrypt("WELLDONEISBETTERTHANWELLSAID"));
-}
