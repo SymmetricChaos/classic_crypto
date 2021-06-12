@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod porta_tests {
+mod bazeries_tests {
 
     use crate::ciphers::bazeries::{Bazeries,BazeriesProgressive,M94};
     use crate::Cipher;

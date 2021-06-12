@@ -81,6 +81,3 @@ impl fmt::Display for M94 {
         write!(f, "M94 Cipher\noffset: {}\nwheels: {}",self.offset,alphas)
     }
 }
-
-
-
