@@ -2,7 +2,17 @@ use std::fmt;
 use std::collections::VecDeque;
 use std::iter::FromIterator;
 
-use itertools::Itertools;
+fn permute_l(alpha: &mut VecDeque<char>, n: usize) {
+    alpha.rotate_left(n);
+    let t = alpha.remove(1).unwrap();
+    alpha.insert(13, t);
+}
+
+fn permute_r(alpha: &mut VecDeque<char>, n: usize) {
+    alpha.rotate_left(n+1);
+    let t = alpha.remove(2).unwrap();
+    alpha.insert(13, t);
+}
 
 
 pub struct Chaocipher {
@@ -16,53 +26,38 @@ impl Chaocipher {
         let alpha_r = VecDeque::from_iter(alphabet_right.chars());
         Chaocipher{ alpha_l, alpha_r }
     }
+}
 
-    fn permute_l(&mut self, n: usize) {
-        self.alpha_l.rotate_left(n);
-        let t = self.alpha_l.remove(1).unwrap();
-        self.alpha_l.insert(13, t);
-    }
+impl crate::Cipher for Chaocipher {
 
-    fn permute_r(&mut self, n: usize) {
-        self.alpha_r.rotate_left(n+1);
-        let t = self.alpha_r.remove(2).unwrap();
-        self.alpha_r.insert(13, t);
-    }
-
-    pub fn encrypt(&mut self, text: &str) -> String {
-        let orig_l = self.alpha_l.clone();
-        let orig_r = self.alpha_r.clone();
+    fn encrypt(&self, text: &str) -> String {
+        let mut left = self.alpha_l.clone();
+        let mut right = self.alpha_r.clone();
 
         let symbols = text.chars();
         let mut out = String::new();
         for c in symbols {
-            let n = self.alpha_r.iter().position(|x| x == &c).unwrap();
-            out.push(self.alpha_l[n]);
-            self.permute_l(n);
-            self.permute_r(n);
+            let n = right.iter().position(|x| x == &c).unwrap();
+            out.push(left[n]);
+            permute_l(&mut left,n);
+            permute_r(&mut right,n);
         }
-
-        self.alpha_l = orig_l;
-        self.alpha_r = orig_r;
         
         out
     }
 
-    pub fn decrypt(&mut self, text: &str) -> String {
-        let orig_l = self.alpha_l.clone();
-        let orig_r = self.alpha_r.clone();
+    fn decrypt(&self, text: &str) -> String {
+        let mut left = self.alpha_l.clone();
+        let mut right = self.alpha_r.clone();
 
         let symbols = text.chars();
         let mut out = String::new();
         for c in symbols {
-            let n = self.alpha_l.iter().position(|x| x == &c).unwrap();
-            out.push(self.alpha_r[n]);
-            self.permute_l(n);
-            self.permute_r(n);
+            let n = left.iter().position(|x| x == &c).unwrap();
+            out.push(right[n]);
+            permute_l(&mut left,n);
+            permute_r(&mut right,n);
         }
-
-        self.alpha_l = orig_l;
-        self.alpha_r = orig_r;
         
         out
 
@@ -70,9 +65,10 @@ impl Chaocipher {
 
 }
 
-/* impl fmt::Display for Chaocipher<'_> {
+impl fmt::Display for Chaocipher {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Chaocipher Cipher\nkey: {}",self.key_name)
+        let l: String = self.alpha_l.iter().collect();
+        let r: String = self.alpha_r.iter().collect();
+        write!(f, "Chaocipher Cipher\n{}\n{}",l,r)
     }
-} */
-
+}

@@ -3,10 +3,11 @@
 mod chaocipher_tests {
 
     use crate::ciphers::Chaocipher;
+    use crate::Cipher;
 
     #[test]
     fn test_chaociper() {
-        let mut c = Chaocipher::new("HXUCZVAMDSLKPEFJRIGTWOBNYQ","PTLNBQDEOYSFAVZKGJRIHWXUMC");
+        let c = Chaocipher::new("HXUCZVAMDSLKPEFJRIGTWOBNYQ","PTLNBQDEOYSFAVZKGJRIHWXUMC");
 
         let plaintext = "WELLDONEISBETTERTHANWELLSAID";
         let encrypted = c.encrypt(plaintext);
