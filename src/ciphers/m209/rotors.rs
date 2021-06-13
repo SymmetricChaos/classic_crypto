@@ -1,54 +1,63 @@
 use lazy_static::lazy_static;
-use std::fmt;
+use std::{collections::VecDeque, fmt};
 
 #[derive(Clone,Debug)]
-pub struct Rotor<'a> {
-    alphabet: &'a str,
-    pins: String,
-    position: usize,
-    alphabet_len: usize,
+pub struct Rotor {
+    alphabet: VecDeque<char>,
+    pins: Vec<char>,
+    active: usize,
 }
 
-impl Rotor<'_> {
-    pub fn new(alphabet: &str) -> Rotor {
-        Rotor{ alphabet, pins: "".to_string(), position: 0, alphabet_len: alphabet.chars().count() }
+impl Rotor {
+    pub fn new(alphabet: &str, active: usize) -> Rotor {
+        let alphabet: VecDeque<char> = alphabet.chars().collect();
+        Rotor{ alphabet, pins: Vec::new(), active }
     }
 
     pub fn step(&mut self) {
-        self.position = (self.position + 1) % self.alphabet_len
+        self.alphabet.rotate_right(1)
     }
 
-    pub fn set_pins<'a>(&mut self, pins: & str) {
-        self.pins = pins.to_string()
+    pub fn set_pins(&mut self, pins: &str) {
+        for p in pins.chars() {
+            if !self.alphabet.contains(&p) {
+                panic!("effective pins must be in the Rotor's alphabet")
+            }
+        }
+        self.pins = pins.chars().collect()
     }
 
-    pub fn get_pins(&mut self, pins: &str) -> String {
-        self.pins.to_string()
+    pub fn get_pins(&mut self) -> Vec<char> {
+        self.pins.clone()
     }
 
-    pub fn set_position(&mut self, n: usize) {
-        self.position = n
+    pub fn set_active(&mut self, c: char) {
+        while self.alphabet[self.active] != c {
+            self.alphabet.rotate_right(1)
+        }
     }
 
-    pub fn get_position(&self) -> usize {
-        self.position
+    pub fn set_display(&mut self, c: char) {
+        while self.alphabet[0] != c {
+            self.alphabet.rotate_right(1)
+        }
     }
 
+    pub fn get_active(&self) -> char {
+        self.alphabet[self.active]
+    }
+
+    pub fn active_is_effective(&self) -> bool {
+        self.pins.contains(&self.alphabet[self.active])
+    }
 
 }
 
 // This could be simplified since all the real rotors used ASCII characters but this library tries to work with Unicode as much as possible
-impl fmt::Display for Rotor<'_> {
+impl fmt::Display for Rotor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut s = String::new();
-        for (pos,letter) in self.alphabet.chars().enumerate() {
-            if pos == self.position {
-                // bracket the position showing
-                s.push_str(&format!("[{}]",letter));
-            } else {
-                s.push(letter)
-            }
-        }
+        let mut s: String = self.alphabet.iter().collect();
+        s.push_str(&format!(" ({})",self.pins.iter().collect::<String>()));
         write!(f, "{}", s)
     }
 }
@@ -56,13 +65,13 @@ impl fmt::Display for Rotor<'_> {
 
 //The rotor alphabets all have coprime lengths
 lazy_static! {
-    pub static ref M209_ROTORS: [Rotor<'static>; 6] = {
-        [Rotor::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-        Rotor::new("ABCDEFGHIJKLMNOPQRSTUVXYZ"),
-        Rotor::new("ABCDEFGHIJKLMNOPQRSTUVX"),
-        Rotor::new("ABCDEFGHIJKLMNOPQRSTU"),
-        Rotor::new("ABCDEFGHIJKLMNOPQRS"),
-        Rotor::new("ABCDEFGHIJKLMNOPQ"),
+    pub static ref M209_ROTORS: [Rotor; 6] = {
+        [Rotor::new("ABCDEFGHIJKLMNOPQRSTUVWXYZ",15),
+         Rotor::new("ABCDEFGHIJKLMNOPQRSTUVXYZ",14),
+         Rotor::new("ABCDEFGHIJKLMNOPQRSTUVX",13),
+         Rotor::new("ABCDEFGHIJKLMNOPQRSTU",12),
+         Rotor::new("ABCDEFGHIJKLMNOPQRS",11),
+         Rotor::new("ABCDEFGHIJKLMNOPQ",10),
         ]
     };
 }

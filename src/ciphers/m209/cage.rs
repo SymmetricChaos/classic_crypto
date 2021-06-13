@@ -30,7 +30,7 @@ impl Cage {
 impl fmt::Display for Cage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut s = "Cage\n".to_string();
-        for b in self.bars.chunks(3).collect_vec() {
+        for b in self.bars.chunks(9).collect_vec() {
             for lug in b {
                 let entry = format!("{}-{}  ",lug.0,lug.1);
                 s.push_str(&entry)
