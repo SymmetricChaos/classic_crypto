@@ -1,7 +1,9 @@
 use std::fmt;
 use std::collections::HashMap;
 
-use super::{Rotor, M209_ROTORS, Drum};
+use itertools::Itertools;
+
+use super::{Rotor, M209_ROTORS, Cage};
 
 
 // The M209 was a reciprocal cipher
@@ -27,23 +29,57 @@ Lug Settings
 #[derive(Clone,Debug)]
 pub struct M209<'a> {
     wheels: [Rotor<'a>; 6],
-    drum: Drum,
+    cage: Cage,
 }
 
 impl<'a> M209<'a> {
     pub fn new(pins: [&str; 6], lugs: [(usize,usize);27]) -> M209<'a> {
         // Use pins to set the wheels
-        // Use lugs to set the drum
-        M209{ wheels: M209_ROTORS.clone(), drum: Drum::new(vec![(1,6)]) }
+        // Use lugs to set the cage
+        let mut wheels = M209_ROTORS.clone();
+        for (r, p) in wheels.iter_mut().zip(pins) {
+            r.set_pins(p)
+        }
+        M209{ wheels, cage: Cage::new(lugs.to_vec()) }
     }
 
-    pub fn encrypt(&self, text: &str) -> String {
+    // The stepping is perfectly regular, every wheel steps one position each letter
+    // The encryption is done by the interaction of the lugs with the active pins
+    pub fn step(&mut self) {
+        for w in self.wheels.iter_mut() {
+            w.step()
+        }
+    }
+
+    pub fn step_n(&mut self, n: usize) {
+        for _ in 0..n {
+            for w in self.wheels.iter_mut() {
+                w.step()
+            }
+        }
+
+    }
+
+    pub fn encrypt(&mut self, text: &str) -> String {
+        let nums = text.chars().map(|x| char_to_usize(x)).collect_vec();
         let out = String::with_capacity(text.len());
-        // logic goes here
+        
+        for n in nums {
+            let sh = 0;
+            for bar in self.cage.bars.iter() {
+
+            }
+            // first advance the wheels
+            // then iterate over the bars of the cage
+            // for each lug on the bar check if that wheel has an effective pin in the active position
+            // if either does sh += 1
+            // finally beaufort encrypt the n with the key sh
+        }
+
         out
     }
 
-    pub fn decrypt(&self, text: &str) -> String {
+    pub fn decrypt(&mut self, text: &str) -> String {
         let out = String::with_capacity(text.len());
         // logic goes here (unless M209 is reciprocal, need to check that)
         out
@@ -54,8 +90,14 @@ impl<'a> M209<'a> {
 
 impl fmt::Display for M209<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "M209\n{:?}\n{:?}",
+        write!(f, "M209\n{:?}\n{}",
             self.wheels,
-            self.drum)
+            self.cage)
     }
+}
+
+#[test]
+fn test_m209_step() {
+    let mut m209 = M209::new(["AB","CD","EF","GH","IJ","KL"], [(1,6); 27]);
+    println!("{}",m209);
 }

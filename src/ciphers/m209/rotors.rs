@@ -40,7 +40,16 @@ impl Rotor<'_> {
 // This could be simplified since all the real rotors used ASCII characters but this library tries to work with Unicode as much as possible
 impl fmt::Display for Rotor<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "M209 Rotor")
+        let mut s = String::new();
+        for (pos,letter) in self.alphabet.chars().enumerate() {
+            if pos == self.position {
+                // bracket the position showing
+                s.push_str(&format!("[{}]",letter));
+            } else {
+                s.push(letter)
+            }
+        }
+        write!(f, "{}", s)
     }
 }
 

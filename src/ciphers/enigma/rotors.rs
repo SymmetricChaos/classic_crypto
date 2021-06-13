@@ -72,11 +72,13 @@ impl fmt::Display for Rotor<'_> {
         let mut s = String::new();
         for (pos,letter) in self.wiring_display.chars().enumerate() {
             if pos == self.position {
+                // bracket the position showing
                 s.push_str(&format!("[{}]",letter));
             } else {
                 s.push(letter)
             }
         }
+        // ring position in parens
         s.push_str(&format!(" ({})",self.ring));
         write!(f, "{}",s)
     }
