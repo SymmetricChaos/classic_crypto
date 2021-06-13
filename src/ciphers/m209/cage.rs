@@ -1,6 +1,5 @@
 use itertools::Itertools;
-use lazy_static::lazy_static;
-use std::{collections::HashMap, fmt};
+use std::fmt;
 
 #[derive(Clone,Debug)]
 pub struct Cage {

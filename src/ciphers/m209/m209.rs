@@ -1,10 +1,7 @@
 use std::fmt;
-use std::collections::HashMap;
-
 use itertools::Itertools;
 
 use super::{Rotor, M209_ROTORS, Cage};
-
 
 // The M209 was a reciprocal cipher
 
@@ -16,8 +13,8 @@ fn usize_to_char(n: usize) -> char {
     (n + 65) as u8 as char
 }
 
-fn beaufort_encrypt(n: usize, k: usize, l: usize) -> usize {
-    (l + k - n) % l
+fn atbash_encrypt(n: usize, k: usize, l: usize) -> usize {
+    ((l-1)*(n+1)+k) % l
 }
 
 #[derive(Clone,Debug)]
@@ -67,38 +64,34 @@ impl M209 {
         
         for n in nums {
             let mut sh = 0;
+            // Check each bar. 
+            // If either lug hits an active effective pin increase the shift by one
             for (lug_a, lug_b) in self.cage.bars.iter() {
-                let mut a_effect = false;
-                let mut b_effect = false;
                 if lug_a == &0 {
                     // do nothing
                 } else {
                     if self.wheels[lug_a-1].active_is_effective() {
-                        a_effect = true;
+                        sh += 1;
+                        continue;
                     }
                 }
                 if lug_b == &0 {
                     // do nothing
                 } else {
                     if self.wheels[lug_b-1].active_is_effective() {
-                        b_effect = true;
+                        sh += 1;
+                        continue;
                     }
                 }
 
-                if a_effect || b_effect {
-                    sh += 1
-                }
-
             }
-            let c = usize_to_char(beaufort_encrypt(n,sh,26));
+
+            // This encryption step should be a modified atbash
+            let c = usize_to_char(atbash_encrypt(n,sh,26));
             out.push(c);
             
+            // advance the wheels
             self.step();
-            // first iterate over the bars of the cage 
-            // for each lug on the bar check if that wheel has an effective pin in the active position
-            // if either does sh += 1
-            // then beaufort encrypt the n with the key sh
-            // finally advance the wheels
         }
         out
     }
@@ -127,18 +120,15 @@ impl fmt::Display for M209 {
 #[test]
 fn test_m209_step() {
     let pins = ["ABDHIKMNSTVW",
-                            "ADEGJKLORSUX",
-                            "ABGHJLMNRSTUX",
-                            "CEFHIMNPSTU",
-                            "BDEFHIMNPS",
-                            "ABDHKNOQ"];
+                          "ADEGJKLORSUX",
+                          "ABGHJLMNRSTUX",
+                          "CEFHIMNPSTU",
+                          "BDEFHIMNPS",
+                          "ABDHKNOQ"];
     let lugs = [(3,6), (0,6), (1,6), (1,5), (4,5), (0,4), (0,4), (0,4), (0,4), (2,0), (2,0), (2,0), (2,0), (2,0), (2,0), (2,0), (2,0), (2,0), (2,0), (2,5), (2,5), (0,5), (0,5), (0,5), (0,5), (0,5), (0,5)];
     let mut m209 = M209::new(pins, lugs);
-    for w in m209.wheels.iter() {
-        println!("{}",w.get_active())
-    }
     println!("{}",m209);
-    println!("{}",m209.encrypt("AAAAAAAAAA"));
+    println!("{}",m209.encrypt("AAAAAAAAAAAAAAAAAAAAAAAAAA"));
     m209.set_wheels("AAAAAA");
-    println!("{}",m209.decrypt("UBDXZTLRZD"));
+    println!("{}",m209.decrypt("TNJUWAUQTKCZKNUTOTBCWARMIO"));
 }

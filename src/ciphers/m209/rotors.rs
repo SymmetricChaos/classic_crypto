@@ -15,7 +15,7 @@ impl Rotor {
     }
 
     pub fn step(&mut self) {
-        self.alphabet.rotate_right(1)
+        self.alphabet.rotate_left(1)
     }
 
     pub fn set_pins(&mut self, pins: &str) {
@@ -33,13 +33,13 @@ impl Rotor {
 
     pub fn set_active(&mut self, c: char) {
         while self.alphabet[self.active] != c {
-            self.alphabet.rotate_right(1)
+            self.alphabet.rotate_left(1)
         }
     }
 
     pub fn set_display(&mut self, c: char) {
         while self.alphabet[0] != c {
-            self.alphabet.rotate_right(1)
+            self.alphabet.rotate_left(1)
         }
     }
 
@@ -56,7 +56,15 @@ impl Rotor {
 // This could be simplified since all the real rotors used ASCII characters but this library tries to work with Unicode as much as possible
 impl fmt::Display for Rotor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut s: String = self.alphabet.iter().collect();
+        let mut s = String::new();
+        for (pos,letter) in self.alphabet.iter().enumerate() {
+            if pos == self.active {
+                // bracket the active position
+                s.push_str(&format!("[{}]",letter));
+            } else {
+                s.push(*letter)
+            }
+        }
         s.push_str(&format!(" ({})",self.pins.iter().collect::<String>()));
         write!(f, "{}", s)
     }
