@@ -3,7 +3,7 @@ use std::fmt;
 pub const EMPTY_CELL: char = '\0';
 pub const BLOCKED_CELL: char = '\u{1f}';
 
-// Grid reserves 0x00 (Unicode null) to represent an unused space and 0x1F (Unicode unit seperator) to represent an unusable spaces
+// Grid reserves 0x00 (Unicode null) to represent an unused space and 0x1F (Unicode unit seperator) to represent unusable/blocked spaces
 #[derive(Debug,Clone,Hash,PartialEq)]
 pub struct Grid {
     pub rows: usize,
