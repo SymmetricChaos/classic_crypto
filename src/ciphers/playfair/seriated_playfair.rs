@@ -35,6 +35,68 @@ impl SeriatedPlayfair {
         self.alphabet.chars().nth(num).unwrap()
     }
 
+    fn encrypt_chars(&self, a: char, b: char) -> (char,char) {
+        let a_pair = self.symbol_to_pair(a);
+        let b_pair = self.symbol_to_pair(b);
+
+        let s = self.size+1;
+
+        if a_pair.0 == b_pair.0 {
+            let x = a_pair.0;
+            
+            let out_a = self.pair_to_symbol((x, (a_pair.1+s)%self.size ));
+            let out_b = self.pair_to_symbol((x, (b_pair.1+s)%self.size ));
+
+            return (out_a,out_b)
+            
+
+        } else if a_pair.1 == b_pair.1 {
+            let y = a_pair.1;
+            
+            let out_a = self.pair_to_symbol(( (a_pair.0+s)%self.size , y ));
+            let out_b = self.pair_to_symbol(( (b_pair.0+s)%self.size , y ));
+
+            return (out_a,out_b)
+
+        } else {
+            let out_a = self.pair_to_symbol((a_pair.0, b_pair.1));
+            let out_b =  self.pair_to_symbol((b_pair.0, a_pair.1));
+
+            return (out_a,out_b)
+        }
+    }
+
+    fn decrypt_chars(&self, a: char, b: char) -> (char,char) {
+        let a_pair = self.symbol_to_pair(a);
+        let b_pair = self.symbol_to_pair(b);
+        
+        let s = self.size-1;
+
+        if a_pair.0 == b_pair.0 {
+            let x = a_pair.0;
+            
+            let out_a = self.pair_to_symbol((x, (a_pair.1+s)%self.size ));
+            let out_b = self.pair_to_symbol((x, (b_pair.1+s)%self.size ));
+
+            return (out_a,out_b)
+            
+
+        } else if a_pair.1 == b_pair.1 {
+            let y = a_pair.1;
+            
+            let out_a = self.pair_to_symbol(( (a_pair.0+s)%self.size , y ));
+            let out_b = self.pair_to_symbol(( (b_pair.0+s)%self.size , y ));
+
+            return (out_a,out_b)
+
+        } else {
+            let out_a = self.pair_to_symbol((a_pair.0, b_pair.1));
+            let out_b =  self.pair_to_symbol((b_pair.0, a_pair.1));
+
+            return (out_a,out_b)
+        }
+    }
+
 }
 
 impl crate::Cipher for SeriatedPlayfair {
@@ -48,13 +110,18 @@ impl crate::Cipher for SeriatedPlayfair {
         let chunks = text.chars().chunks(self.period);
         let groups = chunks.into_iter().map(|x| x.collect_vec()).collect_vec();
 
-        for g in groups {
-            println!("{:?}",g);
-        }
-
-        
-
         let mut out = String::with_capacity(tlen);
+
+        for pair in 0..groups.len()/2 {
+            for pos in 0..self.period {
+                println!("{} {}",pair,pos);
+                let a = groups[pair][pos];
+                let b = groups[pair+1][pos];
+                let (out_a, out_b) = self.encrypt_chars(a, b);
+                out.push(out_a);
+                out.push(out_b);
+            }
+        }
 
         out
 
@@ -66,7 +133,20 @@ impl crate::Cipher for SeriatedPlayfair {
             panic!("number of characters in the text must be a multiple of {}",self.period*2)
         }
 
+        let chunks = text.chars().chunks(self.period);
+        let groups = chunks.into_iter().map(|x| x.collect_vec()).collect_vec();
+
         let mut out = String::with_capacity(tlen);
+
+        for pair in 0..groups.len()/2 {
+            for pos in 0..self.period {
+                let a = groups[pair][pos];
+                let b = groups[pair+1][pos];
+                let (out_a, out_b) = self.decrypt_chars(a, b);
+                out.push(out_a);
+                out.push(out_b);
+            }
+        }
 
         out
     }

@@ -65,10 +65,11 @@ mod playfair_tests {
     fn seriated_playfair() {
         let seriated = SeriatedPlayfair::new("SERIATED", LATIN25_J, 5, 6);
 
-        let ciphertext = seriated.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
+        let ciphertext = seriated.encrypt("THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
         let decrypted = seriated.decrypt(&ciphertext);
 
-        assert_eq!(ciphertext,"");
-        assert_eq!(decrypted, "");
+        println!("{}",ciphertext);
+        println!("{}",decrypted);
     }
+
 }
