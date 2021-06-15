@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod playfair_tests {
 
-    use crate::{ciphers::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair}};
+    use crate::{ciphers::playfair::{Playfair,TwoSquare,TwoSquareInverting,FourSquare,Slidefair,SeriatedPlayfair}};
     use crate::Cipher;
     use crate::alphabets::{LATIN25_J,LATIN26};
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX";
@@ -59,5 +59,16 @@ mod playfair_tests {
 
         assert_eq!(ciphertext,"HTPFGWHFRBVPDPURUJONMUBYTRDIYNVCODWH");
         assert_eq!(decrypted, "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
+    }
+
+    #[test]
+    fn seriated_playfair() {
+        let seriated = SeriatedPlayfair::new("SERIATED", LATIN25_J, 5, 6);
+
+        let ciphertext = seriated.encrypt("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGX");
+        let decrypted = seriated.decrypt(&ciphertext);
+
+        assert_eq!(ciphertext,"");
+        assert_eq!(decrypted, "");
     }
 }
