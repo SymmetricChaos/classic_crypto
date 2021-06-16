@@ -1,4 +1,5 @@
 //! Ciphers based on the Polybius Square
 
-pub mod polybius;
+mod polybius;
+mod gen_polybius;
 pub use self::polybius::Polybius;

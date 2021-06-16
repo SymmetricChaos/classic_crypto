@@ -2,22 +2,21 @@ use std::fmt;
 
 use crate::ciphers::polybius::polybius::Polybius;
 
-/// The Bifid Cipher combines a Polybius Square with a simple transposition
-pub struct Bifid<'a> {
+/// The Trifid Cipher uses a Polybius "cube" to convert each character to a three digit string then applies a simple transposition
+pub struct Trifid<'a> {
     polybius: Polybius<'a>,
     block_size: usize,
 }
 
 
-impl Bifid<'_> {
-    pub fn new<'a>(keyword: &'a str, labels: &'a str, block_size: usize, alphabet: &'a str,) -> Bifid<'a> {
-        let polybius = Polybius::new(keyword, alphabet, labels);
-        Bifid{ polybius, block_size }
+impl Trifid<'_> {
+    pub fn new<'a>(keyword: &'a str, labels: &'a str, block_size: usize, alphabet: &'a str,) -> Trifid<'a> {
+        Trifid{ polybius, block_size }
     }
 
 }
 
-impl crate::Cipher for Bifid<'_> {
+impl crate::Cipher for Trifid<'_> {
 
     fn encrypt(&self, text: &str) -> String {
         let len = text.chars().count();
@@ -71,8 +70,8 @@ impl crate::Cipher for Bifid<'_> {
 
 }
 
-impl fmt::Display for Bifid<'_> {
+impl fmt::Display for Trifid<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Bifid Composite Cipher\nBlock Size:\n{}\nPolybius Square:\n{}",self.block_size,self.polybius)
+        write!(f, "Trifid Composite Cipher\nBlock Size:\n{}\nPolybius Square:\n{}",self.block_size,self.polybius)
     }
 }

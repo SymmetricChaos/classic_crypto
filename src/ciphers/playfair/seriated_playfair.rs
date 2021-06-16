@@ -36,6 +36,9 @@ impl SeriatedPlayfair {
     }
 
     fn encrypt_chars(&self, a: char, b: char) -> (char,char) {
+        if a == b {
+            panic!("encountered invalid letter pair {}{}",a,b)
+        }
         let a_pair = self.symbol_to_pair(a);
         let b_pair = self.symbol_to_pair(b);
 
