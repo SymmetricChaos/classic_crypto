@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt};
+use std::fmt;
 
 use itertools::Itertools;
 
@@ -48,7 +48,6 @@ impl SeriatedPlayfair {
             let out_b = self.pair_to_symbol((x, (b_pair.1+s)%self.size ));
 
             return (out_a,out_b)
-            
 
         } else if a_pair.1 == b_pair.1 {
             let y = a_pair.1;
@@ -79,7 +78,6 @@ impl SeriatedPlayfair {
             let out_b = self.pair_to_symbol((x, (b_pair.1+s)%self.size ));
 
             return (out_a,out_b)
-            
 
         } else if a_pair.1 == b_pair.1 {
             let y = a_pair.1;
@@ -113,14 +111,18 @@ impl crate::Cipher for SeriatedPlayfair {
         let mut out = String::with_capacity(tlen);
 
         for pair in 0..groups.len()/2 {
+            println!("{:?}\n{:?}\n",groups[2*pair],groups[2*pair+1]);
+            let mut row_a = String::with_capacity(self.period);
+            let mut row_b = String::with_capacity(self.period);
             for pos in 0..self.period {
-                println!("{} {}",pair,pos);
-                let a = groups[pair][pos];
-                let b = groups[pair+1][pos];
+                let a = groups[2*pair][pos];
+                let b = groups[2*pair+1][pos];
                 let (out_a, out_b) = self.encrypt_chars(a, b);
-                out.push(out_a);
-                out.push(out_b);
+                row_a.push(out_a);
+                row_b.push(out_b);
             }
+            out.push_str(&row_a);
+            out.push_str(&row_b);
         }
 
         out
@@ -139,13 +141,18 @@ impl crate::Cipher for SeriatedPlayfair {
         let mut out = String::with_capacity(tlen);
 
         for pair in 0..groups.len()/2 {
+            println!("{:?}\n{:?}\n",groups[2*pair],groups[2*pair+1]);
+            let mut row_a = String::with_capacity(self.period);
+            let mut row_b = String::with_capacity(self.period);
             for pos in 0..self.period {
-                let a = groups[pair][pos];
-                let b = groups[pair+1][pos];
+                let a = groups[2*pair][pos];
+                let b = groups[2*pair+1][pos];
                 let (out_a, out_b) = self.decrypt_chars(a, b);
-                out.push(out_a);
-                out.push(out_b);
+                row_a.push(out_a);
+                row_b.push(out_b);
             }
+            out.push_str(&row_a);
+            out.push_str(&row_b);
         }
 
         out
