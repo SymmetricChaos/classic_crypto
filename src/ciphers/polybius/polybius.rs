@@ -50,7 +50,7 @@ impl Polybius<'_> {
     }
 
     pub fn decrypt_from_vec(&self, text: &Vec<char>) -> String {
-        let mut out = "".to_string();
+        let mut out = String::new();
         if  text.len() % 2 == 1 {
             panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
         }
@@ -67,7 +67,7 @@ impl Polybius<'_> {
 impl crate::Cipher for Polybius<'_> {
 
     fn encrypt(&self, text: &str) -> String {
-        let mut out = "".to_string();
+        let mut out = String::new();
         for c in text.chars() {
             let (a,b) = self.map[&c];
             let s = format!("{}{}",a,b);
@@ -77,7 +77,7 @@ impl crate::Cipher for Polybius<'_> {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = "".to_string();
+        let mut out = String::new();
         let tlen = text.chars().count();
         if tlen % 2 == 1 {
             panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
@@ -112,35 +112,4 @@ impl fmt::Display for Polybius<'_> {
         }
         write!(f, "Polybius Square\n{}",square)
     }
-}
-
-
-
-
-
-#[test]
-fn polybius() {
-    use crate::alphabets::LATIN36;
-    use crate::Cipher;
-
-    let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
-    println!("{}",poly);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = poly.encrypt(plaintext);
-    let cleartext = poly.decrypt(&ciphertext);
-
-    println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
-}
-
-#[test]
-fn polybius_vec() {
-    use crate::alphabets::LATIN36;
-
-    let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
-    println!("{}",poly);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = poly.encrypt_to_vec(plaintext);
-    let cleartext = poly.decrypt_from_vec(&ciphertext);
-
-    println!("{}\n{:?}\n{}",plaintext,ciphertext,cleartext);
 }

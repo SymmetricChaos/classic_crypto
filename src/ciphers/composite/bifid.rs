@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
+use crate::ciphers::polybius::Polybius;
 
 /// The Bifid Cipher combines a Polybius Square with a simple transposition
 pub struct Bifid<'a> {

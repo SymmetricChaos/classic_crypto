@@ -32,11 +32,7 @@ pub use self::checkerboard::StraddlingCheckerboard;
 pub use self::checkerboard::VicCheckerboard;
 
 mod polybius;
-pub use self::polybius::Polybius;
+pub use self::polybius::{Polybius,GenPolybius};
 
 mod alberti;
 pub use self::alberti::Alberti;
-
-
-
-

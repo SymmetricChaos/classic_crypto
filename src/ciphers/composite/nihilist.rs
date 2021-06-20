@@ -1,7 +1,7 @@
 use std::fmt;
 use num::integer::Roots;
 
-use crate::{Cipher, ciphers::polybius::polybius::Polybius};
+use crate::{Cipher, ciphers::polybius::Polybius};
 
 /// The Nihilist ciphers is a combination of the Polybius Square and a variation on the Vigenere Cipher. It proceeds by first using a 5x5 Polybius Square to convert each letter to a two digit number then adds the values of a keyword to each value, repeating as necessary.
 pub struct Nihilist<'a> {

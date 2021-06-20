@@ -1,6 +1,6 @@
-use std::fmt;
+/* use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
+use crate::ciphers::polybius::Polybius;
 
 /// The Trifid Cipher uses a Polybius "cube" to convert each character to a three digit string then applies a simple transposition
 pub struct Trifid<'a> {
@@ -75,3 +75,4 @@ impl fmt::Display for Trifid<'_> {
         write!(f, "Trifid Composite Cipher\nBlock Size:\n{}\nPolybius Square:\n{}",self.block_size,self.polybius)
     }
 }
+ */

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ciphers::polybius::polybius::Polybius;
+use crate::ciphers::polybius::Polybius;
 use crate::ciphers::transposition::columnar::Columnar;
 use crate::alphabets::LATIN36;
 

@@ -19,4 +19,3 @@ pub use self::nihilist::Nihilist;
 pub use self::bifid::Bifid;
 pub use self::composite::CompositeCipher;
 pub use self::block::BlockCipher;
-pub use self::trifid::Trifid;
