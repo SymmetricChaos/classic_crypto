@@ -64,7 +64,3 @@ impl fmt::Display for RunningKey<'_> {
         write!(f, "Porta Running Key Cipher\nkey file: {:?}",self.key_file)
     }
 }
-
-
-
-

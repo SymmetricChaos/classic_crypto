@@ -55,7 +55,3 @@ impl fmt::Display for RunningKey<'_> {
         write!(f, "Vigenere Running Key Cipher\nkey file: {:?}",self.key_file)
     }
 }
-
-
-
-

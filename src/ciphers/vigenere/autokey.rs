@@ -60,20 +60,3 @@ impl fmt::Display for Autokey<'_> {
         write!(f, "Vigenere Autokey Cipher\nkey: {}",self.key_name)
     }
 }
-
-
-
-
-
-#[test]
-fn vigenere_autokey() {
-    use crate::Cipher;
-    use crate::alphabets::LATIN26;
-    let auto = Autokey::new("SECRET", LATIN26);
-    let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-    let ciphertext = auto.encrypt(plaintext);
-    let decrypted = auto.decrypt(&ciphertext);
-
-    println!("{}\n{}\n{}",plaintext,ciphertext,decrypted);
-    
-}

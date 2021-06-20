@@ -6,8 +6,6 @@ fn beaufort_encrypt(n: usize, k: usize, l: usize) -> usize {
 
 
 
-
-
 pub struct RunningKey<'a> {
     key_file: &'a str,
     alphabet: &'a str,

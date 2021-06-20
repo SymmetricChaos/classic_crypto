@@ -6,8 +6,6 @@ fn beaufort_encrypt(n: usize, k: usize, l: usize) -> usize {
 
 
 
-
-
 pub struct Autokey<'a> {
     key_vals: Vec<usize>,
     key: &'a str,
