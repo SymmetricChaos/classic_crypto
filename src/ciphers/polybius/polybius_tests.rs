@@ -10,7 +10,9 @@ mod polybius_tests {
     fn polybius() {
     
         let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
+        
         println!("{}",poly);
+        
         let ciphertext = poly.encrypt(PLAINTEXT);
         let cleartext = poly.decrypt(&ciphertext);
     

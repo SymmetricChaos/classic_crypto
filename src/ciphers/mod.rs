@@ -36,6 +36,3 @@ pub use self::polybius::{Polybius,GenPolybius};
 
 mod alberti;
 pub use self::alberti::Alberti;
-
-mod polyalphabetic;
-pub use self::polyalphabetic::Vigenere;

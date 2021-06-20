@@ -2,8 +2,6 @@ use std::fmt;
 use std::collections::HashMap;
 use crate::alphabets::keyed_alphabet;
 use itertools::Itertools;
-use itertools::Permutations;
-use num::traits::Pow;
 
 
 
