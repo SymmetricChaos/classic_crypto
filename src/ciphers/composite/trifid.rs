@@ -60,7 +60,7 @@ impl crate::Cipher for Trifid {
         for clip in vector.chunks(self.block_size).map(|x| x.iter().collect::<String>()) {
 
             let polystring = self.polybius.encrypt(&clip);
-            let raw_chunks = polystring.chars().chunks(self.block_size).into_iter().map(|x| x.into_iter().collect::<String>()).collect_vec();
+            let raw_chunks = polystring.chars().chunks(clip.chars().count()).into_iter().map(|x| x.into_iter().collect::<String>()).collect_vec();
 
             let block_a = &raw_chunks[0];
             let block_b = &raw_chunks[1];
