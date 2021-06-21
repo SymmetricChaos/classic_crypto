@@ -67,6 +67,7 @@ impl Polybius<'_> {
 impl crate::Cipher for Polybius<'_> {
 
     fn encrypt(&self, text: &str) -> String {
+        let tlen = text.chars().count();
         let mut out = String::with_capacity(tlen*2);
         for c in text.chars() {
             let (a,b) = self.map[&c];
@@ -77,8 +78,8 @@ impl crate::Cipher for Polybius<'_> {
     }
 
     fn decrypt(&self, text: &str) -> String {
-        let mut out = String::with_capacity(tlen/2);
         let tlen = text.chars().count();
+        let mut out = String::with_capacity(tlen/2);
         if tlen % 2 == 1 {
             panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
         }

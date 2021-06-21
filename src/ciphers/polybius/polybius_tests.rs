@@ -3,7 +3,7 @@ mod polybius_tests {
 
     use crate::ciphers::polybius::{Polybius,GenPolybius};
     use crate::Cipher;
-    const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX";
+    const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
     use crate::alphabets::LATIN36;
 
     #[test]
@@ -11,12 +11,12 @@ mod polybius_tests {
     
         let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
         
-        println!("{}",poly);
-        
+        //println!("{}",poly);
+
         let ciphertext = poly.encrypt(PLAINTEXT);
         let cleartext = poly.decrypt(&ciphertext);
-    
-        println!("{}\n{}\n{}",PLAINTEXT,ciphertext,cleartext);
+
+        assert_eq!(cleartext,PLAINTEXT)
     }
 
     #[test]
@@ -24,12 +24,11 @@ mod polybius_tests {
     
         let poly = GenPolybius::new("ZEBRAS","ABCDEFGHIJKLMNOPQRSTUVWXYZ.","123", 3);
 
-        println!("{}",poly);
+        //println!("{}",poly);
 
-        let plaintext = "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG";
-        let ciphertext = poly.encrypt(plaintext);
+        let ciphertext = poly.encrypt(PLAINTEXT);
         let cleartext = poly.decrypt(&ciphertext);
     
-        println!("{}\n{}\n{}",plaintext,ciphertext,cleartext);
+        assert_eq!(cleartext,PLAINTEXT)
     }
 }

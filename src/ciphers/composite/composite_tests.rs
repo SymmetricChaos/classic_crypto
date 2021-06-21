@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod composite_tests {
 
-    use crate::ciphers::composite::{ADFGX, ADFGVX, Bifid, Nihilist, CompositeCipher};
+    use crate::ciphers::composite::{ADFGX, ADFGVX, Bifid, Trifid, Nihilist, CompositeCipher};
     use crate::Cipher;
     use crate::alphabets::{LATIN25_J,LATIN26};
 
@@ -41,6 +41,18 @@ mod composite_tests {
         
         assert_eq!(ciphertext,"PRWGENCHRXDLDRTMLCOAHTZPECTEHAFFUWG");
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
+    }
+
+    #[test]
+    fn trifid() {
+        let trifid = Trifid::new("RALPHEMERSON", "123", 7, "ABCDEFGHIJKLMNOPQRSTUVWXYZ#");
+
+        let plaintext = "THEONLYWAYTOHAVEAFRIENDISTOBEONE";
+        let ciphertext = trifid.encrypt(plaintext);
+        let decrypted = trifid.decrypt(&ciphertext);
+        
+        assert_eq!(ciphertext,"QPTISKMUQPUBBWQBHPVWLFMBYQAJAEEU");
+        assert_eq!(decrypted, "THEONLYWAYTOHAVEAFRIENDISTOBEONE");
     }
 
     
