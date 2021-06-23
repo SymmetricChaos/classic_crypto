@@ -43,6 +43,7 @@ mod composite_tests {
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG");
     }
 
+    
     #[test]
     fn trifid() {
         let trifid = Trifid::new("RALPHEMERSON", "123", 7, "ABCDEFGHIJKLMNOPQRSTUVWXYZ#");

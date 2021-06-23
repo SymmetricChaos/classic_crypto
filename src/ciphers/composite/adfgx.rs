@@ -6,14 +6,14 @@ use crate::alphabets::{LATIN25_J,LATIN26};
 
 /// The ADFGX Cipher combines a 5x5 Polybius Square (replacing J with I) and Columnar Transposition to achieve surprisingly high security with a very simple cipher. It was later replaced by the ADFGVX Cipher which used a 6x6 Polybius Square.
 pub struct ADFGX<'a> {
-    polybius: Polybius<'a>,
+    polybius: Polybius,
     columnar: Columnar<'a>,
 }
 
 
 impl ADFGX<'_> {
     pub fn new<'a>(keyword: &'a str, columnar_keyword: &'a str) -> ADFGX<'a> {
-        let polybius = Polybius::new(keyword, LATIN25_J, "ADFGX");
+        let polybius = Polybius::new(keyword, LATIN25_J, "ADFGX", 2);
         let columnar = Columnar::new(columnar_keyword, LATIN26);
         ADFGX{ polybius, columnar }
     }

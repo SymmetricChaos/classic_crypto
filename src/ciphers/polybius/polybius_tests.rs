@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod polybius_tests {
 
-    use crate::ciphers::polybius::{Polybius,GenPolybius};
+    use crate::ciphers::Polybius;
     use crate::Cipher;
     const PLAINTEXT: &'static str = "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOG";
     use crate::alphabets::LATIN36;
@@ -9,7 +9,7 @@ mod polybius_tests {
     #[test]
     fn polybius() {
     
-        let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456");
+        let poly = Polybius::new("17ZEBRAS42",LATIN36,"123456", 2);
         
         //println!("{}",poly);
 
@@ -22,7 +22,7 @@ mod polybius_tests {
     #[test]
     fn gen_polybius() {
     
-        let poly = GenPolybius::new("ZEBRAS","ABCDEFGHIJKLMNOPQRSTUVWXYZ.","123", 3);
+        let poly = Polybius::new("ZEBRAS","ABCDEFGHIJKLMNOPQRSTUVWXYZ.","123", 3);
 
         //println!("{}",poly);
 

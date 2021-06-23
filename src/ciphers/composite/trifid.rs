@@ -2,18 +2,18 @@ use std::fmt;
 
 use itertools::Itertools;
 
-use crate::ciphers::polybius::GenPolybius;
+use crate::ciphers::Polybius;
 
 /// The Trifid Cipher uses a Polybius "cube" to convert each character to a three digit string then applies a simple transposition
 pub struct Trifid {
-    polybius: GenPolybius,
+    polybius: Polybius,
     block_size: usize,
 }
 
 
 impl Trifid {
     pub fn new(keyword: &str, labels: &str, block_size: usize, alphabet: &str) -> Trifid {
-        let polybius = GenPolybius::new(keyword, alphabet, labels, 3);
+        let polybius = Polybius::new(keyword, alphabet, labels, 3);
         Trifid{ polybius, block_size }
     }
 

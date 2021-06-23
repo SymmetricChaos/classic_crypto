@@ -61,9 +61,6 @@ impl Plugboard<'_> {
         }
     }
 
-    /* pub fn random(&self, n: u32) -> Plugboard {
-
-    } */
 }
 
 impl fmt::Display for Plugboard<'_> {
@@ -79,9 +76,9 @@ impl fmt::Display for Plugboard<'_> {
 #[derive(Clone,Debug)]
 pub struct EnigmaM3<'a> {
     plugboard: Plugboard<'a>,
-    rotors: (Rotor<'a>,Rotor<'a>,Rotor<'a>),
+    rotors: (Rotor<'a>, Rotor<'a>, Rotor<'a>),
     reflector: Reflector<'a>,
-    ring_positions: (usize,usize,usize),
+    ring_positions: (usize, usize, usize),
 }
 
 impl<'a> EnigmaM3<'a> {
@@ -97,6 +94,7 @@ impl<'a> EnigmaM3<'a> {
         EnigmaM3{ plugboard, rotors: (a,b,c), reflector, ring_positions }
     }
 
+    // The message key
     pub fn set_rotors(&mut self, rotor_positions: (usize,usize,usize)) {
         self.rotors.0.set_position(rotor_positions.0);
         self.rotors.1.set_position(rotor_positions.1);
@@ -115,7 +113,6 @@ impl<'a> EnigmaM3<'a> {
             self.reflector)
     }
 
-    // Need to validate double-stepping
     fn advance_rotors(&mut self) {
         let mut on_notch = self.rotors.2.get_position() == self.rotors.2.get_notch().0 || self.rotors.2.get_position() == self.rotors.2.get_notch().1;
         self.rotors.2.step();
@@ -169,7 +166,7 @@ impl<'a> EnigmaM3<'a> {
         out
     }
 
-    // This method is just for compatibility as the Enigma machines were all involutive, encryption and decryption were the same process
+    // The Engima machines are reciprocal
     pub fn decrypt(&mut self, text: &str) -> String {
         self.encrypt(text)
     }

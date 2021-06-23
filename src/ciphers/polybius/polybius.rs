@@ -1,116 +1,138 @@
 use std::fmt;
 use std::collections::HashMap;
 use crate::alphabets::keyed_alphabet;
+use itertools::Itertools;
 
 
-// Less memory intensive method?
-pub struct Polybius<'a> {
-    map: HashMap<char,(char,char)>,
-    map_inv: HashMap<(char,char),char>,
-    alphabet: &'a str,
-    labels: &'a str,
+
+struct CartesianPower {
+    alphabet: Vec<char>,
+    dimension: usize,
+    counters: Vec<usize>,
+    counter: usize,
 }
 
-impl Polybius<'_> {
-    pub fn new<'a>(keyword: &'a str, alphabet: &'a str, labels: &'a str) -> Polybius<'a> {
+impl Iterator for CartesianPower {
+    type Item = String;
 
-        let alpha = keyed_alphabet(keyword,alphabet);
+    fn next(&mut self) -> Option<Self::Item> {
 
-        let alen = alpha.chars().count();
-        let llen = labels.chars().count();
-        if alen > llen*llen {
-            panic!("an alphabet with {} characters does not fit in a {}x{} square.",alen,llen,llen)
+        if self.counter >= self.alphabet.len().pow(self.dimension as u32) {
+            return None
         }
 
-        let mut symbols = alpha.chars();
-        let mut map = HashMap::new();
-        let mut map_inv = HashMap::new();
-        for a in labels.chars() {
-            for b in labels.chars() {
-                let t = (a,b);
-                let c = symbols.next();
-                if c.is_some() {
-                    map.insert(c.unwrap(), t);
-                    map_inv.insert(t, c.unwrap());
-                }
+        self.counter += 1;
+
+        let mut s = String::with_capacity(self.dimension);
+        for c in self.counters.iter().rev() {
+            s.push(self.alphabet[*c])
+        }
+        
+        let mut carry = true;
+        for x in self.counters.iter_mut() {
+            if carry {
+                *x += 1
+            }
+            if x == &self.alphabet.len() {
+                carry = true;
+                *x = *x % self.alphabet.len()
+            } else {
+                carry = false
             }
         }
 
-        Polybius{ map, map_inv, alphabet, labels }
+        Some(s)
     }
 
-    pub fn encrypt_to_vec(&self, text: &str) -> Vec<char> {
-        let mut out = Vec::new();
-        for c in text.chars() {
-            let (a,b) = self.map[&c];
-            out.push(a);
-            out.push(b);
-        }
-        out
-    }
-
-    pub fn decrypt_from_vec(&self, text: &Vec<char>) -> String {
-        let mut out = String::new();
-        if  text.len() % 2 == 1 {
-            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
-        }
-        let n_groups = text.len() / 2;
-        let mut symbols = text.iter();
-        for _ in 0..n_groups {
-            let t = (*symbols.next().unwrap(),*symbols.next().unwrap());
-            out.push(self.map_inv[&t]);
-        }
-        out
-    }
 }
 
-impl crate::Cipher for Polybius<'_> {
+impl CartesianPower {
+
+    pub fn new(alpha: &str, dimension: usize) -> CartesianPower {
+        let alphabet = alpha.chars().collect_vec();
+        let mut counters = Vec::with_capacity(dimension);
+        for _ in 0..dimension {
+            counters.push(0)
+        }
+        CartesianPower{ alphabet, dimension, counters, counter: 0 }
+    }
+
+}
+
+
+
+// Generalized polybius hypercube
+pub struct Polybius {
+    map: HashMap<char,String>,
+    map_inv: HashMap<String,char>,
+    alphabet: String,
+    dimension: usize,
+}
+
+impl Polybius {
+    pub fn new(keyword: &str, alphabet: &str, labels: &str, dimension: usize) -> Polybius {
+
+        let alphabet = keyed_alphabet(keyword,alphabet);        
+
+        let alen = alphabet.chars().count();
+        let llen = labels.chars().count();
+        if alen > llen*llen*dimension {
+            panic!("an alphabet with {} characters does not fit in an {}-cube with edges of length {}.",alen,dimension,llen)
+        }
+
+        let symbols = alphabet.chars();
+        let codes = CartesianPower::new(labels, dimension);
+
+        let mut map = HashMap::with_capacity(alen);
+        let mut map_inv = HashMap::with_capacity(alen);
+        for (sy,code) in symbols.zip(codes) {
+            map.insert(sy, code.clone());
+            map_inv.insert(code, sy);
+        }
+
+        Polybius{ map, map_inv, alphabet, dimension }
+    }
+
+}
+
+impl crate::Cipher for Polybius {
 
     fn encrypt(&self, text: &str) -> String {
         let tlen = text.chars().count();
-        let mut out = String::with_capacity(tlen*2);
+        let mut out = String::with_capacity(tlen*self.dimension);
+
         for c in text.chars() {
-            let (a,b) = self.map[&c];
-            let s = format!("{}{}",a,b);
-            out.push_str(&s);
+            let s = &self.map[&c];
+            out.push_str(s);
         }
+
         out
     }
 
     fn decrypt(&self, text: &str) -> String {
         let tlen = text.chars().count();
-        let mut out = String::with_capacity(tlen/2);
-        if tlen % 2 == 1 {
-            panic!("Polybius Square Error: cannot decrypt a string with an odd number of characters")
-        }
-        let n_groups = tlen / 2;
-        let mut symbols = text.chars();
-        for _ in 0..n_groups {
-            let t = (symbols.next().unwrap(),symbols.next().unwrap());
-            out.push(self.map_inv[&t]);
+        let mut out = String::with_capacity(tlen/self.dimension);
+
+        let raw_chunks = text.chars().chunks(self.dimension);
+        let chunks = raw_chunks.into_iter().map(|x| x.collect::<String>()).into_iter();
+
+        for c in chunks {
+            out.push(self.map_inv[&c]);
         }
         out
     }
 
 }
 
-impl fmt::Display for Polybius<'_> {
+impl fmt::Display for Polybius {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut square = " ".to_string();
-        for c in self.labels.chars() {
-            square.push(' ');
-            square.push(c)
+        let mut square = format!("Generalized Polybius Square with Dimension {}\n",self.dimension);
+        
+        for a in self.alphabet.chars() {
+            let s = format!("{}  {}\n",a,self.map[&a]);
+            square.push_str(&s)
         }
-        square.push_str("\n");
-        let mut symbols = self.alphabet.chars();
-        for l in self.labels.chars() {
-            square.push(l);
-            for _ in 0..self.labels.chars().count() {
-                square.push(' ');
-                square.push(symbols.next().unwrap_or(' '))
-            }
-            square.push_str("\n");
-        }
-        write!(f, "Polybius Square\n{}",square)
+
+        write!(f, "{}",square)
     }
 }
