@@ -1,7 +1,5 @@
 use std::fmt;
 
-
-/// Polyalphabetic substitution ciphers (like the Beaufort, Porta, and Vigenere) are all special cases of the Bazeries Cipher with vastly simpler keys. The Bazeries cipher could also be considered an instance of a Bazeries cipher.
 pub struct Bazeries<'a> {
     wheels: Vec<&'a str>,
     length: usize,

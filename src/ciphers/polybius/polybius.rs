@@ -61,7 +61,7 @@ impl CartesianPower {
 
 
 
-// Generalized polybius hypercube
+// Generalized Polybius hypercube, usually used with dimension 2 to produce a square or sometimes with dimension 3 to produce a cube
 pub struct Polybius {
     map: HashMap<char,String>,
     map_inv: HashMap<String,char>,
