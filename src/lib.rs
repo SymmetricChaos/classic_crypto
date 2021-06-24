@@ -6,4 +6,5 @@ pub mod traits;
 pub mod grid;
 
 pub use self::traits::Cipher;
+pub use self::traits::PolyalphabeticCipher;
 pub use self::traits::Code;

@@ -12,7 +12,7 @@ fn usize_to_tuple(n: usize) -> (usize,usize) {
     (n / 24, n % 24)
 }
 
-pub fn random_RS44_grid_holes() -> [usize; 240] {
+pub fn random_rs44_grid_holes() -> [usize; 240] {
     let mut rng = thread_rng();
     let mut out = [0usize; 240];
     let mut nums = vec![0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
@@ -139,7 +139,7 @@ impl fmt::Display for RS44 {
 
 #[test]
 fn test_random_grid() {
-    let a = random_RS44_grid_holes();
+    let a = random_rs44_grid_holes();
     //println!("{:?}",a);
 
     //let v = create_grid_vector(a);

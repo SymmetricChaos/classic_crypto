@@ -69,7 +69,7 @@ pub fn rank_str(text: &str, alphabet: &str) -> Vec<usize> {
 
 
 pub fn string_to_nums(text: &str, alphabet: &str) -> Vec<usize> {
-    text.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() / 2 ).collect()
+    text.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() ).collect()
 }
 
 

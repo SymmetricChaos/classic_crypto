@@ -15,7 +15,7 @@ mod vigenere_tests {
         let ciphertext = vig.encrypt(PLAINTEXT);
         let decrypted = vig.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"LLGHYBUODISPFJQONNETUFZXJXJVPTRCFFK");
+        assert_eq!(ciphertext,"CJFYWRLMCZQFWHPFLDVRTWXNAVIMNJIAEWI");
         assert_eq!(decrypted,PLAINTEXT)
     }
 
@@ -25,7 +25,7 @@ mod vigenere_tests {
         let ciphertext = auto.encrypt(PLAINTEXT);
         let decrypted = auto.decrypt(&ciphertext);
 
-        assert_eq!(ciphertext,"LLGHYBVRFHIEPPPOXQZUGLEYDIZSGEQRKSR");
+        assert_eq!(ciphertext,"CJFYWRVRFHIEPPPOXQZUGLEYDIZSGEQRKSR");
         assert_eq!(decrypted,PLAINTEXT)
     }
 

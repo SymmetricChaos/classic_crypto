@@ -3,29 +3,29 @@ use std::fmt;
 use crate::auxiliary::string_to_nums;
 
 
-pub struct Vigenere<'a> {
+pub struct BeaufortVariant<'a> {
     key_vals: Vec<usize>,
     key_name: &'a str,
     alphabet: &'a str,
     length: usize,
 }
 
-impl Vigenere<'_> {
-    pub fn new<'a>(key: &'a str, alphabet: &'a str) -> Vigenere<'a> {
+impl BeaufortVariant<'_> {
+    pub fn new<'a>(key: &'a str, alphabet: &'a str) -> BeaufortVariant<'a> {
         let key_name = key;
         let key_vals: Vec<usize> = string_to_nums(key, alphabet);
-        Vigenere{ key_vals, key_name, alphabet, length: alphabet.chars().count() }
+        BeaufortVariant{ key_vals, key_name, alphabet, length: alphabet.chars().count() }
     }
 
 }
 
-impl crate::PolyalphabeticCipher for Vigenere<'_> {
+impl crate::PolyalphabeticCipher for BeaufortVariant<'_> {
     fn encrypt_char(&self, t: usize, k: usize) -> usize {
-        (t+k) % self.length
+        (self.length+t-k) % self.length
     }
 
     fn decrypt_char(&self, t: usize, k: usize) -> usize {
-        (self.length+t-k) % self.length
+        (t+k) % self.length
     }
 
     fn text_to_nums(&self, text: &str) -> Vec<usize> {
@@ -42,19 +42,9 @@ impl crate::PolyalphabeticCipher for Vigenere<'_> {
     }
 }
 
-impl crate::Cipher for Vigenere<'_> {
+impl crate::Cipher for BeaufortVariant<'_> {
 
     fn encrypt(&self, text: &str) -> String {
-        let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
-        let ckey = self.key_vals.iter().cycle();
-        let mut out = "".to_string();
-        for (n,k) in nums.iter().zip(ckey) {
-            out.push(self.alphabet.chars().nth( (n+k)%self.length ).unwrap() )
-        }
-        out
-    }
-
-    fn decrypt(&self, text: &str) -> String {
         let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() + self.length ).collect();
         let ckey = self.key_vals.iter().cycle();
         let mut out = "".to_string();
@@ -64,10 +54,20 @@ impl crate::Cipher for Vigenere<'_> {
         out
     }
 
+    fn decrypt(&self, text: &str) -> String {
+        let nums: Vec<usize> = text.chars().map( |x| self.alphabet.chars().position(|c| c == x).unwrap() ).collect();
+        let ckey = self.key_vals.iter().cycle();
+        let mut out = "".to_string();
+        for (n,k) in nums.iter().zip(ckey) {
+            out.push(self.alphabet.chars().nth( (n+k)%self.length ).unwrap() )
+        }
+        out
+    }
+
 }
 
-impl fmt::Display for Vigenere<'_> {
+impl fmt::Display for BeaufortVariant<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vigenere Cipher\nkey: {}",self.key_name)
+        write!(f, "Beaufort Variant Cipher\nkey: {}",self.key_name)
     }
 }

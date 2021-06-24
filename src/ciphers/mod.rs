@@ -13,6 +13,7 @@ pub mod monoalphabetic;
 pub mod playfair;
 pub mod porta;
 pub mod m209;
+pub mod polyalphabetic;
 
 mod chaocipher;
 pub use self::chaocipher::Chaocipher;
