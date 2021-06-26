@@ -72,7 +72,8 @@ mod composite_tests {
     
     #[test]
     fn composite_example() {
-        use crate::ciphers::{vigenere::Vigenere,transposition::Columnar};
+        use crate::ciphers::transposition::Columnar;
+        use crate::ciphers::polyalphabetic::Vigenere;
 
         let c1 = Vigenere::new("APPLE", LATIN26);
         let c2 = Columnar::new("BANANA",LATIN26);

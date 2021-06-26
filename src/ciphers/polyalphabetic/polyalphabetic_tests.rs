@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod polyalphabetic_tests {
 
-    use crate::ciphers::polyalphabetic::{Vigenere,Beaufort,BeaufortVariant,Autokey,ProgressiveKey};
-    use crate::{Cipher};
+    use crate::ciphers::polyalphabetic::{Vigenere,Beaufort,BeaufortVariant,Autokey,ProgressiveKey,Tableaux};
+    use crate::Cipher;
 
     use crate::alphabets::LATIN26;
 
@@ -106,4 +106,26 @@ mod polyalphabetic_tests {
     }
 
 
+    // randomly generated tableaux
+    const TABLEAUX: [&'static str; 26] = [
+        "KBFOQMZYRNELUIVXGATWJHDPSC","QNMGTHDUZJAIKXVPFSELBCWYOR","IAKJQSXOCBDLMWYGHFUVENZPRT",
+        "TAEDSLGVIJKRMYZPHOBUQXNFWC","IHEKSDTCRZYBXFMLPVAGONWUQJ","EXIBHKPJLZCGVDNFWTYMQOAURS",
+        "YEMDIBZAPQLHTXWOJRKCFSVNUG","DORMVWNTGYCXQIFEUAZKLHJPBS","TOYNSJCIFUWPEDZMQKARVBXGLH",
+        "RWALBDPXHTFVIYSJUNGKEMQZCO","UCKLWRGMVEFJQSTBPYXZDAONIH","PXGIAWHERUQMJFTZLYONDVCKSB",
+        "RUXTMEYHCPDVONJKIBSQFLWZGA","MQSEAPDONIYVCJGXRHTFZBLKUW","DOXFPYEUQCVHLKBITZJGWMNRSA",
+        "OPYNACTKJGHWMXZURVFIEBDSQL","KIWNXCMBRDOUTESFAQJZHGYVPL","YZKWFOSQLRPNUBMCDEAIGXVHJT",
+        "DOUPSHRJECMXQAKIZVBTGFNYWL","FAGJPHMEQWDTLRXKVOZYSIUNCB","VKIJYQOPBAEFZNGULRTSHWDXCM",
+        "VKLARZBIUTNHGEDMCXFOJPSWQY","RAGEWFNKLVOZSJMBHTQPICUDXY","PEWHORBVSMQKZUTJIGNYCLDXAF",
+        "LBARIOTHCVMWUGFQPENSXJZKYD","SXVAFQCTBIPDWENYKUHJOLZGMR",
+    ];
+
+    #[test]
+    fn tableaux() {
+        let tab = Tableaux::new("SECRET", TABLEAUX.to_vec(), LATIN26);
+        let ciphertext = tab.encrypt(PLAINTEXT);
+        let decrypted = tab.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
 }

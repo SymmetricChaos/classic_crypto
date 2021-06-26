@@ -1,7 +1,6 @@
 use std::fmt;
 
 
-/// Polyalphabetic substitution ciphers (like the Beaufort, Porta, and Vigenere) are all special cases of the BazeriesProgressive Cipher with vastly simpler keys. The BazeriesProgressive cipher could also be considered an instance of a BazeriesProgressive cipher.
 pub struct BazeriesProgressive<'a> {
     wheels: Vec<&'a str>,
     increment: usize,

@@ -5,11 +5,12 @@ mod polyalphabetic_tests;
 mod vigenere;
 mod beaufort;
 mod beaufort_variant;
+mod tableaux;
 
 pub use self::vigenere::Vigenere;
 pub use self::beaufort::Beaufort;
 pub use self::beaufort_variant::BeaufortVariant;
-
+pub use self::tableaux::Tableaux;
 
 mod autokey;
 mod progressive_key;
