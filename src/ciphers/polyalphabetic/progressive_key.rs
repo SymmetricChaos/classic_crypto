@@ -1,3 +1,4 @@
+use std::fmt;
 use crate::{Cipher, PolyalphabeticCipher};
 
 pub struct ProgressiveKey<'a> {
@@ -58,5 +59,11 @@ impl Cipher for ProgressiveKey<'_> {
         }
 
         self.cipher.nums_to_text(out)
+    }
+}
+
+impl fmt::Display for ProgressiveKey<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Progressive Key {}",self.cipher)
     }
 }

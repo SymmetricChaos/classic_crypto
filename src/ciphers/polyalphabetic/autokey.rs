@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, fmt};
 
 use crate::{Cipher, PolyalphabeticCipher};
 
@@ -42,5 +42,11 @@ impl Cipher for Autokey<'_> {
         }
         
         self.cipher.nums_to_text(out)
+    }
+}
+
+impl fmt::Display for Autokey<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Autokey {}",self.cipher)
     }
 }

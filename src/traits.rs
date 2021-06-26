@@ -1,3 +1,5 @@
+use std::fmt;
+
 
 pub trait Cipher { 
     fn encrypt(&self, text: &str) -> String;
@@ -5,7 +7,7 @@ pub trait Cipher {
 }
 
 // For the Vigenere like family of ciphers
-pub trait PolyalphabeticCipher {
+pub trait PolyalphabeticCipher: fmt::Display {
     fn encrypt_char(&self, t: usize, k: usize) -> usize;
     fn decrypt_char(&self, t: usize, k: usize) -> usize;
     fn text_to_nums(&self, text: &str) -> Vec<usize>;
