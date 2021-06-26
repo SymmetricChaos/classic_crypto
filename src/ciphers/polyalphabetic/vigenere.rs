@@ -40,6 +40,10 @@ impl crate::PolyalphabeticCipher for Vigenere<'_> {
     fn key_vals(&self) -> Vec<usize> {
         self.key_vals.clone()
     }
+
+    fn alphabet_len(&self) -> usize {
+        self.length
+    }
 }
 
 impl crate::Cipher for Vigenere<'_> {

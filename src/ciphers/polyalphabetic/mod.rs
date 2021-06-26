@@ -12,4 +12,6 @@ pub use self::beaufort_variant::BeaufortVariant;
 
 
 mod autokey;
+mod progressive_key;
 pub use self::autokey::Autokey;
+pub use self::progressive_key::ProgressiveKey;

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod polyalphabetic_tests {
 
-    use crate::ciphers::polyalphabetic::{Vigenere,Beaufort,BeaufortVariant,Autokey};
+    use crate::ciphers::polyalphabetic::{Vigenere,Beaufort,BeaufortVariant,Autokey,ProgressiveKey};
     use crate::{Cipher};
 
     use crate::alphabets::LATIN26;
@@ -30,6 +30,17 @@ mod polyalphabetic_tests {
     }
 
     #[test]
+    fn vigenere_progkey() {
+        let vig = Vigenere::new("SECRET", LATIN26);
+        let prog = ProgressiveKey::new(&vig, 3);
+        let ciphertext = prog.encrypt(PLAINTEXT);
+        let decrypted = prog.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"LLGHYBXRGLVSLPWUTTNCDOIGVJVHBFGRUUZ");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
     fn beaufort() {
         let beau = Beaufort::new("SECRET", LATIN26);
         let ciphertext = beau.encrypt(PLAINTEXT);
@@ -47,6 +58,17 @@ mod polyalphabetic_tests {
         let decrypted = auto.decrypt(&ciphertext);
     
         assert_eq!(ciphertext,"ZXYBKLRXDZGMPFNUFCBQWJOQVWLKKESVEQF");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn beaufort_progkey() {
+        let beau = Beaufort::new("SECRET", LATIN26);
+        let prog = ProgressiveKey::new(&beau, 3);
+        let ciphertext = prog.encrypt(PLAINTEXT);
+        let decrypted = prog.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"ZXYBKLTXEDTALFUABFPYTMSYNXHZFFIVOSN");
         assert_eq!(decrypted,PLAINTEXT)
     }
 
@@ -69,6 +91,17 @@ mod polyalphabetic_tests {
         let decrypted = auto.decrypt(&ciphertext);
     
         assert_eq!(ciphertext,"BDCZQPJDXBUOLVNGVYZKERMKFEPQQWIFWKV");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn beaufort_var_progkey() {
+        let beau_var = BeaufortVariant::new("SECRET", LATIN26);
+        let prog = ProgressiveKey::new(&beau_var, 3);
+        let ciphertext = prog.encrypt(PLAINTEXT);
+        let decrypted = prog.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"BDCZQPHDWXHAPVGAZVLCHOICNDTBVVSFMIN");
         assert_eq!(decrypted,PLAINTEXT)
     }
 

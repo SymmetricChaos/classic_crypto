@@ -11,6 +11,7 @@ pub trait PolyalphabeticCipher {
     fn text_to_nums(&self, text: &str) -> Vec<usize>;
     fn nums_to_text(&self, nums: Vec<usize>) -> String;
     fn key_vals(&self) -> Vec<usize>;
+    fn alphabet_len(&self) -> usize;
 }
 
 pub trait Code { 

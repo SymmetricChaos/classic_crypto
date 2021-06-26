@@ -3,12 +3,12 @@ use std::collections::VecDeque;
 use crate::{Cipher, PolyalphabeticCipher};
 
 pub struct Autokey<'a> {
-    cipher: Box<&'a dyn PolyalphabeticCipher>
+    cipher: &'a dyn PolyalphabeticCipher
 }
 
 impl Autokey<'_> {
     pub fn new(cipher: &dyn PolyalphabeticCipher) -> Autokey {
-        Autokey{ cipher: Box::new(cipher.clone()) }
+        Autokey{ cipher: cipher.clone() }
     }
 }
 
