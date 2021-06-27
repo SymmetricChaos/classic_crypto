@@ -1,9 +1,11 @@
 use std::fmt;
 
+use crate::auxiliary::string_to_nums;
 
 /// Polyalphabetic substitution ciphers (like the Beaufort, Porta, and Vigenere) are all special cases of the Tableaux Cipher with vastly simpler keys.
 pub struct Tableaux<'a> {
     tableaux: Vec<&'a str>,
+    tableaux_vals: Vec<Vec<usize>>,
     key: &'a str,
     key_vals: Vec<usize>,
     alphabet: &'a str,
@@ -12,6 +14,7 @@ pub struct Tableaux<'a> {
 
 impl Tableaux<'_> {
     pub fn new<'a>(key: &'a str, tableaux: Vec<&'a str>, alphabet: &'a str) -> Tableaux<'a> {
+        let mut tableaux_vals = Vec::with_capacity(tableaux.len());
         let alen = alphabet.chars().count();
         if tableaux.len() != alen {
             panic!("the tableaux must have exactly one row for each character in the alphabet")
@@ -25,9 +28,10 @@ impl Tableaux<'_> {
                     panic!("all rows of the tableaux must be permutations of the alphabet")
                 }
             }
+            tableaux_vals.push(string_to_nums(row,alphabet))
         }
         let key_vals = key.chars().map(|c| alphabet.chars().position(|x| x == c).unwrap() ).collect();
-        Tableaux{ tableaux: tableaux.clone(), key, key_vals, alphabet, length: alen }
+        Tableaux{ tableaux: tableaux.clone(), tableaux_vals, key, key_vals, alphabet, length: alen }
     }
 
     pub fn tableaux(&self) -> String {
@@ -63,11 +67,11 @@ impl Tableaux<'_> {
 
 impl crate::PolyalphabeticCipher for Tableaux<'_> {
     fn encrypt_char(&self, t: usize, k: usize) -> usize {
-        self.tableaux[k]
+        self.tableaux_vals[k].iter().position(|x| *x == t).unwrap()
     }
 
     fn decrypt_char(&self, t: usize, k: usize) -> usize {
-        self.tableaux[t][k]
+        self.tableaux_vals[k][t]
     }
 
     fn text_to_nums(&self, text: &str) -> Vec<usize> {

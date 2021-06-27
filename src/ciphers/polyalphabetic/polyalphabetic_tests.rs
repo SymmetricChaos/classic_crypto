@@ -125,7 +125,29 @@ mod polyalphabetic_tests {
         let ciphertext = tab.encrypt(PLAINTEXT);
         let decrypted = tab.decrypt(&ciphertext);
     
-        assert_eq!(ciphertext,"");
+        assert_eq!(ciphertext,"TBUHXVJDJJUJWNHVZWKQFFRHGGQRPBQKKFT");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn tableaux_auto() {
+        let tab = Tableaux::new("SECRET", TABLEAUX.to_vec(), LATIN26);
+        let auto = Autokey::new(&tab);
+        let ciphertext = auto.encrypt(PLAINTEXT);
+        let decrypted = auto.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"TBUHXVYTLIGKVKYVSWAGYELKAGFGCSBTAUC");
+        assert_eq!(decrypted,PLAINTEXT)
+    }
+
+    #[test]
+    fn tableaux_prog() {
+        let tab = Tableaux::new("SECRET", TABLEAUX.to_vec(), LATIN26);
+        let prog = ProgressiveKey::new(&tab, 3);
+        let ciphertext = prog.encrypt(PLAINTEXT);
+        let decrypted = prog.decrypt(&ciphertext);
+    
+        assert_eq!(ciphertext,"TBUHXVQTDRBESKBXLRCFYDLUIMLCZWSTQPC");
         assert_eq!(decrypted,PLAINTEXT)
     }
 }
