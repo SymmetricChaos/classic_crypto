@@ -78,7 +78,7 @@ impl Iterator for FibonacciCode {
     fn next(&mut self) -> Option<String> {
 
         // Go through the bits backward adding a 1 or 0 depending on if its part of the partition
-        let mut bits = "".to_string();
+        let mut bits = String::new();
         let mut val = self.n;
         for f in self.vector.iter().rev() {
             if f <= &val {

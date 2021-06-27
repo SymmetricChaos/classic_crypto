@@ -34,30 +34,30 @@ mod binary_code_tests {
         let coded = bacon.encode(PLAINTEXT);
         let decoded = bacon.decode(&coded);
 
-        println!("{}",coded);
+        assert_eq!(coded,"1001100111001001000010100010000001001010000011000101110101100110100101011101011101001101000110001111100100111010101001001000110011001110010001011000001100111000000110111000110");
         assert_eq!(decoded,PLAINTEXT);
     }
 
     #[test]
     fn bacon_ascii() {
-        let bacon = Bacon::new(ASCII95);
+        let b64 = Bacon::new(ASCII95);
         let plaintext = "The quick (BROWN) fox jumps over the [LAZY] dog!";
-        let coded = bacon.encode(plaintext);
-        let decoded = bacon.decode(&coded);
+        let coded = b64.encode(plaintext);
+        let decoded = b64.decode(&coded);
 
-        println!("{}",coded);
+        assert_eq!(coded,"01101001001000100010100000001010001101010110010011000011100101100000000001000010001001100100101111011011101011100001001000000010001101001111101100000000001001010101010110011011010000101001100000001001111101011010001011010010000000010101001001000100010100000000111011010110001000010111010011100101111010000000100010010011111000111000000");
         assert_eq!(decoded,plaintext);
     }
 
-    #[test]
+/*     #[test]
     fn base64_default() {
         let bacon = Base64::default();
         let coded = bacon.encode(PLAINTEXT);
         let decoded = bacon.decode(&coded);
 
-        println!("{}",coded);
+        assert_eq!(coded,"010011000111000100010000010100001000000010001010000001010001001110010110001101000101001110010111001001010100001100001111010010001110010101000100010001010011000111000100001011000000011001011000000011001110000110");
         assert_eq!(decoded,PLAINTEXT);
-    }
+    } */
 
     #[test]
     fn baudot_ita2() {
@@ -124,6 +124,19 @@ mod binary_code_tests {
 
         assert_eq!("11100101101110011011001111100100101110111010111011100101100100001000110100100000001011010011111000100000111000111000000110110010111000111000001010001001111000111000000110001100111000111000000110101010001000000010110100111110001000000110100001101001011100100110000101100111011000010110111001100001",encoded);
         assert_eq!(decoded,plaintext);
+    }
+
+    #[test]
+    fn utf8_to_base64() {
+        let b64 = Base64::default();
+        let utf8 = UTF8::default();
+
+        let binary = utf8.encode("The quick brown fox");
+        let b64_encoded = b64.encode(&binary);
+
+        println!("{}",b64_encoded);
+        // correct version
+        println!("VGhlIHF1aWNrIGJyb3duIGZveA==")
     }
 
 }
