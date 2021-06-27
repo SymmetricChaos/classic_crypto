@@ -6,7 +6,6 @@
 pub mod transposition;
 pub mod enigma;
 pub mod composite;
-pub mod tableaux;
 pub mod playfair;
 pub mod porta;
 pub mod m209;
