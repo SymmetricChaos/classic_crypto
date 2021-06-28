@@ -133,10 +133,11 @@ mod binary_code_tests {
 
         let binary = utf8.encode("The quick brown fox");
         let b64_encoded = b64.encode(&binary);
+        let b64_decoded = b64.decode(&b64_encoded);
+        let decoded = utf8.decode(&b64_decoded);
 
-        println!("{}",b64_encoded);
-        // correct version
-        println!("VGhlIHF1aWNrIGJyb3duIGZveA==")
+        assert_eq!(b64_encoded,"VGhlIHF1aWNrIGJyb3duIGZveA==");
+        assert_eq!(decoded,"The quick brown fox");
     }
 
 }

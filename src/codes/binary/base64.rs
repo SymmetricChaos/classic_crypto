@@ -76,12 +76,21 @@ impl crate::Code for Base64<'_> {
 
     fn decode(&self, text: &str) -> String {
         let mut out = String::new();
+        let mut padding = 0;
+
         for s in text.chars() {
             if s == '=' {
+                padding += 1;
                 continue
             }
             out.push_str(self.map.get(&s).expect(&format!("The symbol `{}` is not in the MIME Base64 alphabet",s)))
         }
+
+        for _ in 0..padding {
+            out.pop();
+            out.pop();
+        }
+        
         out
     }
 
