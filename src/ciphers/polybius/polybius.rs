@@ -72,6 +72,10 @@ pub struct Polybius {
 impl Polybius {
     pub fn new(keyword: &str, alphabet: &str, labels: &str, dimension: usize) -> Polybius {
 
+        if dimension < 2 {
+            panic!("Dimensions must be greater than 1")
+        }
+
         let alphabet = keyed_alphabet(keyword,alphabet);        
 
         let alen = alphabet.chars().count();

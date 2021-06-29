@@ -95,7 +95,6 @@ impl crate::Code for Base64<'_> {
     }
 
 
-
     fn char_map(&self) -> String {
         let mut out = String::new();
         for c in self.alphabet.chars() {

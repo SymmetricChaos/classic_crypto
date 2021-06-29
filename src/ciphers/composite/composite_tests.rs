@@ -13,6 +13,8 @@ mod composite_tests {
         let ciphertext = adfgx.encrypt(plaintext);
         let decrypted = adfgx.decrypt(&ciphertext);
 
+        println!("{}",adfgx);
+
         assert_eq!(ciphertext,"PCRNEKHIGANXSYPLMWUWBDTQHOCDUPBBCRMY");
         assert_eq!(decrypted, "THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGX");
     }
@@ -83,7 +85,7 @@ mod composite_tests {
         let ciphertext = composite.encrypt(plaintext);
         let decrypt =    composite.decrypt(&ciphertext);
 
-        assert_eq!(ciphertext,"ORKRTFVTXVLTIDBJCQTJURTZLGQSOKWOQCQI");
+        assert_eq!(ciphertext,"BVXDTZTRCXVZYOYKWKWZQTTNILJPEQTMSSWS");
         assert_eq!(decrypt,   "THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGQ");
     }
 }

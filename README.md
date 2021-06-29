@@ -7,11 +7,11 @@ Implementations of well known classical ciphers and codes with the ability to ac
 ## All implemented ciphers
 
 ### Monoalphabetic Family
-* affine
-* atbash
 * caesar
+* affine
+* general substitution
+* atbash
 * decoder ring
-* substitution
 
 ### Polyalphabetic Family 
 * vigenere
@@ -33,6 +33,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * two square
 * four square
 * slidefair
+* seriated playfair
 
 ### Transposition Ciphers
 * columnar
@@ -47,12 +48,16 @@ Implementations of well known classical ciphers and codes with the ability to ac
 ### Other
 * alberti cipher disk
 * straddling checkerboard
-* polybius square
+* polybius square (generalized)
 * enigma (M3 variant)
 * AFGVX and ADFGX
 * bifid and trifid
 * nihilist
 * M209
+* chaocipher
+* BATCO
+* DRYAD
+* Baziers Wheel and M94
 
 
 ## All implemented codes
@@ -62,15 +67,20 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * bacon
 * baudot
 * fibonacci
-* morse
-* UTF32
+* morse (ITU)
 * UTF8
+* UTF32
 * Base64
 
 ### Spelling Alphabets
 * NATO
 * CCB
 
+### Romanization
+* hirigana and katagana
+
+### Other Codes
+* Godel
 
 
 # Coming Soon!
@@ -79,6 +89,6 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * RS44 cipher (in progress)
 * disrupted columnar transposition
 * more route ciphers
-* completion of porta cipher family
+* integration of Porta with polyalphabetic
 * UTF16 encoding
 * text to text version of Base64 (but like efficient and stuff)
