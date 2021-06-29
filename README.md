@@ -6,35 +6,27 @@ Implementations of well known classical ciphers and codes with the ability to ac
 
 ## All implemented ciphers
 
-### Beaufort Family
-* beaufort
-* progressive key
-* autokey
-* running key
-
-### Vigenere Family
-* vigenere
-* progressive key
-* autokey
-* running key
-
-### Porta Family
-* porta
-* progressive key
-* running key
-
-### Tableaux Family
-* tableaux
-* progressive key
-* autokey
-* running key
-
-### Monoalphabetic
+### Monoalphabetic Family
 * affine
 * atbash
 * caesar
 * decoder ring
 * substitution
+
+### Polyalphabetic Family 
+* vigenere
+* beaufort
+* variant beaufort
+* tableaux
+
+#### Polyalphabetic Modifiers
+* autokey
+* progressive key
+
+### Porta Family
+* porta
+* progressive key
+* running key
 
 ### Playfair Family
 * playfair
@@ -49,6 +41,8 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * route
   * stripe
   * snake
+* grille
+* turning grille
 
 ### Other
 * alberti cipher disk
@@ -56,8 +50,9 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * polybius square
 * enigma (M3 variant)
 * AFGVX and ADFGX
-* bifid
+* bifid and trifid
 * nihilist
+* M209
 
 
 ## All implemented codes
@@ -69,6 +64,7 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * fibonacci
 * morse
 * UTF32
+* UTF8
 * Base64
 
 ### Spelling Alphabets
@@ -79,14 +75,10 @@ Implementations of well known classical ciphers and codes with the ability to ac
 
 # Coming Soon!
 * maybe optimize things? idk enough about Rust, really
-* M209 (in progress)
 * VIC cipher (in progress)
 * RS44 cipher (in progress)
-* incomplete columnar transposition (in progress)
 * disrupted columnar transposition
-* turning grille cipher
 * more route ciphers
-* beaufort variant cipher family
 * completion of porta cipher family
-* UTF8 and UTF16 encodings
+* UTF16 encoding
 * text to text version of Base64 (but like efficient and stuff)
