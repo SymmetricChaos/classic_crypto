@@ -1,0 +1,1 @@
+// There are only 26 possibly keys for the Caesar cipher so trying them all is trivial. The challenge in automating the results in scoring the text.

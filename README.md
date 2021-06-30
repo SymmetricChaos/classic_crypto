@@ -45,20 +45,22 @@ Implementations of well known classical ciphers and codes with the ability to ac
 * grille
 * turning grille
 
-### Other
-* alberti cipher disk
-* straddling checkerboard
-* polybius square (generalized)
+### Composite Ciphers
 * enigma (M3 variant)
 * AFGVX and ADFGX
 * bifid and trifid
 * nihilist
-* M209
+
+### Other
+* alberti cipher disk
+* straddling checkerboard
+* polybius square (generalized)
 * chaocipher
 * BATCO
 * DRYAD
-* Baziers Wheel and M94
-
+* baziers
+* M94
+* M209
 
 ## All implemented codes
 
