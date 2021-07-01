@@ -1,18 +1,25 @@
 // Assign a String a numerical (f64) score between 0 and 1 estimating how likely it is to be English text
 
 use std::error::Error;
+use std::collections::HashMap;
 
-#[test]
-fn example() -> Result<(), Box<dyn Error>> {
+use itertools::Itertools;
+
+fn read_1grams() -> HashMap<String,f64> {
+
+    let mut map: HashMap<String,f64> = HashMap::new();
+
     // Build the CSV reader and iterate over each record.
-    let mut rdr = csv::Reader::from_path("1gramScores.csv").unwrap();
+    let mut rdr = csv::Reader::from_path("src\\attacks\\1gramScores.csv").unwrap();
     for result in rdr.records() {
-        // The iterator yields Result<StringRecord, Error>, so we check the
-        // error here.
-        let record = result?;
-        println!("{:?}", record);
+        // Conver the record to a string
+        let record: String = result.unwrap().deserialize(None).unwrap();
+        // Convert the string to a vector
+        let rec_vec =  record.split(' ').collect_vec();
+        map.insert(rec_vec[0].to_string(), rec_vec[3].parse().unwrap());
     }
-    Ok(())
+
+    map
 }
 
 
