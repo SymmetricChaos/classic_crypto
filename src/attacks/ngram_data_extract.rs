@@ -24,27 +24,27 @@ struct Row {
 
 fn score_1_grams() -> Result<(), Box<dyn Error>> {
     let mut total = 0f64;
+    let mut rows = Vec::new();
     let mut rdr = csv::Reader::from_path("src\\attacks\\1grams.csv")?;
     for result in rdr.deserialize() {
         // Conver the record to a Row struct
         let record: Row = result?;
-        total += record.count
+        total += record.count;
+        rows.push(record)
     }
     let normalizer = 1.0/total;
     let mut wtr = Writer::from_path("src\\attacks\\1grams_data.csv")?;
-    for result in rdr.deserialize() {
-        // Conver the record to a Row struct
-        let record: Row = result?;
-        wtr.write_record(&[record.ngram,
-                           record.count.to_string(),
-                           (record.count*normalizer).to_string()])?;
+    for row in rows {
+        wtr.write_record(&[row.ngram,
+                           row.count.to_string(),
+                           (row.count*normalizer).to_string()])?;
     }
+    wtr.flush();
     Ok(())
 }
 
 
-
-
+#[test]
 fn main() {
     score_1_grams();
 }
