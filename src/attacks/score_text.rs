@@ -2,8 +2,10 @@
 
 use lazy_static::lazy_static;
 use std::collections::HashMap;
-
 use itertools::Itertools;
+use std::convert::TryFrom;
+
+use crate::alphabets::LATIN26;
 
 
 lazy_static! {
@@ -22,10 +24,25 @@ lazy_static! {
 }
 
 pub fn score_text(text: &str) -> f64 {
-    let mut score = 0f64;
-    for c in text.chars() {
-        score += MONOGRAMS[&c]
+
+    let mut empirical: HashMap<char, f64> = HashMap::new();
+    for l in LATIN26.chars() {
+        empirical.insert(l, 0.0);
     }
+
+    let total = text.chars().count() as f64;
+    let step = 1.0/total;
+
+    for c in text.chars() {
+        *empirical.get_mut(&c).unwrap() += step
+    }
+
+    let mut score = 0f64;
+    for l in LATIN26.chars() {
+        println!("{} {} {}",MONOGRAMS[&l],empirical[&l],(MONOGRAMS[&l]-empirical[&l]).abs());
+        score += (MONOGRAMS[&l]-empirical[&l]).abs()
+    }
+
     score
 }
 
@@ -35,6 +52,6 @@ mod text_scoring_tests {
 
     #[test]
     fn letter_score() {
-        println!("{}",score_text("THEFOX"))
+        println!("{}",score_text("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
     }
 }
