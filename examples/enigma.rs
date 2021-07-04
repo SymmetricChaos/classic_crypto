@@ -17,7 +17,7 @@ fn main() -> Result<(),Error> {
 
     let mut s = EnigmaM3::new( plugs, rotors, reflector, ring_positions );
 
-    s.encrypt_file("enigma_plaintext.txt", "engima_ciphertext.txt")?;
+    s.encrypt_file("prepared_plaintext.txt", "engima_ciphertext.txt")?;
 
     Ok(())
 }

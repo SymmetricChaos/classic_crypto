@@ -1,6 +1,7 @@
 use std::fmt;
 use std::collections::VecDeque;
 use std::iter::FromIterator;
+use std::{fs::File, io::{Error, Read, Write}};
 
 fn permute_l(alpha: &mut VecDeque<char>, n: usize) {
     alpha.rotate_left(n);
@@ -61,6 +62,36 @@ impl crate::Cipher for Chaocipher {
         
         out
 
+    }
+
+    fn encrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
+    }
+
+    fn decrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.decrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
     }
 
 }

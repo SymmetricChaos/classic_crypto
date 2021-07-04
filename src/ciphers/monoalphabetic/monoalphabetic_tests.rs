@@ -50,6 +50,15 @@ mod monoalphabetic_tests {
     }
 
     #[test]
+    fn caesar_file() {
+        let caesar = Caesar::new(1, LATIN26);
+
+        caesar.encrypt_file("prepared_plaintext.txt", "caesar_ciphertext.txt").unwrap();
+        caesar.decrypt_file("caesar_ciphertext.txt", "scratchpad.txt").unwrap();
+
+    }
+
+    #[test]
     fn decoder_ring() {
         use crate::alphabets::GREEK24;
 

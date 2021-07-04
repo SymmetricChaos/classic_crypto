@@ -2,6 +2,7 @@ use std::cell::Cell;
 use rand::{Rng, thread_rng};
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
+use std::{fs::File, io::{Error, Read, Write}};
 
 use crate::alphabets::scramble_alphabet;
 use crate::alphabets::scramble_alphabet_seeded;
@@ -111,6 +112,36 @@ impl crate::Cipher for DRYAD {
         }
         
         out
+    }
+
+    fn encrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
+    }
+
+    fn decrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.decrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
     }
 
 }

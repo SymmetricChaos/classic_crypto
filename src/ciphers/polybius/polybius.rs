@@ -1,5 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
+use std::{fs::File, io::{Error, Read, Write}};
 use crate::alphabets::keyed_alphabet;
 use itertools::Itertools;
 
@@ -124,6 +125,36 @@ impl crate::Cipher for Polybius {
             out.push(self.map_inv[&c]);
         }
         out
+    }
+
+    fn encrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
+    }
+
+    fn decrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.decrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
     }
 
 }

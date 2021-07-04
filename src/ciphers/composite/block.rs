@@ -1,3 +1,5 @@
+use std::{fs::File, io::{Error, Read, Write}};
+
 use crate::Cipher;
 
 /// A block version of a cipher applies it to only a portion of the text each time then reads off each encrypted block.
@@ -40,6 +42,36 @@ impl crate::Cipher for BlockCipher<'_> {
             out.push_str( &self.cipher.decrypt(&c) )
         }
         out
+    }
+
+    fn encrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.encrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
+    }
+
+    fn decrypt_file(&self, source: &str, target: &str) -> Result<(),Error> {
+
+        let mut target_file = File::create(target.to_string())?;
+    
+        let mut source_file = File::open(source)?;
+        let mut source_text = String::new();
+        source_file.read_to_string(&mut source_text)?;
+    
+        let ciphertext = self.decrypt(&source_text);
+    
+        target_file.write(ciphertext.as_bytes())?;
+
+        Ok(())
     }
 
 }

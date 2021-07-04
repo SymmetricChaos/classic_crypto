@@ -1,4 +1,5 @@
 use std::fmt;
+use std::{fs::File, io::{Error, Read, Write}};
 
 use crate::auxiliary::rank_str;
 use crate::alphabets::LATIN36;

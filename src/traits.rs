@@ -1,9 +1,11 @@
-use std::fmt;
+use std::{fmt, io::Error};
 
 
 pub trait Cipher { 
     fn encrypt(&self, text: &str) -> String;
     fn decrypt(&self, text: &str) -> String;
+    fn encrypt_file(&self, source: &str, target: &str) -> Result<(),Error>;
+    fn decrypt_file(&self, source: &str, target: &str) -> Result<(),Error>;
 }
 
 // For the Vigenere like family of ciphers

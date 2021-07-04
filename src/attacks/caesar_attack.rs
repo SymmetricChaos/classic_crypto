@@ -14,7 +14,7 @@ fn example() {
         println!("{}",score_text_monogram(t))
     }
 
-    println!();
+/*     println!();
 
     let mut texts = Vec::new();
     for n in 0..26 {
@@ -23,5 +23,5 @@ fn example() {
     }
     for t in texts.iter() {
         println!("{}",score_text_bigram(t))
-    }
+    } */
 }
