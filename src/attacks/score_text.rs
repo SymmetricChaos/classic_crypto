@@ -27,17 +27,28 @@ lazy_static! {
         }
         map
     };
+    pub static ref BIGRAMS: HashMap<String, f64> = {
+        let mut map: HashMap<String, f64> = HashMap::new();
+        let mut rdr = csv::Reader::from_path("src\\attacks\\2grams_data.csv").unwrap();
+        for result in rdr.deserialize() {
+            // Conver the record to a Row struct
+            let record: DataRow = result.unwrap();
+            // Convert the string to a vector
+            map.insert(record.ngram,record.normed);
+        }
+        map
+    };
 }
 
-pub fn score_text(text: &str) -> f64 {
+pub fn score_text_monogram(text: &str) -> f64 {
 
     let mut empirical: HashMap<char, f64> = HashMap::new();
+    let total = text.chars().count() as f64;
+    let step = 1.0/total;
+
     for l in LATIN26.chars() {
         empirical.insert(l, 0.0);
     }
-
-    let total = text.chars().count() as f64;
-    let step = 1.0/total;
 
     for c in text.chars() {
         *empirical.get_mut(&c).unwrap() += step
@@ -51,12 +62,40 @@ pub fn score_text(text: &str) -> f64 {
     score
 }
 
+
+pub fn score_text_bigram(text: &str) -> f64 {
+
+    let mut empirical: HashMap<String, f64> = HashMap::new();
+    let total = text.chars().count() as f64;
+    let step = 1.0/(total-1);
+
+    let mut chs = text.chars();
+
+    let mut buffer = String::with_capacity(2);
+    buffer.push(chs.next());
+    buffer.push(chs.next());
+    *empirical.get_mut(&buffer).unwrap() += step;
+
+    while let Some(c) = chs.next() {
+        buffer.remove(0);
+        buffer.push(c);
+        *empirical.get_mut(&buffer).unwrap() += step
+    }
+
+    let mut score = 0f64;
+    for bigram in BIGRAMS.keys() {
+        score += (BIGRAMS[bigram]-empirical[bigram]).abs()
+    }
+
+    score
+}
+
 #[cfg(test)]
 mod text_scoring_tests {
     use super::*;
 
     #[test]
     fn letter_score() {
-        println!("{}",score_text("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
+        println!("{}",score_text_monogram("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"));
     }
 }

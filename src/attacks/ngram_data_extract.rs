@@ -22,7 +22,7 @@ struct Row {
     count: f64
 }
 
-fn score_1_grams() -> Result<(), Box<dyn Error>> {
+fn data_from_1grams() -> Result<(), Box<dyn Error>> {
     let mut total = 0f64;
     let mut rows = Vec::new();
     let mut rdr = csv::Reader::from_path("src\\attacks\\1grams.csv")?;
@@ -34,17 +34,83 @@ fn score_1_grams() -> Result<(), Box<dyn Error>> {
     }
     let normalizer = 1.0/total;
     let mut wtr = Writer::from_path("src\\attacks\\1grams_data.csv")?;
+    wtr.write_record(&["ngram","count","normed"])?;
     for row in rows {
         wtr.write_record(&[row.ngram,
                            row.count.to_string(),
                            (row.count*normalizer).to_string()])?;
     }
-    wtr.flush();
+    Ok(())
+}
+
+fn data_from_2grams() -> Result<(), Box<dyn Error>> {
+    let mut total = 0f64;
+    let mut rows = Vec::new();
+    let mut rdr = csv::Reader::from_path("src\\attacks\\2grams.csv")?;
+    for result in rdr.deserialize() {
+        // Conver the record to a Row struct
+        let record: Row = result?;
+        total += record.count;
+        rows.push(record)
+    }
+    let normalizer = 1.0/total;
+    let mut wtr = Writer::from_path("src\\attacks\\2grams_data.csv")?;
+    wtr.write_record(&["ngram","count","normed"])?;
+    for row in rows {
+        wtr.write_record(&[row.ngram,
+                           row.count.to_string(),
+                           (row.count*normalizer).to_string()])?;
+    }
+    Ok(())
+}
+
+fn data_from_3grams() -> Result<(), Box<dyn Error>> {
+    let mut total = 0f64;
+    let mut rows = Vec::new();
+    let mut rdr = csv::Reader::from_path("src\\attacks\\3grams.csv")?;
+    for result in rdr.deserialize() {
+        // Conver the record to a Row struct
+        let record: Row = result?;
+        total += record.count;
+        rows.push(record)
+    }
+    let normalizer = 1.0/total;
+    let mut wtr = Writer::from_path("src\\attacks\\3grams_data.csv")?;
+    wtr.write_record(&["ngram","count","normed"])?;
+    for row in rows {
+        wtr.write_record(&[row.ngram,
+                           row.count.to_string(),
+                           (row.count*normalizer).to_string()])?;
+    }
+    Ok(())
+}
+
+fn data_from_4grams() -> Result<(), Box<dyn Error>> {
+    let mut total = 0f64;
+    let mut rows = Vec::new();
+    let mut rdr = csv::Reader::from_path("src\\attacks\\4grams.csv")?;
+    for result in rdr.deserialize() {
+        // Conver the record to a Row struct
+        let record: Row = result?;
+        total += record.count;
+        rows.push(record)
+    }
+    let normalizer = 1.0/total;
+    let mut wtr = Writer::from_path("src\\attacks\\4grams_data.csv")?;
+    wtr.write_record(&["ngram","count","normed"])?;
+    for row in rows {
+        wtr.write_record(&[row.ngram,
+                           row.count.to_string(),
+                           (row.count*normalizer).to_string()])?;
+    }
     Ok(())
 }
 
 
 #[test]
 fn main() {
-    score_1_grams();
+    data_from_1grams();
+    data_from_2grams();
+    data_from_3grams();
+    data_from_4grams();
 }
