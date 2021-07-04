@@ -67,24 +67,26 @@ pub fn score_text_bigram(text: &str) -> f64 {
 
     let mut empirical: HashMap<String, f64> = HashMap::new();
     let total = text.chars().count() as f64;
-    let step = 1.0/(total-1);
+    let step = 1.0/(total-1.0);
 
     let mut chs = text.chars();
 
     let mut buffer = String::with_capacity(2);
-    buffer.push(chs.next());
-    buffer.push(chs.next());
-    *empirical.get_mut(&buffer).unwrap() += step;
+    buffer.push(chs.next().unwrap());
+    buffer.push(chs.next().unwrap());
+    *empirical.entry(buffer.clone()).or_insert(0.0) += step;
 
     while let Some(c) = chs.next() {
         buffer.remove(0);
         buffer.push(c);
-        *empirical.get_mut(&buffer).unwrap() += step
+        *empirical.entry(buffer.clone()).or_insert(0.0) += step;
     }
+
+    //println!("{:?}",empirical);
 
     let mut score = 0f64;
     for bigram in BIGRAMS.keys() {
-        score += (BIGRAMS[bigram]-empirical[bigram]).abs()
+        score += (BIGRAMS[bigram]-empirical.get(bigram).unwrap_or(&0.0)).abs()
     }
 
     score
@@ -97,5 +99,6 @@ mod text_scoring_tests {
     #[test]
     fn letter_score() {
         println!("{}",score_text_monogram("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"));
+        println!("{}",score_text_bigram("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"));
     }
 }
