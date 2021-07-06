@@ -2,6 +2,13 @@
 
 //http://www.cryptoprograms.com/home
 
-pub mod caesar_attack;
+mod attack_tests;
+
 pub mod score_text;
 pub mod ngram_data_extract;
+
+mod caesar_attack;
+pub use self::caesar_attack::caesar_attack;
+
+mod scytale_attack;
+pub use self::scytale_attack::scytale_attack;
