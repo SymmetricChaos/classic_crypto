@@ -12,3 +12,6 @@ pub use self::caesar_attack::caesar_attack;
 
 mod scytale_attack;
 pub use self::scytale_attack::scytale_attack;
+
+mod vigenere_attack;
+pub use self::vigenere_attack::kasiski;
