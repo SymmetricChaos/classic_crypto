@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ops::Shr};
+use std::{collections::{HashMap,HashSet}, ops::Shr};
 use itertools::Itertools;
 use rand::{seq::index::sample, thread_rng};
 
@@ -183,6 +183,80 @@ impl Iterator for PrimeSieve {
     }
 }
 
+
+/* // 64-bit primality test
+// First checks small possible factors then switches to deterministic Miller-Rabin
+pub fn is_prime(n: usize) -> bool {
+
+    if n <= 1 {
+        return false;
+    }
+
+    // Check all primes below 100 and all witnesses
+    // This quickly eliminates the vast majority of composite numbers using a few simple modulo operations
+    let small_factors = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 325, 9375, 28178, 450775, 9780504, 1795265022];
+
+    for p in small_factors.iter() {
+        if n == *p {
+            return true;
+        }
+        if n % *p == 0 {
+            return false;
+        }
+    }
+    
+    let mut d = (n-1)/2;
+    let mut r = 1;
+    while d % 2 == 0 {
+        d /= 2;
+        r += 1;
+    }
+
+    // Witnesses found by Jim Sinclair
+    let witnesses = [2, 325, 9375, 28178, 450775, 9780504, 1795265022];
+    
+    'outer: for w in witnesses.iter() {
+        let mut x = mod_exp(*w as u128,d as u128,n as u128) as u64;
+        
+        if x == 1 || x == n-1 {
+            continue 'outer;
+        }
+        for _ in 0..r-1 {
+            x = mod_exp(x as u128, 2u128, n as u128) as u64;
+            
+            if x == n-1 {
+                 continue 'outer;
+            }
+        }
+        return false;
+    }
+    true
+} */
+
+
+pub fn factors(n: usize) -> HashSet<usize> {
+    let mut out = HashSet::new();
+    for f in 1..n/2 {
+        if n%f == 0 {
+            out.insert(n);
+            out.insert(n/f);
+        }
+    }
+    out
+}
+
+
+pub fn pairwise_diffs(v: Vec<usize>) -> HashSet<usize> {
+    let mut s: HashSet<usize> = HashSet::new();
+    for a in v.iter() {
+        for b in v.iter() {
+            if a > b {
+                s.insert(a-b);
+            }
+        }
+    }
+    s
+}
 
 
 
