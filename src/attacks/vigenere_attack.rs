@@ -52,10 +52,14 @@ pub fn kasiski(text: &str) -> HashSet<usize> {
 }
 
 // should return best solution and the key that produced it
-pub fn vigenere_attack(text: &str) -> (String,usize) {
+/* pub fn vigenere_attack(text: &str) -> (String,usize) {
     let key_lens = kasiski(text);
-    
-}
+    for kl in key_lens {
+
+    }
+
+    (String::new, 0usize)
+} */
 
 #[cfg(test)]
 mod attack_tests {

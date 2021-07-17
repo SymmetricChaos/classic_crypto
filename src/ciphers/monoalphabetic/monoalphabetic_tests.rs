@@ -8,13 +8,22 @@ mod monoalphabetic_tests {
 
     #[test]
     fn substitution() {
-        let substitution = Substitution::new(LATIN26,LATIN26_QWERTY);
+        let substitution = Substitution::new(LATIN26, LATIN26_QWERTY);
     
         let ciphertext = substitution.encrypt(PLAINTEXT);
         let decrypted = substitution.decrypt(&ciphertext);
     
         assert_eq!(ciphertext,"ZITJXOEAWKGVFYGBOXDHLGCTKZITSQMNRGU");
         assert_eq!(decrypted,PLAINTEXT);
+    }
+
+    #[test]
+    fn substitution_file() {
+        let substitution = Substitution::new(LATIN26, LATIN26_QWERTY);
+
+        substitution.encrypt_file("prepared_plaintext.txt", "substitution_ciphertext.txt").unwrap();
+        substitution.decrypt_file("substitution_ciphertext.txt", "scratchpad.txt").unwrap();
+
     }
 
     #[test]
