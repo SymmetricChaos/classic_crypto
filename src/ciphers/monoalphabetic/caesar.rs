@@ -8,6 +8,7 @@ pub struct Caesar {
     length: usize,
 }
 
+
 impl Caesar {
     pub fn new(key: usize, alphabet: &str) -> Caesar {
         Caesar{ key, alphabet: alphabet.to_string(), length: alphabet.chars().count() }

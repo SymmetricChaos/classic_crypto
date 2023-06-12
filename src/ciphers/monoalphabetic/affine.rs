@@ -34,8 +34,6 @@ impl Affine {
         self.alphabet.chars().nth(v).unwrap()
     }
 
-
-
 }
 
 impl crate::Cipher for Affine {

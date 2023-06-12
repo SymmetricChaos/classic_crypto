@@ -1,7 +1,7 @@
 use std::collections::{HashMap,HashSet};
-use itertools::Itertools;
+//use itertools::Itertools;
 
-use crate::attacks::score_text::score_text_monogram;
+//use crate::attacks::score_text::score_text_monogram;
 use crate::auxiliary::{factors, pairwise_diffs};
 
 // A Vigenere cipher is ultimately just a sequence of Caesar ciphers and those are easy to break.
@@ -24,7 +24,7 @@ pub fn kasiski(text: &str) -> HashSet<usize> {
         buffer.remove(0);
         buffer.push(c);
         pos += 1;
-        let mut entry = tri.get_mut(&buffer.clone());
+        let entry = tri.get_mut(&buffer.clone());
         if let Some(v) = entry {
             v.push(pos);
         } else {

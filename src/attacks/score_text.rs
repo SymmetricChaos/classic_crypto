@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 use crate::alphabets::LATIN26;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug,Deserialize)]
 struct DataRow {
     ngram: String,
     count: f64,
